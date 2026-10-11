@@ -4,6 +4,7 @@ import net.brdle.collectorsreap.common.item.IConfigured;
 import net.brdle.collectorsreap.compat.Modid;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
@@ -43,9 +44,9 @@ public class CompatConsumable extends ConsumableItem implements IConfigured {
 	}
 
 	@Override
-	public void appendHoverText(@NotNull ItemStack stack, @Nullable Level level, @NotNull List<Component> comps, @NotNull TooltipFlag isAdvanced) {
-		if (this.enabledText(comps)) {
-			super.appendHoverText(stack, level, comps, isAdvanced);
+	public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltip, TooltipFlag isAdvanced) {
+		if (this.enabledText(tooltip)) {
+			super.appendHoverText(stack, context, tooltip, isAdvanced);
 		}
 	}
 }

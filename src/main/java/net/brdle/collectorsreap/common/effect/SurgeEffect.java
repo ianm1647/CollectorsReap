@@ -21,15 +21,16 @@ public class SurgeEffect extends MobEffect {
 	 * Checks whether the effect is ready to be applied this tick.
 	 */
 	@Override
-	public boolean isDurationEffectTick(int duration, int amplifier) {
-		return duration % 2 == 0;
+	public boolean shouldApplyEffectTickThisTick(int duration, int amplifier) {
+		return false;
 	}
 
 	@Override
-	public void applyEffectTick(@NotNull LivingEntity entity, int amplifier) {
+	public boolean applyEffectTick(@NotNull LivingEntity entity, int amplifier) {
 		if (amplifier == SurgeEffect.MAX_SURGE) {
 			SurgeEffect.emitParticles(entity, 2);
 		}
+		return true;
 	}
 
 	public static void emitParticles(@NotNull LivingEntity entity, int amount) {

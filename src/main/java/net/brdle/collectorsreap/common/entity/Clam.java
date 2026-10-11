@@ -1,6 +1,7 @@
 package net.brdle.collectorsreap.common.entity;
 
 import net.brdle.collectorsreap.common.item.CRItems;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -13,9 +14,10 @@ import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
-import net.minecraftforge.common.ForgeMod;
+import net.neoforged.neoforge.common.NeoForgeMod;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -43,9 +45,9 @@ public class Clam extends WaterGroundCreature {
 	}
 
 	@Override
-	protected void defineSynchedData() {
-		super.defineSynchedData();
-		this.entityData.define(VARIANT, 0);
+	protected void defineSynchedData(SynchedEntityData.Builder builder) {
+		super.defineSynchedData(builder);
+		builder.define(VARIANT, 0);
 	}
 
 	@Override
@@ -62,9 +64,10 @@ public class Clam extends WaterGroundCreature {
 
 	@Override
 	public void saveToBucketTag(ItemStack bucket) {
-		CompoundTag nbt = bucket.getOrCreateTag();
-		nbt.putInt("Variant", this.getVariant());
-		nbt.putFloat("Health", this.getHealth());
+		CustomData.update(DataComponents.CUSTOM_DATA, bucket, tag -> {
+			tag.putInt("Variant", this.getVariant());
+			tag.putFloat("Health", this.getHealth());
+		});
 	}
 
 	@Override
@@ -88,16 +91,10 @@ public class Clam extends WaterGroundCreature {
 	}
 
 	@Override
-	public SpawnGroupData finalizeSpawn(@NotNull ServerLevelAccessor worldIn, @NotNull DifficultyInstance difficultyIn, @NotNull MobSpawnType reason, @Nullable SpawnGroupData spawnDataIn, @Nullable CompoundTag dataTag) {
-		if (dataTag == null) {
-			setVariant(getRandom().nextInt(VARIANTS));
-		} else if (dataTag.contains("Variant", 3)) {
-			this.setVariant(dataTag.getInt("Variant"));
-		} else if (dataTag.contains("Health", 99)) {
-			this.setHealth(dataTag.getFloat("Health"));
-		}
+	public SpawnGroupData finalizeSpawn(@NotNull ServerLevelAccessor worldIn, @NotNull DifficultyInstance difficultyIn, @NotNull MobSpawnType reason, @Nullable SpawnGroupData spawnDataIn) {
+		setVariant(getRandom().nextInt(VARIANTS));
 		this.setXRot(this.getRandom().nextFloat());
-		return super.finalizeSpawn(worldIn, difficultyIn, reason, spawnDataIn, dataTag);
+		return super.finalizeSpawn(worldIn, difficultyIn, reason, spawnDataIn);
 	}
 
 	@Override
@@ -108,7 +105,7 @@ public class Clam extends WaterGroundCreature {
 	@Override
 	public void aiStep() {
 		if (this.isInWater() && !this.onGround()) {
-			this.sinkInFluid(ForgeMod.WATER_TYPE.get());
+			this.sinkInFluid(NeoForgeMod.WATER_TYPE.value());
 		}
 		super.aiStep();
 	}

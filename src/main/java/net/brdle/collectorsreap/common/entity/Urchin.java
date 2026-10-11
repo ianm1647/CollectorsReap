@@ -13,7 +13,7 @@ import net.minecraft.world.entity.ai.goal.RandomSwimmingGoal;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.common.ForgeMod;
+import net.neoforged.neoforge.common.NeoForgeMod;
 import org.jetbrains.annotations.NotNull;
 
 public class Urchin extends WaterGroundCreature {
@@ -48,7 +48,7 @@ public class Urchin extends WaterGroundCreature {
 	@Override
 	public void aiStep() {
 		if (this.isInWater() && !this.onGround()) {
-			this.sinkInFluid(ForgeMod.WATER_TYPE.get());
+			this.sinkInFluid(NeoForgeMod.WATER_TYPE.value());
 		}
 		super.aiStep();
 	}
@@ -58,7 +58,7 @@ public class Urchin extends WaterGroundCreature {
 		final boolean superHurt = super.hurt(source, amount); // Also checks !clientSide and isInvulnerableTo
 		if (
 			superHurt &&
-			!source.isIndirect() &&
+			source.isDirect() &&
 			source.getEntity() instanceof final LivingEntity attacker
 		) {
 			final DamageSource thorns = this.damageSources().thorns(this);

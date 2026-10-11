@@ -2,15 +2,11 @@ package net.brdle.collectorsreap.common.event;
 
 import net.brdle.collectorsreap.common.block.CRBlocks;
 import net.brdle.collectorsreap.common.block.CRCauldronInteractions;
-import net.brdle.collectorsreap.common.crafting.EnabledCondition;
 import net.brdle.collectorsreap.common.item.CRItems;
 import net.brdle.collectorsreap.compat.Modid;
 import net.minecraft.world.level.block.ComposterBlock;
-import net.minecraftforge.common.crafting.CraftingHelper;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.RegisterEvent;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 
 public class ModEvents {
 	@SubscribeEvent
@@ -77,13 +73,5 @@ public class ModEvents {
 		ComposterBlock.COMPOSTABLES.put(CRItems.BULBOUS_ROSE_SEEDS.get(), 0.3F);
 		ComposterBlock.COMPOSTABLES.put(CRBlocks.HEARTPETALS.get().asItem(), 0.85F);
 		ComposterBlock.COMPOSTABLES.put(CRItems.HEARTPETALS_SEEDS.get(), 0.3F);
-	}
-
-	// Adds collectorsreap:enabled, etc. conditions
-	@SubscribeEvent
-	public void registerSerializers(RegisterEvent e) {
-		if (e.getRegistryKey() == ForgeRegistries.RECIPE_SERIALIZERS.getRegistryKey()) {
-			CraftingHelper.register(EnabledCondition.Serializer.INSTANCE);
-		}
 	}
 }

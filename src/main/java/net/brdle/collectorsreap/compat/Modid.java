@@ -3,6 +3,8 @@ package net.brdle.collectorsreap.compat;
 import com.teamabnormals.blueprint.core.Blueprint;
 import net.brdle.collectorsreap.CollectorsReap;
 import net.brdle.collectorsreap.Util;
+import net.minecraft.core.Holder;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.ItemTags;
@@ -12,7 +14,6 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
-import net.minecraftforge.registries.ForgeRegistries;
 import vectorwing.farmersdelight.FarmersDelight;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -160,7 +161,7 @@ public enum Modid {
 
 	@Nullable
 	public Item item(@NotNull String name) {
-		return ForgeRegistries.ITEMS.getValue(this.rl(name));
+		return BuiltInRegistries.ITEM.get(this.rl(name));
 	}
 
 	public ItemStack itemStack(@NotNull String name) {
@@ -174,32 +175,32 @@ public enum Modid {
 	@NotNull
  	public Item item(String name, @NotNull Item backup) {
 		if (this.itemExists(name)) {
-			Item returnItem = ForgeRegistries.ITEMS.getValue(this.rl(name));
+			Item returnItem = BuiltInRegistries.ITEM.get(this.rl(name));
 			if (returnItem != null) return returnItem;
 		}
 		return backup;
 	}
 
 	public boolean itemExists(@NotNull String name) {
-		return this.loaded() && ForgeRegistries.ITEMS.containsKey(this.rl(name));
+		return this.loaded() && BuiltInRegistries.ITEM.containsKey(this.rl(name));
 	}
 
 	@Nullable
 	public Block block(@NotNull String name) {
-		return ForgeRegistries.BLOCKS.getValue(this.rl(name));
+		return BuiltInRegistries.BLOCK.get(this.rl(name));
 	}
 
 	@NotNull
 	public Block block(String name, @NotNull Block backup) {
 		if (this.blockExists(name)) {
-			Block returnBlock = ForgeRegistries.BLOCKS.getValue(this.rl(name));
+			Block returnBlock = BuiltInRegistries.BLOCK.get(this.rl(name));
 			if (returnBlock != null) return returnBlock;
 		}
 		return backup;
 	}
 
 	public boolean blockExists(@NotNull String name) {
-		return this.loaded() && ForgeRegistries.BLOCKS.containsKey(this.rl(name));
+		return this.loaded() && BuiltInRegistries.BLOCK.containsKey(this.rl(name));
 	}
 
 	public TagKey<Block> bt(String tag) {
@@ -207,13 +208,13 @@ public enum Modid {
 	}
 
 	@Nullable
-	public final MobEffect effect(@NotNull String name, MobEffect... backup) {
-		return Util.effect(this.rl(name), backup);
+	public final Holder<MobEffect> effect(@NotNull String name, MobEffect... backup) {
+		return (Holder<MobEffect>) Util.effect(this.rl(name), backup);
 	}
 
 	@NotNull
-	public final MobEffectInstance effectInstance(@NotNull final String name, int duration, int amplifier, @NotNull final MobEffect backup, int backupDur, int backupAmp) {
-		final MobEffect effect = this.effect(name, backup);
+	public final MobEffectInstance effectInstance(@NotNull final String name, int duration, int amplifier, @NotNull final Holder<MobEffect> backup, int backupDur, int backupAmp) {
+		final Holder<MobEffect> effect = (Holder<MobEffect>) this.effect(name, backup.value());
 		return (effect == null || effect == backup) ?
 			new MobEffectInstance(backup, backupDur, backupAmp) :
 			new MobEffectInstance(effect, duration, amplifier);
@@ -221,7 +222,7 @@ public enum Modid {
 
 	// Uses same duration and amplifier for backup
 	@NotNull
-	public final MobEffectInstance effectInstance(@NotNull final String name, int duration, int amplifier, @NotNull final MobEffect backup) {
+	public final MobEffectInstance effectInstance(@NotNull final String name, int duration, int amplifier, @NotNull final Holder<MobEffect> backup) {
 		return this.effectInstance(name, duration, amplifier, backup, duration, amplifier);
 	}
 }

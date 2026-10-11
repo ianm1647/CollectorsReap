@@ -62,11 +62,6 @@ public abstract class WaterCreature extends WaterAnimal implements Bucketable {
 	}
 
 	@Override
-	protected float getStandingEyeHeight(@NotNull Pose pPose, EntityDimensions pSize) {
-		return pSize.height * 0.65F;
-	}
-
-	@Override
 	public boolean requiresCustomPersistence() {
 		return super.requiresCustomPersistence() || this.fromBucket();
 	}
@@ -92,9 +87,9 @@ public abstract class WaterCreature extends WaterAnimal implements Bucketable {
 	}
 
 	@Override
-	protected void defineSynchedData() {
-		super.defineSynchedData();
-		this.entityData.define(FROM_BUCKET, false);
+	protected void defineSynchedData(SynchedEntityData.Builder builder) {
+		super.defineSynchedData(builder);
+		builder.define(FROM_BUCKET, false);
 	}
 
 	@Override

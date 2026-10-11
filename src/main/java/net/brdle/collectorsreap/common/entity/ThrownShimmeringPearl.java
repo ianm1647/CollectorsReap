@@ -3,7 +3,6 @@ package net.brdle.collectorsreap.common.entity;
 import net.brdle.collectorsreap.common.event.CRSoundEvents;
 import net.brdle.collectorsreap.common.item.CRItems;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -20,10 +19,8 @@ import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.common.util.ITeleporter;
-import net.minecraftforge.event.ForgeEventFactory;
+import net.neoforged.neoforge.event.EventHooks;
 import org.jetbrains.annotations.NotNull;
-import javax.annotation.Nullable;
 
 public class ThrownShimmeringPearl extends ThrowableItemProjectile {
 	public ThrownShimmeringPearl(EntityType<? extends ThrownShimmeringPearl> type, Level level) {
@@ -101,7 +98,7 @@ public class ThrownShimmeringPearl extends ThrowableItemProjectile {
 
 			// ThrowableProjectile
 			HitResult hitresult = ProjectileUtil.getHitResultOnMoveVector(this, this::canHitEntity);
-			if (hitresult.getType() != HitResult.Type.MISS && !ForgeEventFactory.onProjectileImpact(this, hitresult)) {
+			if (hitresult.getType() != HitResult.Type.MISS && !EventHooks.onProjectileImpact(this, hitresult)) {
 				this.onHit(hitresult);
 			}
 			this.checkInsideBlocks();
@@ -119,15 +116,6 @@ public class ThrownShimmeringPearl extends ThrowableItemProjectile {
 			}
 			this.setPos(d2, d0, d1);
 		}
-	}
-
-	@Nullable
-	public Entity changeDimension(@NotNull ServerLevel server, @NotNull ITeleporter teleporter) {
-		Entity entity = this.getOwner();
-		if (entity != null && entity.level().dimension() != server.dimension()) {
-			this.setOwner(null);
-		}
-		return super.changeDimension(server, teleporter);
 	}
 
 	@Override

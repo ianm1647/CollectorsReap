@@ -1,6 +1,7 @@
 package net.brdle.collectorsreap.compat.abnormals;
 
 import net.brdle.collectorsreap.compat.Modid;
+import net.minecraft.core.Holder;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.effect.MobEffect;
@@ -15,23 +16,23 @@ public class NeapolitanCompat {
 		);
 	}
 
-	public static MobEffect getAgility() {
-		return Modid.N.effect("agility", MobEffects.CONFUSION);
+	public static Holder<MobEffect> getAgility() {
+		return Modid.N.effect("agility", MobEffects.CONFUSION.value());
 	}
 
-	public static MobEffect getVanillaScent() {
-		return Modid.N.effect("vanilla_scent", MobEffects.CONFUSION);
+	public static Holder<MobEffect> getVanillaScent() {
+		return Modid.N.effect("vanilla_scent", MobEffects.CONFUSION.value());
 	}
 
-	public static MobEffect getSugarRush() {
-		return Modid.N.effect("sugar_rush", MobEffects.MOVEMENT_SPEED);
+	public static Holder<MobEffect> getSugarRush() {
+		return Modid.N.effect("sugar_rush", MobEffects.MOVEMENT_SPEED.value());
 	}
 
-	public static MobEffect getBerserking() {
-		return Modid.N.effect("berserking", MobEffects.CONFUSION);
+	public static Holder<MobEffect> getBerserking() {
+		return Modid.N.effect("berserking", MobEffects.CONFUSION.value());
 	}
 
-	public static MobEffect getHarmony() {
-		return Modid.N.effect("harmony", MobEffects.CONFUSION);
+	public static Holder<MobEffect> getHarmony() {
+		return Modid.N.effect("harmony", MobEffects.CONFUSION.value());
 	}
 }

@@ -2,6 +2,7 @@ package net.brdle.collectorsreap.compat.abnormals;
 
 import net.brdle.collectorsreap.common.item.food.GummyItem;
 import net.brdle.collectorsreap.compat.Modid;
+import net.minecraft.core.Holder;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
@@ -22,7 +23,7 @@ public class AdzukiGummyItem extends GummyItem {
 	public void affectConsumer(@NotNull ItemStack stack, @NotNull Level level, @NotNull LivingEntity consumer) {
 		super.affectConsumer(stack, level, consumer);
 		if (this.enabled()) {
-			final MobEffect vanilla = NeapolitanCompat.getVanillaScent();
+			final Holder<MobEffect> vanilla = NeapolitanCompat.getVanillaScent();
 			level.getNearbyEntities(LivingEntity.class, TargetingConditions.DEFAULT.selector(near ->
 					near != consumer &&
 					(near.getEffect(vanilla) == null || !near.hasEffect(NeapolitanCompat.getVanillaScent()))

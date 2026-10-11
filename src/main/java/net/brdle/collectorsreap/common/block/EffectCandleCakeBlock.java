@@ -2,6 +2,7 @@ package net.brdle.collectorsreap.common.block;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Maps;
+import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.sounds.SoundEvents;
@@ -11,7 +12,9 @@ import net.minecraft.tags.BlockTags;
 import net.minecraft.world.Containers;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -23,7 +26,6 @@ import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.gameevent.GameEvent;
-import net.minecraft.world.level.pathfinder.PathComputationType;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
@@ -31,11 +33,11 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.NotNull;
-import vectorwing.farmersdelight.common.tag.ForgeTags;
+import vectorwing.farmersdelight.common.tag.CommonTags;
+
 import java.util.Map;
 
 public class EffectCandleCakeBlock extends AbstractCandleBlock {
-
 	protected static final VoxelShape CAKE_SHAPE = Block.box(1D, 0D, 1D, 15D, 8D, 15D);
 	protected static final VoxelShape CANDLE_SHAPE = Block.box(7D, 8D, 7D, 9D, 14D, 9D);
 	protected static final VoxelShape SHAPE = Shapes.or(CAKE_SHAPE, CANDLE_SHAPE);
@@ -69,31 +71,38 @@ public class EffectCandleCakeBlock extends AbstractCandleBlock {
 	}
 
 	@Override
+	protected MapCodec<? extends AbstractCandleBlock> codec() {
+		return (MapCodec<? extends AbstractCandleBlock>) Block.CODEC;
+	}
+
+	@Override
 	protected @NotNull Iterable<Vec3> getParticleOffsets(@NotNull BlockState pState) {
 		return PARTICLE_OFFSETS;
 	}
 
-	@SuppressWarnings("deprecation")
 	@Override
 	public @NotNull VoxelShape getShape(@NotNull BlockState pState, @NotNull BlockGetter pLevel, @NotNull BlockPos pPos, @NotNull CollisionContext pContext) {
 		return SHAPE;
 	}
 
-	@SuppressWarnings("deprecation")
 	@Override
-	public @NotNull InteractionResult use(@NotNull BlockState state, @NotNull Level level, @NotNull BlockPos pos, Player player, @NotNull InteractionHand hand, @NotNull BlockHitResult result) {
+	public @NotNull ItemInteractionResult useItemOn(@NotNull ItemStack stack, @NotNull BlockState state, @NotNull Level level, @NotNull BlockPos pos, Player player, @NotNull InteractionHand hand, @NotNull BlockHitResult hitResult) {
 		ItemStack itemstack = player.getItemInHand(hand);
 		if (!itemstack.is(Items.FLINT_AND_STEEL) && !itemstack.is(Items.FIRE_CHARGE)) {
-			if (candleHit(result) && player.getItemInHand(hand).isEmpty() && state.getValue(LIT)) {
+			if (candleHit(hitResult) && player.getItemInHand(hand).isEmpty() && state.getValue(LIT)) {
 				extinguish(player, state, level, pos);
-				return InteractionResult.sidedSuccess(level.isClientSide());
+				return ItemInteractionResult.sidedSuccess(level.isClientSide());
 			}
-			if (itemstack.is(ForgeTags.TOOLS_KNIVES)) {
+			if (itemstack.is(CommonTags.Items.TOOLS_KNIFE)) {
 				return cutSlice(level, pos, state, player);
 			}
-			return eatSlice(level, pos, state, player);
 		}
-		return InteractionResult.PASS;
+		return ItemInteractionResult.SKIP_DEFAULT_BLOCK_INTERACTION;
+	}
+
+	@Override
+	protected @NotNull InteractionResult useWithoutItem(@NotNull BlockState state, @NotNull Level level, @NotNull BlockPos pos, @NotNull Player player, @NotNull BlockHitResult hitResult) {
+		return eatSlice(level, pos, state, player);
 	}
 
 	/**
@@ -106,7 +115,10 @@ public class EffectCandleCakeBlock extends AbstractCandleBlock {
 		player.awardStat(Stats.EAT_CAKE_SLICE);
 		Item slice = this.getCake().getSlice();
 		ItemStack sliceStack = slice.getDefaultInstance();
-		player.getFoodData().eat(slice, sliceStack, player);
+		FoodProperties food = sliceStack.getFoodProperties(player);
+		if (food != null) {
+			player.getFoodData().eat(food);
+		}
 		EffectCakeBlock.addEatEffect(sliceStack, level, player);
 		level.gameEvent(player, GameEvent.BLOCK_CHANGE, pos);
 		level.setBlock(pos, this.getCake().defaultBlockState().setValue(EffectCakeBlock.BITES, 1), 3);
@@ -117,23 +129,17 @@ public class EffectCandleCakeBlock extends AbstractCandleBlock {
 	/**
 	 * Cuts off a bite and drops a slice item, without feeding the player.
 	 */
-	public InteractionResult cutSlice(Level level, BlockPos pos, BlockState state, Player player) {
+	public ItemInteractionResult cutSlice(Level level, BlockPos pos, BlockState state, Player player) {
 		level.setBlock(pos, this.getCake().defaultBlockState().setValue(EffectCakeBlock.BITES, 1), 3);
 		Containers.dropItemStack(level, pos.getX(), pos.getY(), pos.getZ(), this.getCake().getSlice().getDefaultInstance());
 		Block.dropResources(state, level, pos);
 		level.playSound(null, pos, SoundEvents.WOOL_BREAK, SoundSource.PLAYERS, 0.8F, 0.8F);
-		return InteractionResult.SUCCESS;
+		return ItemInteractionResult.SUCCESS;
 	}
 
 	@Override
 	protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> pBuilder) {
 		pBuilder.add(LIT);
-	}
-
-	@SuppressWarnings("deprecation")
-	@Override
-	public @NotNull ItemStack getCloneItemStack(@NotNull BlockGetter pLevel, @NotNull BlockPos pPos, @NotNull BlockState pState) {
-		return this.getCake().getSlice().getDefaultInstance();
 	}
 
 	/**
@@ -176,12 +182,6 @@ public class EffectCandleCakeBlock extends AbstractCandleBlock {
 	@Override
 	public boolean hasAnalogOutputSignal(@NotNull BlockState pState) {
 		return true;
-	}
-
-	@SuppressWarnings("deprecation")
-	@Override
-	public boolean isPathfindable(@NotNull BlockState pState, @NotNull BlockGetter pLevel, @NotNull BlockPos pPos, @NotNull PathComputationType pType) {
-		return false;
 	}
 
 	@Override

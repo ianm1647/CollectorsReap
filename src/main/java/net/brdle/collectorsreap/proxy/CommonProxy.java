@@ -4,7 +4,7 @@ import net.brdle.collectorsreap.common.CRParticleTypes;
 import net.brdle.collectorsreap.common.block.CRBlocks;
 import net.brdle.collectorsreap.common.event.CRCreativeTab;
 import net.brdle.collectorsreap.common.event.CRSoundEvents;
-import net.brdle.collectorsreap.common.event.ForgeEvents;
+import net.brdle.collectorsreap.common.event.CommonEvents;
 import net.brdle.collectorsreap.common.event.ModEvents;
 import net.brdle.collectorsreap.common.effect.CREffects;
 import net.brdle.collectorsreap.common.entity.CREntities;
@@ -30,7 +30,7 @@ public class CommonProxy {
 	public void start() {
 		final var modBus = FMLJavaModLoadingContext.get().getModEventBus();
 		final var forgeBus = MinecraftForge.EVENT_BUS;
-		forgeBus.register(new ForgeEvents());
+		forgeBus.register(new CommonEvents());
 		modBus.register(new ModEvents());
 		modBus.register(new Generators());
 		CRFluids.create(modBus);

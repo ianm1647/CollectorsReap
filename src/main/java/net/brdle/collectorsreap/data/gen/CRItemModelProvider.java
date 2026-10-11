@@ -1,20 +1,27 @@
 package net.brdle.collectorsreap.data.gen;
 
+import com.teamabnormals.blueprint.common.block.chest.BlueprintChestBlock;
 import com.teamabnormals.blueprint.core.data.client.BlueprintBlockStateProvider;
 import com.teamabnormals.blueprint.core.data.client.BlueprintItemModelProvider;
 import net.brdle.collectorsreap.CollectorsReap;
 import net.brdle.collectorsreap.Util;
 import net.brdle.collectorsreap.common.block.CRBlocks;
 import net.brdle.collectorsreap.common.item.CRItems;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
-import net.minecraftforge.client.model.generators.ModelFile;
-import net.minecraftforge.common.data.ExistingFileHelper;
-import net.minecraftforge.registries.RegistryObject;
+import net.neoforged.neoforge.client.model.generators.ItemModelBuilder;
+import net.neoforged.neoforge.client.model.generators.ItemModelProvider;
+import net.neoforged.neoforge.client.model.generators.ModelFile;
+import net.neoforged.neoforge.common.data.ExistingFileHelper;
+import net.neoforged.neoforge.registries.DeferredHolder;
 
-public class CRItemModelProvider extends BlueprintItemModelProvider {
+import java.util.function.Supplier;
+
+public class CRItemModelProvider extends ItemModelProvider {
 	public CRItemModelProvider(final PackOutput output, final ExistingFileHelper helper) {
 		super(output, CollectorsReap.MODID, helper);
 	}
@@ -37,11 +44,11 @@ public class CRItemModelProvider extends BlueprintItemModelProvider {
 		this.blockItem(CRBlocks.LUCUMA_PLANKS);
 		this.blockItem(CRBlocks.LUCUMA_STAIRS);
 		this.blockItem(CRBlocks.LUCUMA_SLAB);
-		this.fenceInventory(Util.name(CRBlocks.LUCUMA_FENCE), resourceBlock(CRBlocks.LUCUMA_PLANKS));
+		this.fenceInventory(Util.name(CRBlocks.LUCUMA_FENCE.get()), resourceBlock(CRBlocks.LUCUMA_PLANKS));
 		this.blockItem(CRBlocks.LUCUMA_FENCE_GATE);
-		this.blockItem(CRBlocks.LUCUMA_TRAPDOOR, Util.name(CRBlocks.LUCUMA_TRAPDOOR) + "_bottom");
+		this.blockItem(CRBlocks.LUCUMA_TRAPDOOR, Util.name(CRBlocks.LUCUMA_TRAPDOOR.get()) + "_bottom");
 		this.blockItem(CRBlocks.LUCUMA_PRESSURE_PLATE);
-		this.buttonInventory(Util.name(CRBlocks.LUCUMA_BUTTON), resourceBlock(CRBlocks.LUCUMA_PLANKS));
+		this.buttonInventory(Util.name(CRBlocks.LUCUMA_BUTTON.get()), resourceBlock(CRBlocks.LUCUMA_PLANKS));
 		this.generatedItem(CRBlocks.LUCUMA_DOOR);
 		this.generatedItem(CRBlocks.LUCUMA_SIGN);
 		this.generatedItem(CRBlocks.LUCUMA_HANGING_SIGN);
@@ -51,7 +58,7 @@ public class CRItemModelProvider extends BlueprintItemModelProvider {
 		this.generatedItem(CRItems.LARGE_LUCUMA_BOAT);
 		this.flatBlock(CRBlocks.LUCUMA_SAPLING);
 		this.blockItem(CRBlocks.LUCUMA_LEAVES);
-		this.flatBlock(CRBlocks.LUCUMA_LEAF_PILE, Util.name(CRBlocks.LUCUMA_LEAVES));
+		this.flatBlock(CRBlocks.LUCUMA_LEAF_PILE, Util.name(CRBlocks.LUCUMA_LEAVES.get()));
 		this.blockItem(CRBlocks.LUCUMA_CABINET);
 		this.blockItem(CRBlocks.LUCUMA_BEEHIVE);
 		this.flatBlock(CRBlocks.LUCUMA_LADDER);
@@ -65,12 +72,12 @@ public class CRItemModelProvider extends BlueprintItemModelProvider {
 		this.blockItem(CRBlocks.URCHIN_TEST_BRICKS);
 		this.blockItem(CRBlocks.URCHIN_TEST_BRICK_STAIRS);
 		this.blockItem(CRBlocks.URCHIN_TEST_BRICK_SLAB);
-		this.wallInventory(Util.name(CRBlocks.URCHIN_TEST_BRICK_WALL), resourceBlock(CRBlocks.URCHIN_TEST_BRICKS));
+		this.wallInventory(Util.name(CRBlocks.URCHIN_TEST_BRICK_WALL.get()), resourceBlock(CRBlocks.URCHIN_TEST_BRICKS));
 		this.blockItem(CRBlocks.CHISELED_URCHIN_TEST_BRICKS);
 		this.blockItem(CRBlocks.URCHIN_TEST_TILES);
 		this.blockItem(CRBlocks.URCHIN_TEST_TILE_STAIRS);
 		this.blockItem(CRBlocks.URCHIN_TEST_TILE_SLAB);
-		this.wallInventory(Util.name(CRBlocks.URCHIN_TEST_TILE_WALL), resourceBlock(CRBlocks.URCHIN_TEST_TILES));
+		this.wallInventory(Util.name(CRBlocks.URCHIN_TEST_TILE_WALL.get()), resourceBlock(CRBlocks.URCHIN_TEST_TILES));
 
 		// Ice Cream Blocks
 		this.blockItem(CRBlocks.LIME_ICE_CREAM_BLOCK);
@@ -79,14 +86,14 @@ public class CRItemModelProvider extends BlueprintItemModelProvider {
 		this.blockItem(CRBlocks.LUCUMA_ICE_CREAM_BLOCK);
 
 		// Wild Crop Blocks
-		this.flatBlock(CRBlocks.PORTOBELLO_COLONY, Util.name(CRBlocks.PORTOBELLO_COLONY) + "_stage3");
+		this.flatBlock(CRBlocks.PORTOBELLO_COLONY, Util.name(CRBlocks.PORTOBELLO_COLONY.get()) + "_stage3");
 		this.flatBlock(CRBlocks.PORTOBELLO);
 		this.flatBlock(CRBlocks.DRAGON_BUSH);
 		this.flatBlock(CRBlocks.DAMSELFLOWER);
 		this.flatBlock(CRBlocks.MOONTEAR);
 		this.flatBlock(CRBlocks.SKULL_LILY);
-		this.flatBlock(CRBlocks.BULBOUS_ROSE, Util.name(CRBlocks.BULBOUS_ROSE) + "_top");
-		this.flatBlock(CRBlocks.HEARTPETALS, Util.name(CRBlocks.HEARTPETALS) + "_top");
+		this.flatBlock(CRBlocks.BULBOUS_ROSE, Util.name(CRBlocks.BULBOUS_ROSE.get()) + "_top");
+		this.flatBlock(CRBlocks.HEARTPETALS, Util.name(CRBlocks.HEARTPETALS.get()) + "_top");
 
 		// Fruits/Veggies
 		this.generatedItem(CRItems.POMEGRANATE);
@@ -313,11 +320,11 @@ public class CRItemModelProvider extends BlueprintItemModelProvider {
 
 		// Spawn Eggs
 		this.spawnEggItem(
-			CRItems.TIGER_PRAWN_SPAWN_EGG,
-			CRItems.PLATINUM_BASS_SPAWN_EGG,
-			CRItems.CHIEFTAIN_CRAB_SPAWN_EGG,
-			CRItems.URCHIN_SPAWN_EGG,
-			CRItems.CLAM_SPAWN_EGG
+			CRItems.TIGER_PRAWN_SPAWN_EGG.get(),
+			CRItems.PLATINUM_BASS_SPAWN_EGG.get(),
+			CRItems.CHIEFTAIN_CRAB_SPAWN_EGG.get(),
+			CRItems.URCHIN_SPAWN_EGG.get(),
+			CRItems.CLAM_SPAWN_EGG.get()
 		);
 		this.generatedItem(CRItems.TIGER_PRAWN_BUCKET);
 		this.generatedItem(CRItems.PLATINUM_BASS_BUCKET);
@@ -330,50 +337,76 @@ public class CRItemModelProvider extends BlueprintItemModelProvider {
 		this.generatedItem(CRItems.TIGER_PRAWN_ROE);
 	}
 
-	private void blockItem(RegistryObject<Block> block, String path) {
-		this.getBuilder(BlueprintBlockStateProvider.name(block.get())).parent(new ModelFile.UncheckedModelFile(new ResourceLocation(this.modid, "block/" + path)));
+	@SafeVarargs
+	public final void generatedItem(Supplier<Item>... items) {
+		for (Supplier<Item> item : items) {
+			this.basicItem(item.get());
+		}
 	}
 
-	private void flatBlock(RegistryObject<?> blockItem, String blockPath) {
-		this.withExistingParent(Util.name(blockItem), "item/generated").texture("layer0", resourceBlock(blockPath));
+	@SafeVarargs
+	public final void spawnEggItem(Item... items) {
+		for (Item item : items) {
+			this.withExistingParent(name(item), "item/template_spawn_egg");
+		}
 	}
 
-	private void flatBlock(RegistryObject<?> blockItem) {
-		this.withExistingParent(Util.name(blockItem), "item/generated").texture("layer0", resourceBlock(Util.name(blockItem)));
+	private void blockItem(Supplier<Block> block) {
+		this.getBuilder(BlueprintBlockStateProvider.name(block.get())).parent(new ModelFile.UncheckedModelFile(ResourceLocation.fromNamespaceAndPath(this.modid, "block/" + Util.name(block.get()))));
 	}
 
-	private void chest(RegistryObject<?> chestItem) {
-		this.withExistingParent(Util.name(chestItem), "blueprint:item/template_chest");
+	private void blockItem(Supplier<Block> block, String path) {
+		this.getBuilder(BlueprintBlockStateProvider.name(block.get())).parent(new ModelFile.UncheckedModelFile(ResourceLocation.fromNamespaceAndPath(this.modid, "block/" + path)));
 	}
 
-	private void strawBrush(RegistryObject<?> brushItem) {
-		this.withExistingParent(Util.name(brushItem), mcLoc("item/handheld"))
+	private void flatBlock(Supplier<Block> blockItem, String blockPath) {
+		this.withExistingParent(Util.name(blockItem.get()), "item/generated").texture("layer0", resourceBlock(blockPath));
+	}
+
+	private void flatBlock(Supplier<Block> blockItem) {
+		this.withExistingParent(Util.name(blockItem.get()), "item/generated").texture("layer0", resourceBlock(Util.name(blockItem.get())));
+	}
+
+	private void chest(Supplier<Block> chestItem) {
+		this.withExistingParent(Util.name(chestItem.get()), "blueprint:item/template_chest");
+	}
+
+	private void strawBrush(Supplier<Item> brushItem) {
+		this.withExistingParent(Util.name(brushItem.get()), mcLoc("item/handheld"))
 			.texture("layer0", modLoc("item/straw_brush"))
 			.override()
 				.predicate(modLoc("pollinated"), 1F)
 				.model(
-					this.withExistingParent("pollinated_" + Util.name(brushItem), mcLoc("item/handheld"))
+					this.withExistingParent("pollinated_" + Util.name(brushItem.get()), mcLoc("item/handheld"))
 						.texture("layer0", modLoc("item/pollinated_straw_brush"))
 			).end();
 	}
 
-	private void otherTexture(RegistryObject<? extends ItemLike> item, RegistryObject<? extends ItemLike> textureItem) {
-		this.item(item, Util.name(textureItem), "generated");
+	private void otherTexture(Supplier<? extends ItemLike> item, Supplier<Item> textureItem) {
+		this.withExistingParent(name(item.get()), "item/" + "generated").texture("layer0", ResourceLocation.fromNamespaceAndPath(this.modid, "item/" + Util.name(textureItem.get())));
 	}
 
 	public static ResourceLocation resourceItem(String path) {
 		return Util.cr("item/" + path);
 	}
 
-	public static ResourceLocation resourceItem(RegistryObject<?> item) {
-		return resourceItem(item.getId().getPath());
+	public static ResourceLocation resourceItem(Supplier<Item> item) {
+		return resourceItem(BuiltInRegistries.ITEM.getKey(item.get()).getPath());
 	}
 
 	public static ResourceLocation resourceBlock(String path) {
 		return Util.cr("block/" + path);
 	}
 
-	public static ResourceLocation resourceBlock(RegistryObject<?> block) {
-		return resourceBlock(block.getId().getPath());
+	public static ResourceLocation resourceBlock(Supplier<Block> block) {
+		return resourceBlock(BuiltInRegistries.BLOCK.getKey(block.get()).getPath());
+	}
+
+	public static ResourceLocation key(ItemLike item) {
+		return BuiltInRegistries.ITEM.getKey(item.asItem());
+	}
+
+	public static String name(ItemLike item) {
+		return key(item).getPath();
 	}
 }

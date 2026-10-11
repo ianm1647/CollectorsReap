@@ -7,10 +7,10 @@ import net.brdle.collectorsreap.common.item.CRItems;
 import net.minecraft.core.cauldron.CauldronInteraction;
 
 public class CRCauldronInteractions {
-	public static CauldronInteraction.InteractionMap LIME_MILKSHAKE = CauldronInteraction.newInteractionMap(Util.rl(CollectorsReap.MODID, "lime_milkshake"));
-	public static BlueprintCauldronInteraction POMEGRANATE_MILKSHAKE = BlueprintCauldronInteraction.register(Util.rl(CollectorsReap.MODID, "pomegranate_milkshake"), CauldronInteraction.newInteractionMap());
-	public static BlueprintCauldronInteraction PINK_DRAGON_FRUIT_MILKSHAKE = BlueprintCauldronInteraction.register(Util.rl(CollectorsReap.MODID, "pink_dragon_fruit_milkshake"), CauldronInteraction.newInteractionMap());
-	public static BlueprintCauldronInteraction LUCUMA_MILKSHAKE = BlueprintCauldronInteraction.register(Util.rl(CollectorsReap.MODID, "lucuma_milkshake"), CauldronInteraction.newInteractionMap());
+	public static CauldronInteraction.InteractionMap LIME_MILKSHAKE = CauldronInteraction.newInteractionMap(Util.rl(CollectorsReap.MODID, "lime_milkshake").toString());
+	public static CauldronInteraction.InteractionMap POMEGRANATE_MILKSHAKE = CauldronInteraction.newInteractionMap(Util.rl(CollectorsReap.MODID, "pomegranate_milkshake").toString());
+	public static CauldronInteraction.InteractionMap PINK_DRAGON_FRUIT_MILKSHAKE = CauldronInteraction.newInteractionMap(Util.rl(CollectorsReap.MODID, "pink_dragon_fruit_milkshake").toString());
+	public static CauldronInteraction.InteractionMap LUCUMA_MILKSHAKE = CauldronInteraction.newInteractionMap(Util.rl(CollectorsReap.MODID, "lucuma_milkshake").toString());
 
 	public static void registerCauldronInteractions() {
 		NeapolitanCauldronInteractions.addMilkshakeInteractions(CRItems.LIME_MILKSHAKE.get(), CRBlocks.LIME_MILKSHAKE_CAULDRON.get(), CRItems.LIME_ICE_CREAM.get(), LIME_MILKSHAKE.map());

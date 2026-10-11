@@ -56,25 +56,25 @@ public class CRBlocks {
 
 	// Lucuma Wood
 	public static final Supplier<Block> LUCUMA_LOG = registerBlock("lucuma_log", () -> new LogBlock(CRBlocks.STRIPPED_LUCUMA_LOG, Properties.LUCUMA.log()));
-	public static final Supplier<Block> LUCUMA_WOOD = registerBlock("lucuma_wood", () -> new WoodBlock(CRBlocks.STRIPPED_LUCUMA_WOOD, Properties.LUCUMA.log()));
+	public static final Supplier<Block> LUCUMA_WOOD = registerBlock("lucuma_wood", () -> new RotatedPillarBlock(Properties.LUCUMA.log()));
 	public static final Supplier<Block> STRIPPED_LUCUMA_LOG = registerBlock("stripped_lucuma_log", () -> new RotatedPillarBlock(Properties.LUCUMA.log()));
 	public static final Supplier<Block> STRIPPED_LUCUMA_WOOD = registerBlock("stripped_lucuma_wood", () -> new RotatedPillarBlock(Properties.LUCUMA.log()));
 	public static final Supplier<Block> LUCUMA_PLANKS = registerBlock("lucuma_planks", () -> new Block(Properties.LUCUMA.planks()));
-	public static final Supplier<Block> LUCUMA_STAIRS = registerBlock("lucuma_stairs", () -> new StairBlock(() -> LUCUMA_PLANKS.get().defaultBlockState(), Properties.LUCUMA.planks()));
+	public static final Supplier<Block> LUCUMA_STAIRS = registerBlock("lucuma_stairs", () -> new StairBlock(LUCUMA_PLANKS.get().defaultBlockState(), Properties.LUCUMA.planks()));
 	public static final Supplier<Block> LUCUMA_SLAB = registerBlock("lucuma_slab", () -> new SlabBlock(Properties.LUCUMA.planks()));
 	public static final Supplier<Block> LUCUMA_FENCE = registerBlock("lucuma_fence", () -> new FenceBlock(Properties.LUCUMA.planks()));
-	public static final Supplier<Block> LUCUMA_FENCE_GATE = registerBlock("lucuma_fence_gate", () -> new FenceGateBlock(Properties.LUCUMA.planks(), Properties.LUCUMA_WOOD_TYPE));
-	public static final Supplier<Block> LUCUMA_DOOR = registerBlock("lucuma_door", () -> new DoorBlock(Properties.LUCUMA.door(), Properties.LUCUMA_BLOCK_SET));
-	public static final Supplier<Block> LUCUMA_TRAPDOOR = registerBlock("lucuma_trapdoor", () -> new TrapDoorBlock(Properties.LUCUMA.trapdoor(), Properties.LUCUMA_BLOCK_SET));
-	public static final Supplier<Block> LUCUMA_PRESSURE_PLATE = registerBlock("lucuma_pressure_plate", () -> new PressurePlateBlock(PressurePlateBlock.Sensitivity.EVERYTHING, Properties.LUCUMA.pressurePlate(), Properties.LUCUMA_BLOCK_SET));
-	public static final Supplier<Block> LUCUMA_BUTTON = registerBlock("lucuma_button", () ->  new ButtonBlock(Properties.LUCUMA.button(), Properties.LUCUMA_BLOCK_SET, 30, true));
+	public static final Supplier<Block> LUCUMA_FENCE_GATE = registerBlock("lucuma_fence_gate", () -> new FenceGateBlock(Properties.LUCUMA_WOOD_TYPE, Properties.LUCUMA.planks()));
+	public static final Supplier<Block> LUCUMA_DOOR = registerBlock("lucuma_door", () -> new DoorBlock(Properties.LUCUMA_BLOCK_SET, Properties.LUCUMA.door()));
+	public static final Supplier<Block> LUCUMA_TRAPDOOR = registerBlock("lucuma_trapdoor", () -> new TrapDoorBlock(Properties.LUCUMA_BLOCK_SET, Properties.LUCUMA.trapdoor()));
+	public static final Supplier<Block> LUCUMA_PRESSURE_PLATE = registerBlock("lucuma_pressure_plate", () -> new PressurePlateBlock(Properties.LUCUMA_BLOCK_SET, Properties.LUCUMA.pressurePlate()));
+	public static final Supplier<Block> LUCUMA_BUTTON = registerBlock("lucuma_button", () ->  new ButtonBlock(Properties.LUCUMA_BLOCK_SET, 30, Properties.LUCUMA.button()));
 	public static final Pair<Supplier<BlueprintStandingSignBlock>, Supplier<BlueprintWallSignBlock>> LUCUMA_SIGNS = HELPER.createSignBlock("lucuma", Properties.LUCUMA_WOOD_TYPE, Properties.LUCUMA.sign());
 	public static final Supplier<BlueprintStandingSignBlock> LUCUMA_SIGN = LUCUMA_SIGNS.getFirst();
 	public static final Supplier<BlueprintWallSignBlock> LUCUMA_WALL_SIGN = LUCUMA_SIGNS.getSecond();
 	public static final Pair<Supplier<BlueprintCeilingHangingSignBlock>, Supplier<BlueprintWallHangingSignBlock>> LUCUMA_HANGING_SIGNS = HELPER.createHangingSignBlock("lucuma", Properties.LUCUMA_WOOD_TYPE, Properties.LUCUMA.hangingSign());
 	public static final Supplier<BlueprintCeilingHangingSignBlock> LUCUMA_HANGING_SIGN = LUCUMA_HANGING_SIGNS.getFirst();
 	public static final Supplier<BlueprintWallHangingSignBlock> LUCUMA_WALL_HANGING_SIGN = LUCUMA_HANGING_SIGNS.getSecond();
-	public static final Supplier<Block> LUCUMA_CABINET = HELPER.createFuelBlock("lucuma_cabinet", () -> new CabinetBlock(BlockBehaviour.Properties.copy(ModBlocks.OAK_CABINET.get())), 300);
+	public static final Supplier<Block> LUCUMA_CABINET = HELPER.createFuelBlock("lucuma_cabinet", () -> new CabinetBlock(BlockBehaviour.Properties.ofFullCopy(ModBlocks.OAK_CABINET.get())), 300);
 
 	// Lucuma Woodworks
 	public static final Supplier<Block> LUCUMA_BEEHIVE = registerBlock("lucuma_beehive", () -> new BlueprintBeehiveBlock(Properties.LUCUMA.beehive()));
@@ -83,7 +83,7 @@ public class CRBlocks {
 	public static final Supplier<Block> CHISELED_LUCUMA_BOOKSHELF = HELPER.createFuelBlock("chiseled_lucuma_bookshelf", () -> new ChiseledLucumaBookshelfBlock(Properties.LUCUMA.chiseledBookshelf()), 300);
 	public static final Supplier<Block> LUCUMA_BOARDS = HELPER.createFuelBlock("lucuma_boards", () -> new RotatedPillarBlock(Properties.LUCUMA.planks()), 300);
 	public static final Supplier<BlueprintChestBlock> LUCUMA_CHEST = HELPER.createChestBlock("lucuma", Properties.LUCUMA.chest());
-	public static final Supplier<BlueprintTrappedChestBlock> TRAPPED_LUCUMA_CHEST = HELPER.createTrappedChestBlockNamed("lucuma", Properties.LUCUMA.chest());
+	public static final Supplier<BlueprintTrappedChestBlock> TRAPPED_LUCUMA_CHEST = HELPER.createTrappedChestBlock("lucuma", Properties.LUCUMA.chest());
 
 	public static final Supplier<Block> LUCUMA_LEAVES = registerBlock("lucuma_leaves", () -> new LeavesBlock(Properties.LUCUMA.leaves()));
 	public static final Supplier<Block> LUCUMA_LEAF_PILE = registerBlock("lucuma_leaf_pile", () -> new LeafPileBlock(Properties.LUCUMA.leafPile()));
@@ -94,12 +94,12 @@ public class CRBlocks {
 	// Urchin Test
 	public static final Supplier<Block> URCHIN_TEST_BLOCK = registerBlock("urchin_test_block", () -> new Block(Properties.URCHIN_TEST));
 	public static final Supplier<Block> URCHIN_TEST_BRICKS = registerBlock("urchin_test_bricks", () -> new Block(Properties.URCHIN_TEST));
-	public static final Supplier<Block> URCHIN_TEST_BRICK_STAIRS = registerBlock("urchin_test_brick_stairs", () -> new StairBlock(() -> URCHIN_TEST_BRICKS.get().defaultBlockState(), Properties.URCHIN_TEST));
+	public static final Supplier<Block> URCHIN_TEST_BRICK_STAIRS = registerBlock("urchin_test_brick_stairs", () -> new StairBlock(URCHIN_TEST_BRICKS.get().defaultBlockState(), Properties.URCHIN_TEST));
 	public static final Supplier<Block> URCHIN_TEST_BRICK_SLAB = registerBlock("urchin_test_brick_slab", () -> new SlabBlock(Properties.URCHIN_TEST.strength(2F, 6F)));
 	public static final Supplier<Block> URCHIN_TEST_BRICK_WALL = registerBlock("urchin_test_brick_wall", () -> new WallBlock(Properties.URCHIN_TEST));
 	public static final Supplier<Block> CHISELED_URCHIN_TEST_BRICKS = registerBlock("chiseled_urchin_test_bricks", () -> new Block(Properties.URCHIN_TEST));
 	public static final Supplier<Block> URCHIN_TEST_TILES = registerBlock("urchin_test_tiles", () -> new Block(Properties.URCHIN_TEST));
-	public static final Supplier<Block> URCHIN_TEST_TILE_STAIRS = registerBlock("urchin_test_tile_stairs", () -> new StairBlock(() -> URCHIN_TEST_TILES.get().defaultBlockState(), Properties.URCHIN_TEST));
+	public static final Supplier<Block> URCHIN_TEST_TILE_STAIRS = registerBlock("urchin_test_tile_stairs", () -> new StairBlock(URCHIN_TEST_TILES.get().defaultBlockState(), Properties.URCHIN_TEST));
 	public static final Supplier<Block> URCHIN_TEST_TILE_SLAB = registerBlock("urchin_test_tile_slab", () -> new SlabBlock(Properties.URCHIN_TEST.strength(2F, 6F)));
 	public static final Supplier<Block> URCHIN_TEST_TILE_WALL = registerBlock("urchin_test_tile_wall", () -> new WallBlock(Properties.URCHIN_TEST));
 
@@ -124,31 +124,31 @@ public class CRBlocks {
 	public static final Supplier<Block> POMEGRANATE_BUSH = registerBlockNoItem("pomegranate_bush",
 		() -> new PomegranateBushBlock(BlockBehaviour.Properties.of().mapColor(MapColor.PLANT).forceSolidOff().instabreak().sound(SoundType.SWEET_BERRY_BUSH).noOcclusion().pushReaction(PushReaction.DESTROY)));
 	public static final Supplier<Block> DRAGON_BUSH = registerBlock("dragon_bush",
-		() -> new WildCropBlock(MobEffects.GLOWING, 6, BlockBehaviour.Properties.copy(Blocks.TALL_GRASS)));
+		() -> new WildCropBlock(MobEffects.GLOWING, 6, BlockBehaviour.Properties.ofFullCopy(Blocks.TALL_GRASS)));
 
 	// Crops
 	public static final Supplier<Block> BUDDING_PINK_DRAGON_FRUIT_CROP = registerBlockNoItem("budding_pink_dragon_fruits",
-		() -> new BuddingDragonFruitBlock(BlockBehaviour.Properties.copy(Blocks.WHEAT)));
+		() -> new BuddingDragonFruitBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.WHEAT)));
 	public static final Supplier<Block> PINK_DRAGON_FRUIT_CROP = registerBlockNoItem("pink_dragon_fruits",
-		() -> new DragonFruitVineBlock(BlockBehaviour.Properties.copy(Blocks.WHEAT)));
+		() -> new DragonFruitVineBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.WHEAT)));
 
 	// Sniffer Plants
 	public static final Supplier<Block> DAMSELFLOWER_CROP = registerBlockNoItem("damselflower_crop", () ->
 		new DamselflowerCropBlock(BlockBehaviour.Properties.of().mapColor(MapColor.PLANT).noCollission().randomTicks().instabreak().sound(SoundType.CROP).pushReaction(PushReaction.DESTROY)));
 	public static final Supplier<Block> DAMSELFLOWER = registerBlock("damselflower", () ->
-		new FlowerBlock(() -> MobEffects.MOVEMENT_SPEED, 5, BlockBehaviour.Properties.of().mapColor(MapColor.PLANT).noCollission().instabreak().sound(SoundType.GRASS).offsetType(BlockBehaviour.OffsetType.XZ).pushReaction(PushReaction.DESTROY)));
+		new FlowerBlock(MobEffects.MOVEMENT_SPEED, 5, BlockBehaviour.Properties.of().mapColor(MapColor.PLANT).noCollission().instabreak().sound(SoundType.GRASS).offsetType(BlockBehaviour.OffsetType.XZ).pushReaction(PushReaction.DESTROY)));
 	public static final Supplier<Block> POTTED_DAMSELFLOWER = registerBlockNoItem("potted_damselflower", () ->
 		new FlowerPotBlock(DAMSELFLOWER.get(), PropertyUtil.flowerPot()));
 	public static final Supplier<Block> MOONTEAR_CROP = registerBlockNoItem("moontear_crop", () ->
 		new MoontearCropBlock(BlockBehaviour.Properties.of().mapColor(MapColor.PLANT).noCollission().randomTicks().instabreak().sound(SoundType.CROP).pushReaction(PushReaction.DESTROY)));
 	public static final Supplier<Block> MOONTEAR = registerBlock("moontear", () ->
-		new FlowerBlock(() -> MobEffects.NIGHT_VISION, 5, BlockBehaviour.Properties.of().mapColor(MapColor.PLANT).noCollission().instabreak().sound(SoundType.GRASS).offsetType(BlockBehaviour.OffsetType.XZ).pushReaction(PushReaction.DESTROY)));
+		new FlowerBlock(MobEffects.NIGHT_VISION, 5, BlockBehaviour.Properties.of().mapColor(MapColor.PLANT).noCollission().instabreak().sound(SoundType.GRASS).offsetType(BlockBehaviour.OffsetType.XZ).pushReaction(PushReaction.DESTROY)));
 	public static final Supplier<Block> POTTED_MOONTEAR = registerBlockNoItem("potted_moontear", () ->
 		new FlowerPotBlock(MOONTEAR.get(), PropertyUtil.flowerPot()));
 	public static final Supplier<Block> SKULL_LILY_CROP = registerBlockNoItem("skull_lily_crop", () ->
 		new SkullLilyCropBlock(BlockBehaviour.Properties.of().mapColor(MapColor.PLANT).noCollission().randomTicks().instabreak().sound(SoundType.CROP).pushReaction(PushReaction.DESTROY)));
 	public static final Supplier<Block> SKULL_LILY = registerBlock("skull_lily", () ->
-		new FlowerBlock(() -> MobEffects.POISON, 5, BlockBehaviour.Properties.of().mapColor(MapColor.PLANT).noCollission().instabreak().sound(SoundType.GRASS).offsetType(BlockBehaviour.OffsetType.XZ).pushReaction(PushReaction.DESTROY)));
+		new FlowerBlock(MobEffects.POISON, 5, BlockBehaviour.Properties.of().mapColor(MapColor.PLANT).noCollission().instabreak().sound(SoundType.GRASS).offsetType(BlockBehaviour.OffsetType.XZ).pushReaction(PushReaction.DESTROY)));
 	public static final Supplier<Block> POTTED_SKULL_LILY = registerBlockNoItem("potted_skull_lily", () ->
 		new FlowerPotBlock(SKULL_LILY.get(), PropertyUtil.flowerPot()));
 	public static final Supplier<Block> BULBOUS_ROSE_CROP = registerBlockNoItem("bulbous_rose_crop", () ->
@@ -244,29 +244,13 @@ public class CRBlocks {
 
 	// Milkshake Cauldrons
 	public static final Supplier<Block> LIME_MILKSHAKE_CAULDRON = registerBlockNoItem("lime_milkshake_cauldron",
-		() -> new CRMilkshakeCauldronBlock(
-			Modid.N.loaded() ?
-			CRCauldronInteractions.LIME_MILKSHAKE.map() :
-			CauldronInteraction.newInteractionMap())
-	);
+		() -> new CRMilkshakeCauldronBlock(CRCauldronInteractions.LIME_MILKSHAKE));
 	public static final Supplier<Block> POMEGRANATE_MILKSHAKE_CAULDRON = registerBlockNoItem("pomegranate_milkshake_cauldron",
-		() -> new CRMilkshakeCauldronBlock(
-			Modid.N.loaded() ?
-			CRCauldronInteractions.POMEGRANATE_MILKSHAKE.map() :
-			CauldronInteraction.newInteractionMap())
-	);
+		() -> new CRMilkshakeCauldronBlock(CRCauldronInteractions.POMEGRANATE_MILKSHAKE));
 	public static final Supplier<Block> PINK_DRAGON_FRUIT_MILKSHAKE_CAULDRON = registerBlockNoItem("pink_dragon_fruit_milkshake_cauldron",
-		() -> new CRMilkshakeCauldronBlock(
-			Modid.N.loaded() ?
-			CRCauldronInteractions.PINK_DRAGON_FRUIT_MILKSHAKE.map() :
-			CauldronInteraction.newInteractionMap())
-	);
+		() -> new CRMilkshakeCauldronBlock(CRCauldronInteractions.PINK_DRAGON_FRUIT_MILKSHAKE));
 	public static final Supplier<Block> LUCUMA_MILKSHAKE_CAULDRON = registerBlockNoItem("lucuma_milkshake_cauldron",
-		() -> new CRMilkshakeCauldronBlock(
-			Modid.N.loaded() ?
-			CRCauldronInteractions.LUCUMA_MILKSHAKE.map() :
-			CauldronInteraction.newInteractionMap())
-	);
+		() -> new CRMilkshakeCauldronBlock(CRCauldronInteractions.LUCUMA_MILKSHAKE));
 
 	// Let Fish Love
 	public static final Supplier<Block> PLATINUM_BASS_ROE = registerBlockNoItem("platinum_bass_roe_block", () ->

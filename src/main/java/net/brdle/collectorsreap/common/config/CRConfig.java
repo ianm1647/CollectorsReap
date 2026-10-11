@@ -3,29 +3,30 @@ package net.brdle.collectorsreap.common.config;
 import net.brdle.collectorsreap.Util;
 import net.brdle.collectorsreap.common.item.CRItems;
 import net.minecraft.world.item.Item;
-import net.minecraftforge.common.ForgeConfigSpec;
-import net.minecraftforge.registries.RegistryObject;
+import net.neoforged.neoforge.common.ModConfigSpec;
+
 import java.util.HashMap;
+import java.util.function.Supplier;
 
 public class CRConfig {
-	public static final ForgeConfigSpec COMMON;
-	private static final HashMap<String, ForgeConfigSpec.BooleanValue> ITEM_VALUES;
+	public static final ModConfigSpec COMMON;
+	private static final HashMap<String, ModConfigSpec.BooleanValue> ITEM_VALUES;
 
 	// COMMON
-	public static final ForgeConfigSpec.BooleanValue LIME_POLLINATION;
-	public static final ForgeConfigSpec.BooleanValue POMEGRANATE_POLLINATION;
-	public static final ForgeConfigSpec.BooleanValue FAST_POLLINATE;
-	public static final ForgeConfigSpec.IntValue STYGIAN_POMEGRANATE_RARITY;
-	public static final ForgeConfigSpec.IntValue PANETTONE_DURATION;
-	public static final ForgeConfigSpec.DoubleValue SURGE_ZERO_MULTIPLIER;
-	public static final ForgeConfigSpec.DoubleValue SURGE_ONE_MULTIPLIER;
-	public static final ForgeConfigSpec.DoubleValue SURGE_TWO_MULTIPLIER;
-	public static final ForgeConfigSpec.DoubleValue REBOUND_CHANCE;
-	public static final ForgeConfigSpec.IntValue STRAW_BRUSH_DURABILITY;
-	public static final ForgeConfigSpec.IntValue STRAW_BRUSH_BONE_MEALS;
+	public static final ModConfigSpec.BooleanValue LIME_POLLINATION;
+	public static final ModConfigSpec.BooleanValue POMEGRANATE_POLLINATION;
+	public static final ModConfigSpec.BooleanValue FAST_POLLINATE;
+	public static final ModConfigSpec.IntValue STYGIAN_POMEGRANATE_RARITY;
+	public static final ModConfigSpec.IntValue PANETTONE_DURATION;
+	public static final ModConfigSpec.DoubleValue SURGE_ZERO_MULTIPLIER;
+	public static final ModConfigSpec.DoubleValue SURGE_ONE_MULTIPLIER;
+	public static final ModConfigSpec.DoubleValue SURGE_TWO_MULTIPLIER;
+	public static final ModConfigSpec.DoubleValue REBOUND_CHANCE;
+	public static final ModConfigSpec.IntValue STRAW_BRUSH_DURABILITY;
+	public static final ModConfigSpec.IntValue STRAW_BRUSH_BONE_MEALS;
 
 	static {
-		final ForgeConfigSpec.Builder BUILDER = new ForgeConfigSpec.Builder();
+		final ModConfigSpec.Builder BUILDER = new ModConfigSpec.Builder();
 
 		BUILDER.push("Behavior");
 		FAST_POLLINATE = BUILDER
@@ -80,15 +81,15 @@ public class CRConfig {
 		return contains(item) && ITEM_VALUES.get(item).get();
 	}
 
-	public static boolean verify(RegistryObject<Item> item) {
-		return verify(item.getId().getPath());
+	public static boolean verify(Supplier<Item> item) {
+		return verify(item.get());
 	}
 
 	public static boolean verify(Item item) {
 		return verify(Util.name(item));
 	}
 
-	private static void defineItem(ForgeConfigSpec.Builder builder, String name) {
+	private static void defineItem(ModConfigSpec.Builder builder, String name) {
 		ITEM_VALUES.put(name, builder.define(name, true));
 	}
 

@@ -11,7 +11,7 @@ import net.minecraft.world.entity.ai.control.MoveControl;
 import net.minecraft.world.entity.ai.goal.RandomSwimmingGoal;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.common.ForgeMod;
+import net.neoforged.neoforge.common.NeoForgeMod;
 import org.jetbrains.annotations.NotNull;
 
 public class TigerPrawn extends WaterCreature {
@@ -64,7 +64,7 @@ public class TigerPrawn extends WaterCreature {
 	@Override
 	public void aiStep() {
 		if (this.isInWater() && !this.onGround()) {
-			this.sinkInFluid(ForgeMod.WATER_TYPE.get());
+			this.sinkInFluid(NeoForgeMod.WATER_TYPE.value());
 		}
 		super.aiStep();
 	}

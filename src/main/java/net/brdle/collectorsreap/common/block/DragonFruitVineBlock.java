@@ -4,6 +4,7 @@ import net.brdle.collectorsreap.common.event.CRSoundEvents;
 import net.brdle.collectorsreap.common.item.CRItems;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
@@ -26,8 +27,7 @@ import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.minecraftforge.common.ForgeHooks;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.neoforged.neoforge.common.CommonHooks;
 import vectorwing.farmersdelight.common.Configuration;
 import vectorwing.farmersdelight.common.registry.ModBlocks;
 import vectorwing.farmersdelight.common.tag.ModTags;
@@ -49,7 +49,7 @@ public class DragonFruitVineBlock extends CropBlock {
 	}
 
 	@Override
-	public @NotNull InteractionResult use(@NotNull BlockState state, @NotNull Level level, @NotNull BlockPos pos, @NotNull Player player, @NotNull InteractionHand hand, @NotNull BlockHitResult hit) {
+	public @NotNull InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult) {
 		if (this.isMaxAge(state)) {
 			final RandomSource random = level.getRandom();
 			popResource(level, pos, new ItemStack(CRItems.PINK_DRAGON_FRUIT.get(), 1 + random.nextInt(2)));
@@ -71,10 +71,10 @@ public class DragonFruitVineBlock extends CropBlock {
 		if (level.getRawBrightness(pos, 0) >= 9) {
 			int age = this.getAge(state);
 			if (age < this.getMaxAge()) {
-				float speed = getGrowthSpeed(this, level, pos);
-				if (ForgeHooks.onCropsGrowPre(level, pos, state, random.nextInt((int) (25F / speed) + 1) == 0)) {
+				float speed = getGrowthSpeed(state, level, pos);
+				if (CommonHooks.canCropGrow(level, pos, state, random.nextInt((int) (25F / speed) + 1) == 0)) {
 					level.setBlock(pos, state.setValue(this.getAgeProperty(), age + 1), 2);
-					ForgeHooks.onCropsGrowPost(level, pos, state);
+					CommonHooks.fireCropGrowPost(level, pos, state);
 				}
 			}
 			attemptRopeClimb(level, pos, random);
@@ -84,7 +84,7 @@ public class DragonFruitVineBlock extends CropBlock {
 	public void attemptRopeClimb(@NotNull ServerLevel level, @NotNull BlockPos pos, RandomSource random) {
 		if (random.nextFloat() < 0.3F) {
 			BlockPos posAbove = pos.above();
-			if (level.getBlockState(posAbove).is(ModTags.ROPES)) {
+			if (level.getBlockState(posAbove).is(ModTags.Blocks.ROPES)) {
 				int vineHeight;
 				for (vineHeight = 1; level.getBlockState(pos.below(vineHeight)).is(this); ++vineHeight);
 				if (vineHeight < 3) {
@@ -180,7 +180,7 @@ public class DragonFruitVineBlock extends CropBlock {
 	}
 
 	public static void destroyAndPlaceRope(Level level, @NotNull BlockPos pos) {
-		final Block configuredRopeBlock = ForgeRegistries.BLOCKS.getValue(new ResourceLocation(Configuration.DEFAULT_TOMATO_VINE_ROPE.get()));
+		final Block configuredRopeBlock = BuiltInRegistries.BLOCK.get(ResourceLocation.parse(Configuration.DEFAULT_TOMATO_VINE_ROPE.get()));
 		final Block finalRopeBlock = configuredRopeBlock != null ? configuredRopeBlock : ModBlocks.ROPE.get();
 		level.setBlockAndUpdate(pos, finalRopeBlock.defaultBlockState());
 	}

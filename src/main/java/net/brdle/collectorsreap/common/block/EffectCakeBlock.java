@@ -1,7 +1,7 @@
 package net.brdle.collectorsreap.common.block;
 
-import com.mojang.datafixers.util.Pair;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.stats.Stats;
@@ -9,8 +9,10 @@ import net.minecraft.tags.ItemTags;
 import net.minecraft.world.Containers;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -21,8 +23,8 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.phys.BlockHitResult;
 import org.jetbrains.annotations.NotNull;
-import vectorwing.farmersdelight.common.tag.ForgeTags;
-import java.util.Objects;
+import vectorwing.farmersdelight.common.tag.CommonTags;
+
 import java.util.function.Supplier;
 
 public class EffectCakeBlock extends CakeBlock {
@@ -36,10 +38,10 @@ public class EffectCakeBlock extends CakeBlock {
 
 	public static void addEatEffect(ItemStack pFood, Level pLevel, Player p) {
 		Item item = pFood.getItem();
-		if (item.isEdible() && pFood.getFoodProperties(p) != null) {
-			for (Pair<MobEffectInstance, Float> pair : Objects.requireNonNull(pFood.getFoodProperties(p)).getEffects()) {
-				if (!pLevel.isClientSide && pair.getFirst() != null && pLevel.random.nextFloat() < pair.getSecond()) {
-					p.addEffect(new MobEffectInstance(pair.getFirst()));
+		if (item.getDefaultInstance().getComponents().has(DataComponents.FOOD) && pFood.getFoodProperties(p) != null) {
+			for (FoodProperties.PossibleEffect effect : pFood.getFoodProperties(p).effects()) {
+				if (!pLevel.isClientSide && effect.effect() != null && pLevel.random.nextFloat() < effect.probability()) {
+					p.addEffect(new MobEffectInstance(effect.effect()));
 				}
 			}
 		}
@@ -50,7 +52,7 @@ public class EffectCakeBlock extends CakeBlock {
 	}
 
 	@Override
-	public @NotNull InteractionResult use(@NotNull BlockState state, @NotNull Level level, @NotNull BlockPos pos, Player player, @NotNull InteractionHand hand, @NotNull BlockHitResult result) {
+	public @NotNull ItemInteractionResult useItemOn(@NotNull ItemStack stack, @NotNull BlockState state, @NotNull Level level, @NotNull BlockPos pos, Player player, @NotNull InteractionHand hand, @NotNull BlockHitResult hitResult) {
 		ItemStack itemstack = player.getItemInHand(hand);
 		if (
 			itemstack.is(ItemTags.CANDLES) &&
@@ -65,22 +67,27 @@ public class EffectCakeBlock extends CakeBlock {
 			level.setBlockAndUpdate(pos, EffectCandleCakeBlock.byCakeCandle(this, candle));
 			level.gameEvent(player, GameEvent.BLOCK_CHANGE, pos);
 			player.awardStat(Stats.ITEM_USED.get(itemstack.getItem()));
-			return InteractionResult.SUCCESS;
+			return ItemInteractionResult.SUCCESS;
 		}
 		if (level.isClientSide()) {
-			if (itemstack.is(ForgeTags.TOOLS_KNIVES)) {
+			if (itemstack.is(CommonTags.Items.TOOLS_KNIFE)) {
 				return cutSlice(level, pos, state, player);
 			}
 			if (eatSlice(level, pos, state, player).consumesAction()) {
-				return InteractionResult.SUCCESS;
+				return ItemInteractionResult.SUCCESS;
 			}
 			if (itemstack.isEmpty()) {
-				return InteractionResult.CONSUME;
+				return ItemInteractionResult.CONSUME;
 			}
 		}
-		if (itemstack.is(ForgeTags.TOOLS_KNIVES)) {
+		if (itemstack.is(CommonTags.Items.TOOLS_KNIFE)) {
 			return cutSlice(level, pos, state, player);
 		}
+		return ItemInteractionResult.SKIP_DEFAULT_BLOCK_INTERACTION;
+	}
+
+	@Override
+	protected @NotNull InteractionResult useWithoutItem(@NotNull BlockState state, @NotNull Level level, @NotNull BlockPos pos, @NotNull Player player, @NotNull BlockHitResult hitResult) {
 		return eatSlice(level, pos, state, player);
 	}
 
@@ -94,7 +101,10 @@ public class EffectCakeBlock extends CakeBlock {
 		player.awardStat(Stats.EAT_CAKE_SLICE);
 		Item slice = this.getSlice();
 		ItemStack sliceStack = slice.getDefaultInstance();
-		player.getFoodData().eat(slice, sliceStack, player);
+		FoodProperties food = sliceStack.getFoodProperties(player);
+		if (food != null) {
+			player.getFoodData().eat(food);
+		}
 		EffectCakeBlock.addEatEffect(sliceStack, level, player);
 		level.gameEvent(player, GameEvent.BLOCK_CHANGE, pos);
 		int bites = state.getValue(BITES);
@@ -110,7 +120,7 @@ public class EffectCakeBlock extends CakeBlock {
 	/**
 	 * Cuts off a bite and drops a slice item, without feeding the player.
 	 */
-	public InteractionResult cutSlice(Level level, BlockPos pos, BlockState state, Player player) {
+	public ItemInteractionResult cutSlice(Level level, BlockPos pos, BlockState state, Player player) {
 		int bites = state.getValue(BITES);
 		if (bites < 6) {
 			level.setBlock(pos, state.setValue(BITES, bites + 1), 3);
@@ -119,6 +129,6 @@ public class EffectCakeBlock extends CakeBlock {
 		}
 		Containers.dropItemStack(level, pos.getX(), pos.getY(), pos.getZ(), this.getSlice().getDefaultInstance());
 		level.playSound(null, pos, SoundEvents.WOOL_BREAK, SoundSource.PLAYERS, 0.8F, 0.8F);
-		return InteractionResult.SUCCESS;
+		return ItemInteractionResult.SUCCESS;
 	}
 }

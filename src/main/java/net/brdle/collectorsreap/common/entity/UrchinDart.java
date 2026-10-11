@@ -19,8 +19,8 @@ public class UrchinDart extends AbstractArrow {
 		super(type, level);
 	}
 
-	public UrchinDart(LivingEntity shooter, Level level) {
-		super(CREntities.URCHIN_DART.get(), shooter, level);
+	public UrchinDart(Level level) {
+		super(CREntities.URCHIN_DART.get(), level);
 	}
 
 	@Override
@@ -40,7 +40,7 @@ public class UrchinDart extends AbstractArrow {
 	}
 
 	@Override
-	public @NotNull ItemStack getPickupItem() {
+	public @NotNull ItemStack getDefaultPickupItem() {
 		return new ItemStack(CRItems.URCHIN_DART.get());
 	}
 

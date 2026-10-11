@@ -2,7 +2,7 @@ package net.brdle.collectorsreap.common.item;
 
 import java.util.Map;
 import java.util.function.Supplier;
-import com.mojang.datafixers.util.Pair;
+import com.teamabnormals.blueprint.common.item.BlueprintBoatItem;
 import com.teamabnormals.blueprint.core.util.registry.ItemSubRegistryHelper;
 import net.brdle.collectorsreap.CollectorsReap;
 import net.brdle.collectorsreap.Util;
@@ -28,11 +28,8 @@ import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.*;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.material.Fluids;
-import net.minecraftforge.common.ForgeSpawnEggItem;
-import net.minecraftforge.registries.Supplier;
 import vectorwing.farmersdelight.common.item.ConsumableItem;
 import vectorwing.farmersdelight.common.item.DrinkableItem;
-import vectorwing.farmersdelight.common.item.FuelBlockItem;
 import vectorwing.farmersdelight.common.item.MushroomColonyItem;
 import org.jetbrains.annotations.NotNull;
 import static vectorwing.farmersdelight.common.registry.ModItems.*;
@@ -90,7 +87,7 @@ public class CRItems {
 	public static final Supplier<Item> LUCUMA = registerItem("lucuma", () ->
 		new LucumaItem((new Item.Properties()).food(Nutrition.LUCUMA)));
 	public static final Supplier<Item> GILDED_LUCUMA = registerItem("gilded_lucuma", () ->
-		new GildedLucumaItem((new Item.Properties()).food(Nutrition.GILDED_LUCUMA)));
+		new LucumaItem((new Item.Properties()).rarity(Rarity.RARE).food(Nutrition.GILDED_LUCUMA)));
 
 	// Sliceable Blocks
 	public static final Supplier<Item> PANETTONE = registerBlock(CRBlocks.PANETTONE);
@@ -254,9 +251,10 @@ public class CRItems {
 	public static final Supplier<Item> STRAW_BRUSH = registerItem("straw_brush", () ->
 		new StrawBrushItem((new Item.Properties()).durability(8)));
 	public static final Supplier<Item> URCHIN_DART = registerItem("urchin_dart", () -> new UrchinDartItem((new Item.Properties())));
-	public static final Pair<Supplier<Item>, Supplier<Item>> LUCUMA_BOATS = HELPER.createBoatAndChestBoatItem("lucuma", CRBlocks.LUCUMA_PLANKS);
-	public static final Supplier<Item> LUCUMA_BOAT = LUCUMA_BOATS.getFirst();
-	public static final Supplier<Item> LUCUMA_CHEST_BOAT = LUCUMA_BOATS.getSecond();
+	public static final Supplier<Item> LUCUMA_BOAT = registerItem("lucuma_boat_item",
+		() -> new BlueprintBoatItem(false, Util.rl("lucuma"), new Item.Properties().stacksTo(1)));
+	public static final Supplier<Item> LUCUMA_CHEST_BOAT = registerItem("lucuma_chest_boat_item",
+		() -> new BlueprintBoatItem(true, Util.rl("lucuma"), new Item.Properties().stacksTo(1)));
 	public static final Supplier<Item> LUCUMA_FURNACE_BOAT = HELPER.createItem("lucuma_furnace_boat",
 		Modid.BL.loaded() ?
 		CRBoatTypes.LUCUMA_FURNACE_BOAT :
@@ -497,21 +495,21 @@ public class CRItems {
 		new GummyItem((new Item.Properties()).food(Nutrition.HEMP_GUMMY), Modid.NIRV));
 
 	// Spawn Eggs
-	public static final Supplier<Item> TIGER_PRAWN_SPAWN_EGG = registerItem("tiger_prawn_spawn_egg", () -> new ForgeSpawnEggItem(CREntities.TIGER_PRAWN, 0x7c7248, 0x613432, new Item.Properties()));
-	public static final Supplier<Item> PLATINUM_BASS_SPAWN_EGG = registerItem("platinum_bass_spawn_egg", () -> new ForgeSpawnEggItem(CREntities.PLATINUM_BASS, 0x091442, 0x7B8698, new Item.Properties()));
-	public static final Supplier<Item> CHIEFTAIN_CRAB_SPAWN_EGG = registerItem("chieftain_crab_spawn_egg", () -> new ForgeSpawnEggItem(CREntities.CHIEFTAIN_CRAB, 0xB13125, 0xE1B865, new Item.Properties()));
-	public static final Supplier<Item> URCHIN_SPAWN_EGG = registerItem("urchin_spawn_egg", () -> new ForgeSpawnEggItem(CREntities.URCHIN, 0x9990d7, 0x21132d, new Item.Properties()));
-	public static final Supplier<Item> CLAM_SPAWN_EGG = registerItem("clam_spawn_egg", () -> new ForgeSpawnEggItem(CREntities.CLAM, 0x775745, 0xC5A877, new Item.Properties()));
+	public static final Supplier<Item> TIGER_PRAWN_SPAWN_EGG = registerItem("tiger_prawn_spawn_egg", () -> new SpawnEggItem(CREntities.TIGER_PRAWN.get(), 0x7c7248, 0x613432, new Item.Properties()));
+	public static final Supplier<Item> PLATINUM_BASS_SPAWN_EGG = registerItem("platinum_bass_spawn_egg", () -> new SpawnEggItem(CREntities.PLATINUM_BASS.get(), 0x091442, 0x7B8698, new Item.Properties()));
+	public static final Supplier<Item> CHIEFTAIN_CRAB_SPAWN_EGG = registerItem("chieftain_crab_spawn_egg", () -> new SpawnEggItem(CREntities.CHIEFTAIN_CRAB.get(), 0xB13125, 0xE1B865, new Item.Properties()));
+	public static final Supplier<Item> URCHIN_SPAWN_EGG = registerItem("urchin_spawn_egg", () -> new SpawnEggItem(CREntities.URCHIN.get(), 0x9990d7, 0x21132d, new Item.Properties()));
+	public static final Supplier<Item> CLAM_SPAWN_EGG = registerItem("clam_spawn_egg", () -> new SpawnEggItem(CREntities.CLAM.get(), 0x775745, 0xC5A877, new Item.Properties()));
 	public static final Supplier<Item> TIGER_PRAWN_BUCKET = registerItem("tiger_prawn_bucket", () ->
-		new MobBucketItem(CREntities.TIGER_PRAWN, () -> Fluids.WATER, () -> SoundEvents.BUCKET_EMPTY_TADPOLE, (new Item.Properties()).stacksTo(1).craftRemainder(Items.BUCKET)));
+		new MobBucketItem(CREntities.TIGER_PRAWN.get(), Fluids.WATER, SoundEvents.BUCKET_EMPTY_TADPOLE, (new Item.Properties()).stacksTo(1).craftRemainder(Items.BUCKET)));
 	public static final Supplier<Item> PLATINUM_BASS_BUCKET = registerItem("platinum_bass_bucket", () ->
-		new MobBucketItem(CREntities.PLATINUM_BASS, () -> Fluids.WATER, () -> SoundEvents.BUCKET_EMPTY_FISH, (new Item.Properties()).stacksTo(1).craftRemainder(Items.BUCKET)));
+		new MobBucketItem(CREntities.PLATINUM_BASS.get(), Fluids.WATER, SoundEvents.BUCKET_EMPTY_FISH, (new Item.Properties()).stacksTo(1).craftRemainder(Items.BUCKET)));
 	public static final Supplier<Item> CHIEFTAIN_CRAB_BUCKET = registerItem("chieftain_crab_bucket", () ->
-		new MobBucketItem(CREntities.CHIEFTAIN_CRAB, () -> Fluids.WATER, () -> SoundEvents.BUCKET_EMPTY_AXOLOTL, (new Item.Properties()).stacksTo(1).craftRemainder(Items.BUCKET)));
+		new MobBucketItem(CREntities.CHIEFTAIN_CRAB.get(), Fluids.WATER, SoundEvents.BUCKET_EMPTY_AXOLOTL, (new Item.Properties()).stacksTo(1).craftRemainder(Items.BUCKET)));
 	public static final Supplier<Item> URCHIN_BUCKET = registerItem("urchin_bucket", () ->
-		new MobBucketItem(CREntities.URCHIN, () -> Fluids.WATER, () -> SoundEvents.BUCKET_EMPTY_TADPOLE, (new Item.Properties()).stacksTo(1).craftRemainder(Items.BUCKET)));
+		new MobBucketItem(CREntities.URCHIN.get(), Fluids.WATER, SoundEvents.BUCKET_EMPTY_TADPOLE, (new Item.Properties()).stacksTo(1).craftRemainder(Items.BUCKET)));
 	public static final Supplier<Item> CLAM_BUCKET = registerItem("clam_bucket", () ->
-		new MobBucketItem(CREntities.CLAM, () -> Fluids.WATER, () -> SoundEvents.BUCKET_EMPTY_TADPOLE, (new Item.Properties()).stacksTo(1).craftRemainder(Items.BUCKET)));
+		new MobBucketItem(CREntities.CLAM.get(), Fluids.WATER, SoundEvents.BUCKET_EMPTY_TADPOLE, (new Item.Properties()).stacksTo(1).craftRemainder(Items.BUCKET)));
 
 	// Let Fish Love
 	public static final Supplier<Item> TIGER_PRAWN_ROE = registerItem("tiger_prawn_roe", () ->
@@ -526,11 +524,7 @@ public class CRItems {
 	);
 
 	public static Supplier<Item> registerBlock(Supplier<? extends Block> block) {
-		return registerBlock(Util.name(block), block);
-	}
-
-	public static Supplier<Item> registerFuel(Supplier<Block> block, int burnTime) {
-		return registerItem(Util.name(block), () -> new FuelBlockItem(block.get(), (new Item.Properties()), burnTime));
+		return registerBlock(Util.name(block.get()), block);
 	}
 
 	public static Supplier<Item> registerBlock(String name, Supplier<? extends Block> block) {

@@ -20,7 +20,7 @@ public class CorrosionEffect extends MobEffect {
 	 * Checks whether the effect is ready to be applied this tick.
 	 */
 	@Override
-	public boolean isDurationEffectTick(int duration, int amplifier) {
+	public boolean shouldApplyEffectTickThisTick(int duration, int amplifier) {
 		return false;
 	}
 

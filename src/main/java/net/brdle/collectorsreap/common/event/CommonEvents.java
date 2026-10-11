@@ -15,6 +15,7 @@ import net.brdle.collectorsreap.common.item.food.GummyItem;
 import net.brdle.collectorsreap.data.CRDamageSources;
 import net.brdle.collectorsreap.data.CREntityTags;
 import net.brdle.collectorsreap.data.CRItemTags;
+import net.minecraft.core.Holder;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -34,24 +35,25 @@ import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.entity.projectile.ThrownTrident;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.trading.ItemCost;
 import net.minecraft.world.item.trading.MerchantOffer;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.event.entity.EntityJoinLevelEvent;
-import net.minecraftforge.event.entity.ProjectileImpactEvent;
-import net.minecraftforge.event.entity.living.LivingDamageEvent;
-import net.minecraftforge.event.entity.living.LivingEntityUseItemEvent;
-import net.minecraftforge.event.entity.player.PlayerInteractEvent;
-import net.minecraftforge.event.village.WandererTradesEvent;
-import net.minecraftforge.eventbus.api.EventPriority;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.neoforged.bus.api.EventPriority;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
+import net.neoforged.neoforge.event.entity.ProjectileImpactEvent;
+import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
+import net.neoforged.neoforge.event.entity.living.LivingEntityUseItemEvent;
+import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
+import net.neoforged.neoforge.event.village.WandererTradesEvent;
 import vectorwing.farmersdelight.common.registry.ModParticleTypes;
 import vectorwing.farmersdelight.common.utility.MathUtils;
 import java.util.List;
 import java.util.Objects;
 
-public class ForgeEvents {
+public class CommonEvents {
 	@SubscribeEvent(priority = EventPriority.HIGHEST)
 	public void onFinishPanettone(LivingEntityUseItemEvent.Finish e) {
 		if (e.getItem().is(CRItems.PANETTONE_SLICE.get())) {
@@ -71,22 +73,22 @@ public class ForgeEvents {
 	public void onWanderingTrader(WandererTradesEvent e) {
 		final List<VillagerTrades.ItemListing> trades = e.getGenericTrades();
 		if (Util.enabled(CRBlocks.PORTOBELLO)) {
-			trades.add((ent, r) -> new MerchantOffer(new ItemStack(Items.BROWN_MUSHROOM, 4),
+			trades.add((ent, r) -> new MerchantOffer(new ItemCost(Items.BROWN_MUSHROOM, 4),
 				Util.getStack(CRBlocks.PORTOBELLO), 10, 1, 1));
 		}
 		if (Util.enabled(CRItems.LIME) && Util.enabled(CRItems.LIME_SEEDS)) {
-			trades.add((ent, r) -> new MerchantOffer(new ItemStack(Items.EMERALD, 1),
+			trades.add((ent, r) -> new MerchantOffer(new ItemCost(Items.EMERALD, 1),
 				Util.getStack(CRItems.LIME_SEEDS), 5, 1, 1));
 		}
 		if (Util.enabled(CRItems.PINK_DRAGON_FRUIT) && Util.enabled(CRItems.DRAGON_FRUIT_SEEDS)) {
-			trades.add((ent, r) -> new MerchantOffer(new ItemStack(Items.EMERALD, 1),
+			trades.add((ent, r) -> new MerchantOffer(new ItemCost(Items.EMERALD, 1),
 				Util.getStack(CRItems.DRAGON_FRUIT_SEEDS), 5, 1, 1));
 		}
 		if (Util.enabled(CRItems.LUCUMA)) {
-			trades.add((ent, r) -> new MerchantOffer(new ItemStack(Items.EMERALD, 3),
+			trades.add((ent, r) -> new MerchantOffer(new ItemCost(Items.EMERALD, 3),
 				Util.getStack(CRItems.LUCUMA, 3), 5, 1, 1));
 			if (Util.enabled(CRItems.GILDED_LUCUMA)) {
-				trades.add((ent, r) -> new MerchantOffer(new ItemStack(Items.EMERALD, 10),
+				trades.add((ent, r) -> new MerchantOffer(new ItemCost(Items.EMERALD, 10),
 					Util.getStack(CRItems.GILDED_LUCUMA, 1), 5, 1, 1));
 			}
 		}
@@ -94,25 +96,25 @@ public class ForgeEvents {
 
 	// Rebound
 	@SubscribeEvent(priority = EventPriority.HIGHEST) // Apply damage modifiers early
-	public void onReboundDamage(LivingDamageEvent e) {
+	public void onReboundDamage(LivingDamageEvent.Pre e) {
 		final LivingEntity hurt = e.getEntity();
-		final MobEffect rebound = CREffects.REBOUND.get();
+		final Holder<MobEffect> rebound = CREffects.REBOUND;
 		if (
 			!hurt.level().isClientSide() &&
 			hurt.hasEffect(rebound) &&
-			e.getAmount() > 0F &&
+			e.getNewDamage() > 0F &&
 			hurt.level() instanceof ServerLevel server &&
 			server.getRandom().nextFloat() <= CRConfig.REBOUND_CHANCE.get() // 15% chance to recover
 		) {
 			final MobEffectInstance effectInstance = hurt.getEffect(rebound);
 			if (effectInstance != null) {
 				final float recoveredHealth = (6F * effectInstance.getAmplifier()) + 10F;
-				final float initialDamage = e.getAmount();
+				final float initialDamage = e.getNewDamage();
 				if (recoveredHealth > initialDamage) {
-					e.setAmount(0F);
+					e.setNewDamage(0F);
 					hurt.heal(recoveredHealth - initialDamage);
 				} else {
-					e.setAmount(initialDamage - recoveredHealth);
+					e.setNewDamage(initialDamage - recoveredHealth);
 				}
 				server.playSound(null, hurt.getX(), hurt.getY(), hurt.getZ(), CRSoundEvents.REBOUND_HEAL.get(), SoundSource.NEUTRAL, 0.8F, 0.8F);
 			}
@@ -121,8 +123,8 @@ public class ForgeEvents {
 
 	// Surge
 	@SubscribeEvent(priority = EventPriority.HIGH) // Apply damage modifiers early
-	public void onSurgeDamage(LivingDamageEvent e) {
-		final MobEffect surge = CREffects.SURGE.get();
+	public void onSurgeDamage(LivingDamageEvent.Pre e) {
+		final Holder<MobEffect> surge = CREffects.SURGE;
 		final DamageSource source = e.getSource();
 		final LivingEntity hurt = e.getEntity();
 		if (
@@ -134,11 +136,11 @@ public class ForgeEvents {
 		) {
 			final MobEffectInstance effectInstance = living.getEffect(surge);
 			if (effectInstance != null) {
-				final float beforeDamage = e.getAmount();
+				final float beforeDamage = e.getNewDamage();
 				final int amplifier = effectInstance.getAmplifier();
 
 				// Hurt
-				e.setAmount(
+				e.setNewDamage(
 					Util.roundToHalf((beforeDamage + amplifier + 1F) *
 						(float) switch (amplifier) {
 							case 0 -> CRConfig.SURGE_ZERO_MULTIPLIER.get();
@@ -158,7 +160,7 @@ public class ForgeEvents {
 				}
 
 				// Increment Surge amplifier or reset to zero
-				Util.removeEffect(living, surge);
+				Util.removeEffect(living, surge.value());
 				living.addEffect(new MobEffectInstance(
 					surge,
 					effectInstance.getDuration(),
@@ -174,20 +176,20 @@ public class ForgeEvents {
 	// Weapon Corrosion
 	@SuppressWarnings("DataFlowIssue")
 	@SubscribeEvent(priority = EventPriority.HIGH)
-	public void onCorrodeWeapon(LivingDamageEvent e) {
+	public void onCorrodeWeapon(LivingDamageEvent.Pre e) {
 		final LivingEntity victim = e.getEntity();
 		if (
 			e.getSource().getDirectEntity() instanceof LivingEntity attacker &&
-			victim.hasEffect(CREffects.CORROSION.get())
+			victim.hasEffect(CREffects.CORROSION)
 		) {
-			final int amplifier = victim.getEffect(CREffects.CORROSION.get()).getAmplifier();
+			final int amplifier = victim.getEffect(CREffects.CORROSION).getAmplifier();
 			final InteractionHand hand = attacker.getUsedItemHand();
 			final ItemStack stack = attacker.getItemInHand(hand);
 			if (
 				victim.level() instanceof ServerLevel server &&
 				stack.isDamageableItem()
 			) {
-				stack.hurtAndBreak(amplifier, victim, en -> en.broadcastBreakEvent(hand));
+				stack.hurtAndBreak(amplifier, victim, EquipmentSlot.MAINHAND);
 				CorrosionEffect.emitParticles(victim, amplifier);
 				server.playSound(null, victim.getX(), victim.getY(), victim.getZ(), CRSoundEvents.CORROSION_CORRODE.get(), SoundSource.NEUTRAL, 0.8F, 1.1F);
 			}
@@ -203,13 +205,13 @@ public class ForgeEvents {
 			!projectile.getType().is(CREntityTags.CORROSION_IMMUNE) &&
 			e.getRayTraceResult() instanceof EntityHitResult result &&
 			result.getEntity() instanceof LivingEntity victim &&
-			victim.hasEffect(CREffects.CORROSION.get())
+			victim.hasEffect(CREffects.CORROSION)
 		) {
-			final int amplifier = victim.getEffect(CREffects.CORROSION.get()).getAmplifier();
+			final int amplifier = victim.getEffect(CREffects.CORROSION).getAmplifier();
 			if (victim.level() instanceof ServerLevel server) {
 				e.setCanceled(true);
 				if (projectile instanceof ThrownTrident trident) {
-					trident.tridentItem.hurt(5 * amplifier, victim.getRandom(), null);
+					trident.getWeaponItem().hurtAndBreak(5 * amplifier, victim, null);
 				} else {
 					projectile.discard();
 					projectile.gameEvent(GameEvent.ENTITY_DIE);
@@ -224,14 +226,14 @@ public class ForgeEvents {
 	private boolean validateVolatile(LivingEntity attacker) {
 		return (
 			attacker != null &&
-			attacker.hasEffect(CREffects.VOLATILITY.get()) &&
+			attacker.hasEffect(CREffects.VOLATILITY) &&
 			!attacker.getType().is(CREntityTags.INVOLATILE) &&
 			!(attacker instanceof Player p && p.getAttackStrengthScale(0F) != 1F)
 		);
 	}
 
 	@SubscribeEvent
-	public void onVolatile(LivingDamageEvent e) {
+	public void onVolatile(LivingDamageEvent.Pre e) {
 		LivingEntity victim = e.getEntity();
 		if (
 			victim instanceof Mob &&
@@ -244,7 +246,7 @@ public class ForgeEvents {
 			validateVolatile(attacker)
 		) {
 			server.sendParticles(CRParticleTypes.SHOCKWAVE.get(), victim.getX(), victim.getY(), victim.getZ(), 1, 0D, 0D, 0D, 0D);
-			int level = Objects.requireNonNull(attacker.getEffect(CREffects.VOLATILITY.get())).getAmplifier();
+			int level = Objects.requireNonNull(attacker.getEffect(CREffects.VOLATILITY)).getAmplifier();
 			List<Mob> mobs = server.getNearbyEntities(Mob.class,
 					TargetingConditions.DEFAULT.selector(mob -> (
 						mob != attacker &&
@@ -255,7 +257,7 @@ public class ForgeEvents {
 					victim, victim.getBoundingBox().inflate(4D + ((double) level), 2D, 4D + ((double) level)))
 				.stream().limit(3 + level).toList();
 			if (!mobs.isEmpty()) {
-				float hurtAmount = Math.round(((e.getAmount() + ((level + 2F) * 0.85F)) / (mobs.size() + 1)) * 2F) / 2F;
+				float hurtAmount = Math.round(((e.getNewDamage() + ((level + 2F) * 0.85F)) / (mobs.size() + 1)) * 2F) / 2F;
 				mobs.forEach(mob -> {
 					mob.forceAddEffect(new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE, 10, 0), null);
 					Vec3 vec32 = mob.getEyePosition().subtract(victim.position().add(0D, 1F, 0D)).normalize();

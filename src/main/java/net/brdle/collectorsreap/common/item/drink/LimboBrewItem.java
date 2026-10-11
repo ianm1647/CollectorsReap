@@ -2,6 +2,7 @@ package net.brdle.collectorsreap.common.item.drink;
 
 import net.brdle.collectorsreap.Util;
 import net.brdle.collectorsreap.compat.Modid;
+import net.minecraft.core.Holder;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.LivingEntity;
@@ -27,10 +28,10 @@ public class LimboBrewItem extends CompatDrinkable {
 	public void affectConsumer(@NotNull ItemStack stack, @NotNull Level level, @NotNull LivingEntity consumer) {
 		super.affectConsumer(stack, level, consumer);
 		for (final MobEffect effect : Util.getBeneficialEffects(consumer)) {
-			if (consumer.hasEffect(effect)) {
-				final @NotNull MobEffectInstance current = Objects.requireNonNull(consumer.getEffect(effect));
+			if (consumer.hasEffect(Util.holder(effect))) {
+				final @NotNull MobEffectInstance current = Objects.requireNonNull(consumer.getEffect(Util.holder(effect)));
 				final MobEffectInstance extended = new MobEffectInstance(
-					effect,
+					Util.holder(effect),
 					current.getDuration() + this.getBuffExtension(),
 					current.getAmplifier(),
 					current.isVisible(),

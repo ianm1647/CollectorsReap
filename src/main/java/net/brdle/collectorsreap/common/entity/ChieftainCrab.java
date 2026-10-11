@@ -4,6 +4,7 @@ import net.brdle.collectorsreap.common.item.CRItems;
 import net.brdle.collectorsreap.data.CRBlockTags;
 import net.brdle.collectorsreap.data.CRItemTags;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -28,12 +29,14 @@ import net.minecraft.world.entity.animal.Animal;
 import net.minecraft.world.entity.animal.Bucketable;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.common.ForgeMod;
-import net.minecraftforge.fluids.FluidType;
 import java.util.UUID;
+
+import net.neoforged.neoforge.common.NeoForgeMod;
+import net.neoforged.neoforge.fluids.FluidType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -80,19 +83,9 @@ public class ChieftainCrab extends Animal implements NeutralMob, Bucketable {
 	}
 
 	@Override
-	public @NotNull MobType getMobType() {
-		return MobType.ARTHROPOD;
-	}
-
-	@Override
-	public float getStepHeight() {
-		return 1.15F;
-	}
-
-	@Override
-	protected void defineSynchedData() {
-		super.defineSynchedData();
-		this.entityData.define(FROM_BUCKET, false);
+	protected void defineSynchedData(SynchedEntityData.Builder builder) {
+		super.defineSynchedData(builder);
+		builder.define(FROM_BUCKET, false);
 	}
 
 	@Override
@@ -124,8 +117,9 @@ public class ChieftainCrab extends Animal implements NeutralMob, Bucketable {
 
 	@Override
 	public void saveToBucketTag(ItemStack bucket) {
-		CompoundTag nbt = bucket.getOrCreateTag();
-		nbt.putFloat("Health", this.getHealth());
+		CustomData.update(DataComponents.CUSTOM_DATA, bucket, tag ->
+			tag.putFloat("Health", this.getHealth())
+		);
 	}
 
 	@Override
@@ -162,7 +156,7 @@ public class ChieftainCrab extends Animal implements NeutralMob, Bucketable {
 	@Override
 	public void aiStep() {
 		if (this.isInWater() && !this.onGround()) {
-			this.sinkInFluid(ForgeMod.WATER_TYPE.get());
+			this.sinkInFluid(NeoForgeMod.WATER_TYPE.value());
 		}
 		super.aiStep();
 	}
@@ -184,11 +178,8 @@ public class ChieftainCrab extends Animal implements NeutralMob, Bucketable {
 	}
 
 	@Override
-	public @NotNull SpawnGroupData finalizeSpawn(@NotNull ServerLevelAccessor worldIn, @NotNull DifficultyInstance difficultyIn, @NotNull MobSpawnType reason, @Nullable SpawnGroupData spawnDataIn, @Nullable CompoundTag dataTag) {
-		if (dataTag != null && dataTag.contains("Health", 99)) {
-			this.setHealth(dataTag.getFloat("Health"));
-		}
-		return super.finalizeSpawn(worldIn, difficultyIn, reason, spawnDataIn, dataTag);
+	public @NotNull SpawnGroupData finalizeSpawn(@NotNull ServerLevelAccessor worldIn, @NotNull DifficultyInstance difficultyIn, @NotNull MobSpawnType reason, @Nullable SpawnGroupData spawnDataIn) {
+		return super.finalizeSpawn(worldIn, difficultyIn, reason, spawnDataIn);
 	}
 
 	@Override
@@ -202,23 +193,13 @@ public class ChieftainCrab extends Animal implements NeutralMob, Bucketable {
 	}
 
 	@Override
-	protected float getStandingEyeHeight(@NotNull Pose pose, @NotNull EntityDimensions size) {
-		return this.getBbHeight() * 0.75F;
-	}
-
-	@Override
-	public boolean canBreatheUnderwater() {
-		return true;
-	}
-
-	@Override
 	public float getWaterSlowDown() {
 		return 0.9F;
 	}
 
 	@Override
 	public boolean canDrownInFluidType(FluidType type) {
-		return type != ForgeMod.WATER_TYPE.get();
+		return type != NeoForgeMod.WATER_TYPE;
 	}
 
 	@Override

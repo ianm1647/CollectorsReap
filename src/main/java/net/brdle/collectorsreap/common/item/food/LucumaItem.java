@@ -1,5 +1,6 @@
 package net.brdle.collectorsreap.common.item.food;
 
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import vectorwing.farmersdelight.common.item.ConsumableItem;
 import org.jetbrains.annotations.NotNull;
@@ -10,7 +11,7 @@ public class LucumaItem extends ConsumableItem {
 	}
 
 	@Override
-	public int getUseDuration(@NotNull ItemStack stack) {
+	public int getUseDuration(@NotNull ItemStack stack, LivingEntity entity) {
 		return 48;
 	}
 }

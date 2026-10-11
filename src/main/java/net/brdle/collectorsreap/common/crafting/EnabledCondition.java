@@ -1,24 +1,32 @@
 package net.brdle.collectorsreap.common.crafting;
 
-import com.google.gson.JsonObject;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.brdle.collectorsreap.CollectorsReap;
 import net.brdle.collectorsreap.Util;
 import net.brdle.collectorsreap.common.config.CRConfig;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.GsonHelper;
-import net.minecraftforge.common.crafting.conditions.ICondition;
-import net.minecraftforge.common.crafting.conditions.IConditionSerializer;
+import net.neoforged.bus.api.IEventBus;
+import net.neoforged.neoforge.common.conditions.ICondition;
+import net.neoforged.neoforge.registries.DeferredHolder;
+import net.neoforged.neoforge.registries.DeferredRegister;
+import net.neoforged.neoforge.registries.NeoForgeRegistries;
 
 public class EnabledCondition implements ICondition {
-	private static final ResourceLocation NAME = Util.cr("enabled");
+	public static final ResourceLocation ID = Util.cr("enabled");
+	public static final MapCodec<EnabledCondition> CODEC = RecordCodecBuilder.mapCodec(instance ->
+		instance.group(
+			Codec.STRING.fieldOf("value").forGetter(c -> c.value)
+		).apply(instance, EnabledCondition::new));
+
+	private static final DeferredRegister<MapCodec<? extends ICondition>> CONDITIONS = DeferredRegister.create(NeoForgeRegistries.CONDITION_SERIALIZERS, CollectorsReap.MODID);
+	public static final DeferredHolder<MapCodec<? extends ICondition>, MapCodec<EnabledCondition>> ENABLED = CONDITIONS.register("enabled", () -> CODEC);
+
 	private final String value;
 
 	public EnabledCondition(String value) {
 		this.value = value;
-	}
-
-	@Override
-	public ResourceLocation getID() {
-		return NAME;
 	}
 
 	@Override
@@ -27,26 +35,16 @@ public class EnabledCondition implements ICondition {
 	}
 
 	@Override
-	public String toString() {
-		return "enabled(\"" + this.value + "\")";
+	public MapCodec<? extends ICondition> codec() {
+		return CODEC;
 	}
 
-	public static class Serializer implements IConditionSerializer<EnabledCondition> {
-		public static final EnabledCondition.Serializer INSTANCE = new EnabledCondition.Serializer();
+	public static void create(IEventBus bus) {
+		CONDITIONS.register(bus);
+	}
 
-		@Override
-		public void write(JsonObject json, EnabledCondition condition) {
-			json.addProperty("value", condition.value);
-		}
-
-		@Override
-		public EnabledCondition read(JsonObject json) {
-			return new EnabledCondition(GsonHelper.getAsString(json, "value"));
-		}
-
-		@Override
-		public ResourceLocation getID() {
-			return EnabledCondition.NAME;
-		}
+	@Override
+	public String toString() {
+		return "enabled(\"" + this.value + "\")";
 	}
 }

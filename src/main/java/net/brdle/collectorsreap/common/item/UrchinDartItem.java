@@ -35,20 +35,20 @@ public class UrchinDartItem extends Item {
 	}
 
 	@Override
-	public int getUseDuration(@NotNull ItemStack stack) {
+	public int getUseDuration(@NotNull ItemStack stack, @NotNull LivingEntity entity) {
 		return 36000;
 	}
 
 	@Override
 	public void releaseUsing(@NotNull ItemStack stack, @NotNull Level level, @NotNull LivingEntity entity, int timeLeft) {
 		if (entity instanceof Player player) {
-			if (this.getUseDuration(stack) - timeLeft >= 10) {
+			if (this.getUseDuration(stack, player) - timeLeft >= 10) {
 				player.getCooldowns().addCooldown(this, 20);
 				if (!level.isClientSide()) {
 					boolean holdingShooter = player.getItemInHand(InteractionHand.OFF_HAND).is(CRItemTags.DART_SHOOTERS);
 					float velocity = holdingShooter ? 3F : 2F;
 					float inaccuracy = holdingShooter ? 1.1F : 1.5F;
-					UrchinDart dart = new UrchinDart(player, level);
+					UrchinDart dart = new UrchinDart(level);
 					dart.shootFromRotation(
 						player,
 						player.getXRot(),

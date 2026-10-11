@@ -1,22 +1,22 @@
 package net.brdle.collectorsreap.common.effect;
 
 import net.brdle.collectorsreap.CollectorsReap;
+import net.minecraft.core.Holder;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.world.effect.MobEffect;
-import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.registries.DeferredRegister;
-import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.RegistryObject;
+import net.neoforged.bus.api.IEventBus;
+import net.neoforged.neoforge.registries.DeferredRegister;
 
 public class CREffects {
-	public static final DeferredRegister<MobEffect> EFFECTS = DeferredRegister.create(ForgeRegistries.MOB_EFFECTS, CollectorsReap.MODID);
+	public static final DeferredRegister<MobEffect> EFFECTS = DeferredRegister.create(Registries.MOB_EFFECT, CollectorsReap.MODID);
 
-	public static final RegistryObject<MobEffect> CORROSION = EFFECTS.register("corrosion",
+	public static final Holder<MobEffect> CORROSION = EFFECTS.register("corrosion",
 		CorrosionEffect::new);
-	public static final RegistryObject<MobEffect> VOLATILITY = EFFECTS.register("volatility",
+	public static final Holder<MobEffect> VOLATILITY = EFFECTS.register("volatility",
 		VolatilityEffect::new);
-	public static final RegistryObject<MobEffect> SURGE = EFFECTS.register("surge",
+	public static final Holder<MobEffect> SURGE = EFFECTS.register("surge",
 		SurgeEffect::new);
-	public static final RegistryObject<MobEffect> REBOUND = EFFECTS.register("rebound",
+	public static final Holder<MobEffect> REBOUND = EFFECTS.register("rebound",
 		ReboundEffect::new);
 
 	public static void create(IEventBus bus) {
