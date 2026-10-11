@@ -6,6 +6,6 @@ import net.minecraft.world.effect.MobEffects;
 
 public class MNDCompat {
 	public static MobEffect getBeneficialPungent() {
-		return Modid.MND.effect("g_pungent", MobEffects.DAMAGE_RESISTANCE);
+		return Modid.MND.effect("g_pungent", MobEffects.DAMAGE_RESISTANCE.value());
 	}
 }

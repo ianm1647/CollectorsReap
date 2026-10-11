@@ -40,8 +40,8 @@ public class ChieftainCrabModel extends HierarchicalModel<ChieftainCrab> {
 	}
 
 	@Override
-	public void renderToBuffer(PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
-		Main.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
+	public void renderToBuffer(PoseStack poseStack, VertexConsumer buffer, int packedLight, int packedOverlay, int color) {
+		Main.render(poseStack, buffer, packedLight, packedOverlay, color);
 	}
 
 	@Override

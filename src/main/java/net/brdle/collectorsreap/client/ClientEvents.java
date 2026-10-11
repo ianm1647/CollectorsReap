@@ -1,6 +1,5 @@
 package net.brdle.collectorsreap.client;
 
-import com.teamabnormals.blueprint.core.util.DataUtil;
 import net.brdle.collectorsreap.Util;
 import net.brdle.collectorsreap.client.model.*;
 import net.brdle.collectorsreap.client.particle.AcidParticle;
@@ -15,23 +14,23 @@ import net.brdle.collectorsreap.common.item.StrawBrushItem;
 import net.minecraft.client.renderer.BiomeColors;
 import net.minecraft.client.renderer.entity.ThrownItemRenderer;
 import net.minecraft.client.renderer.item.ItemProperties;
-import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.level.FoliageColor;
 import net.minecraft.world.level.GrassColor;
 import net.minecraft.world.level.block.Block;
-import net.minecraftforge.client.event.EntityRenderersEvent;
-import net.minecraftforge.client.event.RegisterColorHandlersEvent;
-import net.minecraftforge.client.event.RegisterParticleProvidersEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
-import net.minecraftforge.registries.RegistryObject;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
+import net.neoforged.neoforge.client.event.EntityRenderersEvent;
+import net.neoforged.neoforge.client.event.RegisterColorHandlersEvent;
+import net.neoforged.neoforge.client.event.RegisterParticleProvidersEvent;
+
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.function.Supplier;
 
 public class ClientEvents {
-	private static final List<RegistryObject<Block>> FOLIAGE_COLOR_BLOCKS = Arrays.asList(CRBlocks.LUCUMA_LEAVES, CRBlocks.LUCUMA_LEAF_PILE);
-	private static final List<RegistryObject<Block>> GRASS_COLOR_BLOCKS = Collections.emptyList();
+	private static final List<Supplier<Block>> FOLIAGE_COLOR_BLOCKS = Arrays.asList(CRBlocks.LUCUMA_LEAVES, CRBlocks.LUCUMA_LEAF_PILE);
+	private static final List<Supplier<Block>> GRASS_COLOR_BLOCKS = Collections.emptyList();
 
 	@SubscribeEvent
 	public void setupClient(FMLClientSetupEvent e){
@@ -46,19 +45,26 @@ public class ClientEvents {
 	}
 
 	@SubscribeEvent
-	public void registerBlockColors(RegisterColorHandlersEvent.Block e) {
+	public void registerBlockColors(RegisterColorHandlersEvent.Block event) {
 		if (!FOLIAGE_COLOR_BLOCKS.isEmpty()) {
-			DataUtil.registerBlockColor(e.getBlockColors(), (state, tint, pos, u) -> pos != null && tint != null ? BiomeColors.getAverageFoliageColor(tint, pos) : FoliageColor.getDefaultColor(), FOLIAGE_COLOR_BLOCKS);
+			FOLIAGE_COLOR_BLOCKS.forEach(block ->
+				event.register((x, level, pos, u) -> level != null && pos != null
+					? BiomeColors.getAverageFoliageColor(level, pos) : FoliageColor.get(0.5D, 1.0D), block.get())
+			);
 		}
 		if (!GRASS_COLOR_BLOCKS.isEmpty()) {
-			DataUtil.registerBlockColor(e.getBlockColors(), (state, tint, pos, u) -> pos != null && tint != null ? BiomeColors.getAverageGrassColor(tint, pos) : GrassColor.getDefaultColor(), GRASS_COLOR_BLOCKS);
+			GRASS_COLOR_BLOCKS.forEach(block -> event.register((x, level, pos, u) -> level != null && pos != null
+				? BiomeColors.getAverageGrassColor(level, pos) : GrassColor.getDefaultColor(), block.get())
+			);
 		}
 	}
 
 	@SubscribeEvent
 	public void registerItemColors(RegisterColorHandlersEvent.Item event) {
 		if (!FOLIAGE_COLOR_BLOCKS.isEmpty()) {
-			DataUtil.registerBlockItemColor(event.getItemColors(), (stack, c) -> event.getBlockColors().getColor(((BlockItem) stack.getItem()).getBlock().defaultBlockState(), null, null, c), FOLIAGE_COLOR_BLOCKS);
+			FOLIAGE_COLOR_BLOCKS.forEach(item -> event.register((color, items) -> items > 0 ? -1
+					: FoliageColor.get(0.5D, 1.0D), item.get())
+			);
 		}
 	}
 

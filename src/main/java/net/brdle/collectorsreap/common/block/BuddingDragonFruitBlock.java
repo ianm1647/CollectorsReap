@@ -1,5 +1,6 @@
 package net.brdle.collectorsreap.common.block;
 
+import com.mojang.serialization.MapCodec;
 import net.brdle.collectorsreap.common.item.CRItems;
 import net.brdle.collectorsreap.data.CRBlockTags;
 import net.minecraft.core.BlockPos;
@@ -8,13 +9,20 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.*;
 import net.minecraft.world.level.block.BonemealableBlock;
+import net.minecraft.world.level.block.BushBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import vectorwing.farmersdelight.common.block.BuddingBushBlock;
 import org.jetbrains.annotations.NotNull;
 
 public class BuddingDragonFruitBlock extends BuddingBushBlock implements BonemealableBlock {
+	public static final MapCodec<BuddingBushBlock> CODEC = simpleCodec(BuddingDragonFruitBlock::new);
+
 	public BuddingDragonFruitBlock(Properties properties) {
 		super(properties);
+	}
+
+	protected MapCodec<? extends BushBlock> codec() {
+		return CODEC;
 	}
 
 	@Override
@@ -22,8 +30,7 @@ public class BuddingDragonFruitBlock extends BuddingBushBlock implements Bonemea
 		return CRItems.DRAGON_FRUIT_SEEDS.get();
 	}
 
-	@Override
-	public @NotNull BlockState getPlant(@NotNull BlockGetter world, @NotNull BlockPos pos) {
+	public @NotNull BlockState getPlantType(@NotNull BlockGetter world, @NotNull BlockPos pos) {
 		return CRBlocks.BUDDING_PINK_DRAGON_FRUIT_CROP.get().defaultBlockState();
 	}
 
@@ -51,7 +58,7 @@ public class BuddingDragonFruitBlock extends BuddingBushBlock implements Bonemea
 	}
 
 	@Override
-	public boolean isValidBonemealTarget(@NotNull LevelReader level, @NotNull BlockPos pos, @NotNull BlockState state, boolean isClient) {
+	public boolean isValidBonemealTarget(LevelReader levelReader, BlockPos blockPos, BlockState blockState) {
 		return true;
 	}
 

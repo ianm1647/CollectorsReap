@@ -1,6 +1,5 @@
 package net.brdle.collectorsreap;
 
-import com.mojang.datafixers.util.Pair;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.brdle.collectorsreap.common.config.CRConfig;
 import net.brdle.collectorsreap.common.item.CRItems;
@@ -9,8 +8,9 @@ import net.brdle.collectorsreap.compat.Modid;
 import net.brdle.collectorsreap.compat.Mods;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Holder;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
@@ -32,14 +32,12 @@ import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.entity.living.MobEffectEvent;
-import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.IForgeRegistry;
-import net.minecraftforge.registries.RegistryObject;
 import java.util.*;
 import java.util.function.Supplier;
-import net.minecraftforge.registries.tags.ITagManager;
+
+import net.neoforged.neoforge.common.EffectCure;
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.event.entity.living.MobEffectEvent;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -51,7 +49,7 @@ public class Util {
 	public static final UUID BLOCK_REACH = UUID.fromString("6ba3d68d-2e14-4b88-92c8-5a6796650af3");
 
 	public static ResourceLocation rl(@NotNull String modid, @NotNull String path) {
-		return new ResourceLocation(modid, path);
+		return ResourceLocation.fromNamespaceAndPath(modid, path);
 	}
 
 	public static ResourceLocation rl(@NotNull Modid modid, @NotNull String path) {
@@ -59,15 +57,15 @@ public class Util {
 	}
 
 	public static ResourceLocation rl(@NotNull String separated) {
-		return new ResourceLocation(separated);
+		return ResourceLocation.parse(separated);
 	}
 
 	public static ResourceLocation rl(ItemLike itemLike) {
 		if (itemLike instanceof Item item) {
-			IForgeRegistry<Item> reg = ForgeRegistries.ITEMS;
+			<Item> reg = BuiltInRegistries.ITEM;
 			if (reg.containsValue(item)) return reg.getKey(item);
 		} else if (itemLike instanceof Block block) {
-			IForgeRegistry<Block> reg = ForgeRegistries.BLOCKS;
+			IForgeRegistry<Block> reg = BuiltInRegistries.BLOCK;
 			if (reg.containsValue(block)) return reg.getKey(block);
 		}
 		return rl(EMPTY_STR, EMPTY_STR);
@@ -94,8 +92,8 @@ public class Util {
 		if (tag == null) {
 			return true;
 		}
-		ITagManager<Item> tags = ForgeRegistries.ITEMS.tags();
-		return tags != null && (!tags.isKnownTagName(tag) || tags.getTag(tag).isEmpty());
+		TagKey<Item> tags = BuiltInRegistries.ITEM.getTags();
+		return tags != null && (!tags.isFor().isKnownTagName(tag) || tags.getTag(tag).isEmpty());
 	}
 
 	// Returns true if tag has an entry or is null
@@ -103,7 +101,7 @@ public class Util {
 		if (tag == null) {
 			return true;
 		}
-		ITagManager<Item> tags = ForgeRegistries.ITEMS.tags();
+		TagKey<Item> tags = BuiltInRegistries.ITEM.getTags();
 		return tags != null && tags.isKnownTagName(tag) && !tags.getTag(tag).isEmpty();
 	}
 
@@ -136,16 +134,16 @@ public class Util {
 	}
 
 	public static boolean itemExists(ResourceLocation location) {
-		return Mods.stringLoaded(location.getNamespace()) && ForgeRegistries.ITEMS.containsKey(location);
+		return Mods.stringLoaded(location.getNamespace()) && BuiltInRegistries.ITEM.containsKey(location);
 	}
 
 	public static boolean blockExists(ResourceLocation location) {
-		return Mods.stringLoaded(location.getNamespace()) && ForgeRegistries.BLOCKS.containsKey(location);
+		return Mods.stringLoaded(location.getNamespace()) && BuiltInRegistries.BLOCK.containsKey(location);
 	}
 
 	@Nullable
 	public static Item item(ResourceLocation rl) {
-		return ForgeRegistries.ITEMS.getValue(rl);
+		return BuiltInRegistries.ITEM.get(rl);
 	}
 
 	@Nullable
@@ -196,11 +194,11 @@ public class Util {
 
 	@Nullable
 	public static Block block(ResourceLocation rl) {
-		return ForgeRegistries.BLOCKS.getValue(rl);
+		return BuiltInRegistries.BLOCK.get(rl);
 	}
 
 	public static boolean effectExists(ResourceLocation effect) {
-		return Mods.stringLoaded(effect.getNamespace()) && ForgeRegistries.MOB_EFFECTS.containsKey(effect);
+		return Mods.stringLoaded(effect.getNamespace()) && BuiltInRegistries.MOB_EFFECT.containsKey(effect);
 	}
 
 	@Nullable
@@ -216,7 +214,7 @@ public class Util {
 	public static MobEffect effect(ResourceLocation effLocation, MobEffect... backup) {
 		return (
 			effectExists(effLocation) ?
-			ForgeRegistries.MOB_EFFECTS.getValue(effLocation) :
+				BuiltInRegistries.MOB_EFFECT.get(effLocation) :
 			getBackup(backup)
 		);
 	}
@@ -236,10 +234,10 @@ public class Util {
 	}
 
 	// Returns True if effect is removed
-	public static boolean removeEffect(@NotNull LivingEntity entity, @NotNull MobEffect effect) {
+	public static boolean removeEffect(@NotNull LivingEntity entity, @NotNull Holder<MobEffect> effect, EffectCure cure) {
 		if (
 			entity.hasEffect(effect) &&
-			!MinecraftForge.EVENT_BUS.post(new MobEffectEvent.Remove(entity, effect)) // True if event is canceled
+			!NeoForge.EVENT_BUS.post(new MobEffectEvent.Remove(entity, effect, cure)).isCanceled() // True if event is canceled
 		) {
 			entity.removeEffect(effect);
 			return true;
@@ -269,7 +267,7 @@ public class Util {
 		return (
 			food == null ?
 			Collections.emptyList() :
-			food.getEffects().stream().map(Pair::getFirst).map(MobEffectInstance::new).toList()
+			food.effects().stream().findFirst().map(new MobEffectInstance()).toList()
 		);
 	}
 
@@ -281,7 +279,7 @@ public class Util {
 		final Collection<MobEffectInstance> active = entity.getActiveEffects();
 		return active.stream()
 			.filter(instance ->
-				instance.getEffect().getCategory().equals(MobEffectCategory.HARMFUL) &&
+				instance.getEffect().value().getCategory().equals(MobEffectCategory.HARMFUL) &&
 				instance.isCurativeItem(new ItemStack(Items.MILK_BUCKET))
 			)
 			.map(MobEffectInstance::getEffect)
@@ -296,7 +294,7 @@ public class Util {
 		final Collection<MobEffectInstance> active = entity.getActiveEffects();
 		return active.stream()
 			.map(MobEffectInstance::getEffect)
-			.filter(effect -> effect.getCategory().equals(MobEffectCategory.BENEFICIAL))
+			.filter(effect -> effect.value().getCategory().equals(MobEffectCategory.BENEFICIAL))
 			.toList();
 	}
 
@@ -313,8 +311,8 @@ public class Util {
 		return rl(itemLike).getPath();
 	}
 
-	public static String name(RegistryObject<?> reg) {
-		return reg.getId().getPath();
+	public static String name(Holder<?> reg) {
+		return reg.getPath();
 	}
 
 	public static String nameSpace(ItemStack stack) {
@@ -355,14 +353,6 @@ public class Util {
 			0.05D * dir.getStepZ() + random.nextDouble() * 0.02D
 		);
 		level.addFreshEntity(dropItem);
-	}
-
-	public static boolean hasTagString(ItemStack stack, String key, String value) {
-		if (stack.hasTag()) {
-			CompoundTag tag = stack.getTag();
-			return tag != null && tag.contains(key) && tag.getString(key).equals(value);
-		}
-		return false;
 	}
 
 	public static boolean configEnabled(String feature) {

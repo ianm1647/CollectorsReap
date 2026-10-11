@@ -6,7 +6,7 @@ import net.brdle.collectorsreap.data.CRBlockTags;
 import net.minecraft.core.HolderGetter;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.data.worldgen.BootstapContext;
+import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.util.random.SimpleWeightedRandomList;
 import net.minecraft.util.valueproviders.ConstantInt;
@@ -32,7 +32,7 @@ public class CRConfiguredFeatures {
 	public static final ResourceKey<ConfiguredFeature<?, ?>> LUCUMA = createKey("lucuma");
 	public static final ResourceKey<ConfiguredFeature<?, ?>> LUCUMA_BEES = createKey("lucuma_bees");
 
-	public static void bootstrap(BootstapContext<ConfiguredFeature<?, ?>> context) {
+	public static void bootstrap(BootstrapContext<ConfiguredFeature<?, ?>> context) {
 		final HolderGetter<Block> holdergetter = context.lookup(Registries.BLOCK);
 
 		final TreeConfiguration LUCUMA_TREE = createLucumaTree(holdergetter).build();

@@ -47,8 +47,8 @@ public class TigerPrawnModel extends HierarchicalModel<TigerPrawn> {
 	}
 
 	@Override
-	public void renderToBuffer(@NotNull PoseStack poseStack, @NotNull VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
-		body.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
+	public void renderToBuffer(PoseStack poseStack, VertexConsumer buffer, int packedLight, int packedOverlay, int color) {
+		body.render(poseStack, buffer, packedLight, packedOverlay, color);
 	}
 
 	@Override

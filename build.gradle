@@ -1,68 +1,22 @@
-buildscript {
-    repositories {
-        maven { url = 'https://maven.minecraftforge.net' }
-        maven { url = 'https://maven.parchmentmc.org' }
-        mavenCentral()
-    }
-    dependencies {
-        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '5.1.+', changing: true
-        classpath 'org.parchmentmc:librarian:1.+'
-        classpath 'org.spongepowered:mixingradle:0.7.+'
-    }
-}
-apply plugin: 'net.minecraftforge.gradle'
-apply plugin: 'org.parchmentmc.librarian.forgegradle'
-apply plugin: 'eclipse'
-apply plugin: 'maven-publish'
-apply plugin: 'org.spongepowered.mixin'
-
-version = "${mc_version}-${mod_version}"
-group = 'net.brdle.collectorsreap'
-archivesBaseName = 'collectorsreap'
-
-java.toolchain.languageVersion = JavaLanguageVersion.of(17)
-
-println('Java: ' + System.getProperty('java.version') + ' JVM: ' + System.getProperty('java.vm.version') + '(' + System.getProperty('java.vendor') + ') Arch: ' + System.getProperty('os.arch'))
-minecraft {
-    mappings channel: 'parchment', version: "${parchment_version}-${mc_version}"
-    accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg') // Currently, this location cannot be changed from the default.
-    runs {
-        client {
-            workingDirectory project.file('run')
-            property 'forge.logging.markers', 'REGISTRIES'
-            property 'forge.logging.console.level', 'debug'
-            mods {
-                collectorsreap {
-                    source sourceSets.main
-                }
-            }
-        }
-        server {
-            workingDirectory project.file('run')
-            property 'forge.logging.markers', 'REGISTRIES'
-            property 'forge.logging.console.level', 'debug'
-            mods {
-                collectorsreap {
-                    source sourceSets.main
-                }
-            }
-        }
-        data {
-            workingDirectory project.file('run')
-            property 'forge.logging.markers', 'REGISTRIES'
-            property 'forge.logging.console.level', 'debug'
-            // Specify the modid for data generation, where to output the resulting resource, and where to look for existing resources.
-            args '--mod', 'collectorsreap', '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/'), '--existing-mod', 'farmersdelight', '--existing-mod', 'blueprint'
-            mods {
-                collectorsreap {
-                    source sourceSets.main
-                }
-            }
-        }
-    }
+plugins {
+	id 'java-library'
+	id 'maven-publish'
+	id 'net.neoforged.moddev' version '2.0.144'
+	id 'idea'
 }
 
-sourceSets.main.resources { srcDir 'src/generated/resources' }
+tasks.named('wrapper', Wrapper).configure {
+	distributionType = Wrapper.DistributionType.BIN
+}
+
+version = mod_version
+group = mod_group_id
+
+sourceSets.main.resources {
+	srcDir('src/generated/resources')
+	exclude("**/*.bbmodel")
+	exclude("src/generated/**/.cache")
+}
 
 repositories {
     maven {
@@ -79,51 +33,117 @@ repositories {
 }
 
 dependencies {
-    minecraft "net.minecraftforge:forge:${mc_version}-${forge_version}"
-    compileOnly fg.deobf("mezz.jei:jei-${mc_version}-common-api:${jei_version}")
-    compileOnly fg.deobf("mezz.jei:jei-${mc_version}-forge-api:${jei_version}")
-    runtimeOnly fg.deobf("mezz.jei:jei-${mc_version}-forge:${jei_version}")
-    runtimeOnly fg.deobf("squeek.appleskin:appleskin-forge:${appleskin_version}")
-    implementation fg.deobf("curse.maven:jade-324717:${jade_version}")
-    implementation fg.deobf("curse.maven:farmers-d-398521:${farmers_delight_version}")
-	implementation fg.deobf("curse.maven:farmers-respite-551453:${farmers_respite_version}")
-	implementation fg.deobf("curse.maven:brewin-and-chewin-637808:${brewin_and_chewin_version}")
-	implementation fg.deobf("curse.maven:let-fish-love-941186:${let_fish_love_version}")
-	implementation fg.deobf("com.teamabnormals:blueprint:${mc_version}-${blueprint_version}")
-	implementation fg.deobf("com.teamabnormals:boatload:${mc_version}-${boatload_version}")
-	compileOnly fg.deobf("curse.maven:neapolitan-382016:${neapolitan_version}")
-	compileOnly fg.deobf("curse.maven:nirvana-1278909:${nirvana_version}")
+    compileOnly "mezz.jei:jei-${minecraft_version}-common-api:${jei_version}"
+    compileOnly "mezz.jei:jei-${minecraft_version}-forge-api:${jei_version}"
+    runtimeOnly "mezz.jei:jei-${minecraft_version}-forge:${jei_version}"
+    runtimeOnly "squeek.appleskin:appleskin-neoforge:${appleskin_version}"
+    implementation "curse.maven:jade-324717:${jade_version}"
+    implementation "curse.maven:farmers-d-398521:${farmers_delight_version}"
+	implementation "curse.maven:farmers-respite-unofficial-port-1475195:${farmers_respite_version}"
+	implementation "curse.maven:brewin-and-chewin-637808:${brewin_and_chewin_version}"
+	implementation "curse.maven:let-fish-love-reborn-1556616:${let_fish_love_version}"
+	implementation "com.teamabnormals:blueprint:${minecraft_version}-${blueprint_version}"
+	implementation "com.teamabnormals:boatload:${minecraft_version}-${boatload_version}"
+	compileOnly "curse.maven:neapolitan-382016:${neapolitan_version}"
+	compileOnly "curse.maven:nirvana-1278909:${nirvana_version}"
 }
 
-jar {
-    manifest {
-        attributes([
-                "Specification-Title"     : "collectorsreap",
-                "Specification-Vendor"    : "brdle",
-                "Specification-Version"   : "1",
-                "Implementation-Title"    : project.name,
-                "Implementation-Version"  : "${mod_version}",
-                "Implementation-Vendor"   : "brdle",
-                "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
-        ])
-    }
+base {
+	archivesName = mod_id
 }
 
-jar.finalizedBy('reobfJar')
+java.toolchain.languageVersion = JavaLanguageVersion.of(21)
+
+neoForge {
+	version = project.neo_version
+	parchment {
+		mappingsVersion = project.parchment_mappings_version
+		minecraftVersion = project.parchment_minecraft_version
+	}
+
+	accessTransformers = project.files('src/main/resources/META-INF/accesstransformer.cfg')
+
+	runs {
+		client {
+			client()
+			systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
+		}
+
+		server {
+			server()
+			programArgument '--nogui'
+			systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
+		}
+
+		gameTestServer {
+			type = "gameTestServer"
+			systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
+		}
+
+		data {
+			data()
+			programArguments.addAll '--mod', project.mod_id, '--all', '--output', file('src/generated/resources/').getAbsolutePath(), '--existing', file('src/main/resources/').getAbsolutePath()
+		}
+
+		configureEach {
+			systemProperty 'forge.logging.markers', 'REGISTRIES'
+			logLevel = org.slf4j.event.Level.DEBUG
+		}
+	}
+
+	mods {
+		"${mod_id}" {
+			sourceSet(sourceSets.main)
+		}
+	}
+}
+
+configurations {
+	runtimeClasspath.extendsFrom localRuntime
+}
+
+var generateModMetadata = tasks.register("generateModMetadata", ProcessResources) {
+	var replaceProperties = [
+		minecraft_version      : minecraft_version,
+		minecraft_version_range: minecraft_version_range,
+		neo_version            : neo_version,
+		loader_version_range   : loader_version_range,
+		mod_id                 : mod_id,
+		mod_name               : mod_name,
+		mod_license            : mod_license,
+		mod_version            : mod_version,
+		mod_authors            : mod_authors,
+		mod_description        : mod_description,
+	]
+	inputs.properties replaceProperties
+	expand replaceProperties
+	from "src/main/templates"
+	into "build/generated/sources/modMetadata"
+}
+
+sourceSets.main.resources.srcDir generateModMetadata
+neoForge.ideSyncTask generateModMetadata
 
 publishing {
-    publications {
-        mavenJava(MavenPublication) {
-            artifact jar
-        }
-    }
-    repositories {
-        maven {
-            url "file://${project.projectDir}/mcmodsrepo"
-        }
-    }
+	publications {
+		register('mavenJava', MavenPublication) {
+			from components.java
+		}
+	}
+	repositories {
+		maven {
+			url "file://${project.projectDir}/repo"
+		}
+	}
 }
 
 tasks.withType(JavaCompile).configureEach {
-    options.encoding = 'UTF-8' // Use the UTF-8 charset for Java compilation
+	options.encoding = 'UTF-8'
+}
+
+idea {
+	module {
+		downloadSources = true
+		downloadJavadoc = true
+	}
 }

@@ -1,6 +1,5 @@
 package net.brdle.collectorsreap.common.block;
 
-import com.teamabnormals.blueprint.core.api.BlueprintCauldronInteraction;
 import com.teamabnormals.neapolitan.core.other.NeapolitanCauldronInteractions;
 import net.brdle.collectorsreap.CollectorsReap;
 import net.brdle.collectorsreap.Util;
@@ -8,7 +7,7 @@ import net.brdle.collectorsreap.common.item.CRItems;
 import net.minecraft.core.cauldron.CauldronInteraction;
 
 public class CRCauldronInteractions {
-	public static BlueprintCauldronInteraction LIME_MILKSHAKE = BlueprintCauldronInteraction.register(Util.rl(CollectorsReap.MODID, "lime_milkshake"), CauldronInteraction.newInteractionMap());
+	public static CauldronInteraction.InteractionMap LIME_MILKSHAKE = CauldronInteraction.newInteractionMap(Util.rl(CollectorsReap.MODID, "lime_milkshake"));
 	public static BlueprintCauldronInteraction POMEGRANATE_MILKSHAKE = BlueprintCauldronInteraction.register(Util.rl(CollectorsReap.MODID, "pomegranate_milkshake"), CauldronInteraction.newInteractionMap());
 	public static BlueprintCauldronInteraction PINK_DRAGON_FRUIT_MILKSHAKE = BlueprintCauldronInteraction.register(Util.rl(CollectorsReap.MODID, "pink_dragon_fruit_milkshake"), CauldronInteraction.newInteractionMap());
 	public static BlueprintCauldronInteraction LUCUMA_MILKSHAKE = BlueprintCauldronInteraction.register(Util.rl(CollectorsReap.MODID, "lucuma_milkshake"), CauldronInteraction.newInteractionMap());
