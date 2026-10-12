@@ -32,8 +32,8 @@ public class CRBlockModelProvider extends BlockStateProvider {
 
 	@Override
 	protected void registerStatesAndModels() {
-		this.pieBlock(CRBlocks.PORTOBELLO_QUICHE);
-		this.pieBlock(CRBlocks.LIME_PIE);
+		this.pieBlock(CRBlocks.PORTOBELLO_QUICHE.get());
+		this.pieBlock(CRBlocks.LIME_PIE.get());
 		this.stageBlock(CRBlocks.PORTOBELLO_COLONY.get(), PortobelloColonyBlock.COLONY_AGE);
 		this.cross(CRBlocks.PORTOBELLO.get());
 		this.cross(CRBlocks.DRAGON_BUSH.get());
@@ -389,7 +389,7 @@ public class CRBlockModelProvider extends BlockStateProvider {
 				String name = Util.name(block.get());
 				String suffix = bites > 0 ? "_slice" + bites : "";
 				var mod = models()
-					.withExistingParent("block/" + name + suffix, Util.rl(FarmersDelight.MODID, "pie" + suffix))
+					.withExistingParent("block/" + name + suffix, Util.rl(FarmersDelight.MODID, "template_pie" + suffix))
 					.texture("top", resourceBlock(name + "_top"))
 					.texture("bottom", resourceBlock(name + "_bottom"))
 					.texture("side", resourceBlock(name + "_side"))
@@ -420,6 +420,20 @@ public class CRBlockModelProvider extends BlockStateProvider {
 				return ConfiguredModel.builder().modelFile(mod).build();
 			}
 		);
+	}
+
+	public void pieBlock(Block block) {
+		this.getVariantBuilder(block).forAllStates((state) -> {
+			int bites = (Integer)state.getValue(PieBlock.BITES);
+			String suffix = bites > 0 ? "_slice" + bites : "";
+			ConfiguredModel.Builder var10000 = ConfiguredModel.builder();
+			String var10002 = this.blockName(block);
+			return var10000.modelFile(this.existingModel(var10002 + suffix)).rotationY(((int)((Direction)state.getValue(PieBlock.FACING)).toYRot() + 180) % 360).build();
+		});
+	}
+
+	private String blockName(Block block) {
+		return BuiltInRegistries.BLOCK.getKey(block).getPath();
 	}
 
 	private void candleCakeBlock(Supplier<Block> block, Supplier<Block> cake) {

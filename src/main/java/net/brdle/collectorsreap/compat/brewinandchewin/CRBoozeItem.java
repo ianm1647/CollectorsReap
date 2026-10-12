@@ -6,7 +6,7 @@ import umpaz.brewinandchewin.common.item.BoozeItem;
 import java.util.function.Supplier;
 
 public class CRBoozeItem extends BoozeItem {
-	public CRBoozeItem(Fluid fluid, Properties properties) {
-		super((Supplier<Fluid>) fluid, properties);
+	public CRBoozeItem(Supplier<Fluid> fluid, Properties properties) {
+		super(fluid, properties);
 	}
 }

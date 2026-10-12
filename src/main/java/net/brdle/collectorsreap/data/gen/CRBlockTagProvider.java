@@ -35,7 +35,6 @@ public class CRBlockTagProvider extends BlockTagsProvider {
 			.addOptionalTag(Modid.GR.rl("farmlands"))
 			.addOptional(Modid.MND.rl("resurgent_soil_farmland"));
 		this.tag(CRBlockTags.PORTOBELLO_SPAWNABLE_ON)
-			.addTag(ModTags.Blocks.MUSHROOM_COLONY_GROWABLE_ON)
 			.addTag(BlockTags.MUSHROOM_GROW_BLOCK)
 			.addTag(BlockTags.DIRT);
 		this.tag(CRBlockTags.LIME_SPAWNABLE_ON)

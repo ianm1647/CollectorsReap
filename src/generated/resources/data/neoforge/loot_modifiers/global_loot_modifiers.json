@@ -1,0 +1,17 @@
+{
+  "entries": [
+    "collectorsreap:abandoned_mineshaft",
+    "collectorsreap:simple_dungeon",
+    "collectorsreap:bastion_hoglin_stable",
+    "collectorsreap:bastion_other",
+    "collectorsreap:ancient_city_lucuma_sapling",
+    "collectorsreap:ancient_city_gilded_lucuma",
+    "collectorsreap:shipwreck_treasure",
+    "collectorsreap:buried_treasure",
+    "collectorsreap:fishing_platinum_bass",
+    "collectorsreap:fishing_tiger_prawn",
+    "collectorsreap:fishing_urchin",
+    "collectorsreap:fishing_clam"
+  ],
+  "replace": false
+}

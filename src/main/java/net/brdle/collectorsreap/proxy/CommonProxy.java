@@ -2,6 +2,7 @@ package net.brdle.collectorsreap.proxy;
 
 import net.brdle.collectorsreap.common.CRParticleTypes;
 import net.brdle.collectorsreap.common.block.CRBlocks;
+import net.brdle.collectorsreap.common.crafting.EnabledCondition;
 import net.brdle.collectorsreap.common.event.CRCreativeTab;
 import net.brdle.collectorsreap.common.event.CRSoundEvents;
 import net.brdle.collectorsreap.common.event.CommonEvents;
@@ -42,6 +43,7 @@ public class CommonProxy {
 		CRLootModifiers.create(bus);
 		CRSoundEvents.create(bus);
 		CRFoliagePlacerTypes.create(bus);
+		EnabledCondition.create(bus);
 
 //		hiddenItems = new ArrayList<>();
 //		if (!Modid.FR.loaded()) {

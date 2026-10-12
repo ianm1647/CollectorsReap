@@ -233,6 +233,11 @@ public class Util {
 	}
 
 	@NotNull
+	public static Holder<Item> holder(@NotNull Item item) {
+		return BuiltInRegistries.ITEM.wrapAsHolder(item);
+	}
+
+	@NotNull
 	public static Holder<MobEffect> holder(@NotNull MobEffect effect) {
 		return BuiltInRegistries.MOB_EFFECT.wrapAsHolder(effect);
 	}

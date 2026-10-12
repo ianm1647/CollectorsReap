@@ -11,6 +11,7 @@ import com.teamabnormals.blueprint.core.api.BlockSetTypeRegistryHelper;
 import com.teamabnormals.blueprint.core.api.WoodTypeRegistryHelper;
 import com.teamabnormals.blueprint.core.util.PropertyUtil;
 import net.brdle.collectorsreap.CollectorsReap;
+import net.brdle.collectorsreap.Util;
 import net.brdle.collectorsreap.common.item.CRItems;
 import net.brdle.collectorsreap.compat.Modid;
 import net.brdle.collectorsreap.compat.abnormals.ChiseledLucumaBookshelfBlock;
@@ -21,6 +22,7 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.BlockBehaviour;
@@ -116,11 +118,11 @@ public class CRBlocks {
 		() -> new Block(BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_ORANGE).strength(0.2F).sound(SoundType.SNOW)));
 
 	// Wild Crop Blocks
-	public static final Supplier<Block> PORTOBELLO_COLONY = registerBlockNoItem("portobello_colony",
-		() -> new PortobelloColonyBlock(copy(ModBlocks.BROWN_MUSHROOM_COLONY), CRItems.PORTOBELLO.get().builtInRegistryHolder()));
 	public static final Supplier<Block> PORTOBELLO = registerBlockNoItem("portobello",
 		() -> new PortobelloBlock(copy(Blocks.BROWN_MUSHROOM)
 			.noCollission().randomTicks().instabreak().sound(SoundType.GRASS).lightLevel((l) -> 1).hasPostProcess(CRBlocks::always)));
+	public static final Supplier<Block> PORTOBELLO_COLONY = registerBlockNoItem("portobello_colony",
+		() -> new PortobelloColonyBlock(copy(ModBlocks.BROWN_MUSHROOM_COLONY), Items.BROWN_MUSHROOM.builtInRegistryHolder()));
 	public static final Supplier<Block> LIME_BUSH = registerBlockNoItem("lime_bush",
 		() -> new LimeBushBlock(BlockBehaviour.Properties.of().mapColor(MapColor.PLANT).forceSolidOff().instabreak().sound(SoundType.SWEET_BERRY_BUSH).noOcclusion().pushReaction(PushReaction.DESTROY)));
 	public static final Supplier<Block> POMEGRANATE_BUSH = registerBlockNoItem("pomegranate_bush",
@@ -246,13 +248,13 @@ public class CRBlocks {
 
 	// Milkshake Cauldrons
 	public static final Supplier<Block> LIME_MILKSHAKE_CAULDRON = registerBlockNoItem("lime_milkshake_cauldron",
-		() -> Modid.N.loaded() ? new CRMilkshakeCauldronBlock(CRCauldronInteractions.LIME_MILKSHAKE) : null);
+		() -> Modid.N.loaded() ? new CRMilkshakeCauldronBlock(CRCauldronInteractions.LIME_MILKSHAKE) : new Block(BlockBehaviour.Properties.of()));
 	public static final Supplier<Block> POMEGRANATE_MILKSHAKE_CAULDRON = registerBlockNoItem("pomegranate_milkshake_cauldron",
-		() -> Modid.N.loaded() ? new CRMilkshakeCauldronBlock(CRCauldronInteractions.POMEGRANATE_MILKSHAKE) : null);
+		() -> Modid.N.loaded() ? new CRMilkshakeCauldronBlock(CRCauldronInteractions.POMEGRANATE_MILKSHAKE) : new Block(BlockBehaviour.Properties.of()));
 	public static final Supplier<Block> PINK_DRAGON_FRUIT_MILKSHAKE_CAULDRON = registerBlockNoItem("pink_dragon_fruit_milkshake_cauldron",
-		() -> Modid.N.loaded() ? new CRMilkshakeCauldronBlock(CRCauldronInteractions.PINK_DRAGON_FRUIT_MILKSHAKE) : null);
+		() -> Modid.N.loaded() ? new CRMilkshakeCauldronBlock(CRCauldronInteractions.PINK_DRAGON_FRUIT_MILKSHAKE) : new Block(BlockBehaviour.Properties.of()));
 	public static final Supplier<Block> LUCUMA_MILKSHAKE_CAULDRON = registerBlockNoItem("lucuma_milkshake_cauldron",
-		() -> Modid.N.loaded() ? new CRMilkshakeCauldronBlock(CRCauldronInteractions.LUCUMA_MILKSHAKE) : null);
+		() -> Modid.N.loaded() ? new CRMilkshakeCauldronBlock(CRCauldronInteractions.LUCUMA_MILKSHAKE) : new Block(BlockBehaviour.Properties.of()));
 
 	// Let Fish Love
 	public static final Supplier<Block> PLATINUM_BASS_ROE = registerBlockNoItem("platinum_bass_roe_block", () ->

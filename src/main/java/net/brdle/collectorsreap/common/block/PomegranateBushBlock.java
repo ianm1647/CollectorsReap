@@ -75,7 +75,7 @@ public class PomegranateBushBlock extends FruitBushBlock {
 	@Override
 	public boolean isRandomlyTicking(@NotNull BlockState state) {
 		return (
-			!(CRConfig.POMEGRANATE_POLLINATION.get() && state.getValue(this.getAgeProperty()) >= this.getMaxAge() - 1) &&
+			!(CRConfig.COMMON.isLoaded() && CRConfig.POMEGRANATE_POLLINATION.get() && state.getValue(this.getAgeProperty()) >= this.getMaxAge() - 1) &&
 			super.isRandomlyTicking(state)
 		);
 	}

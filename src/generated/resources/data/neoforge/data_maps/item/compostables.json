@@ -1,0 +1,115 @@
+{
+  "values": {
+    "collectorsreap:baked_portobello_cap": {
+      "chance": 0.65
+    },
+    "collectorsreap:bulbous_rose_seeds": {
+      "chance": 0.3
+    },
+    "collectorsreap:damselflower_seeds": {
+      "chance": 0.3
+    },
+    "collectorsreap:dragon_fruit_seeds": {
+      "chance": 0.3
+    },
+    "collectorsreap:dried_pink_dragon_fruit": {
+      "chance": 0.5
+    },
+    "collectorsreap:heartpetals_seeds": {
+      "chance": 0.3
+    },
+    "collectorsreap:lime": {
+      "chance": 0.3
+    },
+    "collectorsreap:lime_cake": {
+      "chance": 1.0
+    },
+    "collectorsreap:lime_cake_slice": {
+      "chance": 0.65
+    },
+    "collectorsreap:lime_cookie": {
+      "chance": 0.85
+    },
+    "collectorsreap:lime_pie": {
+      "chance": 1.0
+    },
+    "collectorsreap:lime_pie_slice": {
+      "chance": 0.85
+    },
+    "collectorsreap:lime_seeds": {
+      "chance": 0.3
+    },
+    "collectorsreap:lime_slice": {
+      "chance": 0.2
+    },
+    "collectorsreap:lucuma": {
+      "chance": 0.3
+    },
+    "collectorsreap:lucuma_bread": {
+      "chance": 0.65
+    },
+    "collectorsreap:lucuma_cake": {
+      "chance": 1.0
+    },
+    "collectorsreap:lucuma_cake_slice": {
+      "chance": 0.65
+    },
+    "collectorsreap:moontear_seeds": {
+      "chance": 0.3
+    },
+    "collectorsreap:panettone": {
+      "chance": 1.0
+    },
+    "collectorsreap:panettone_slice": {
+      "chance": 0.85
+    },
+    "collectorsreap:pink_dragon_fruit": {
+      "chance": 0.3
+    },
+    "collectorsreap:pink_dragon_fruit_cake": {
+      "chance": 1.0
+    },
+    "collectorsreap:pink_dragon_fruit_cake_slice": {
+      "chance": 0.65
+    },
+    "collectorsreap:pomegranate": {
+      "chance": 0.3
+    },
+    "collectorsreap:pomegranate_cake": {
+      "chance": 1.0
+    },
+    "collectorsreap:pomegranate_cake_slice": {
+      "chance": 0.65
+    },
+    "collectorsreap:pomegranate_seeds": {
+      "chance": 0.1
+    },
+    "collectorsreap:pomegranate_slice": {
+      "chance": 0.2
+    },
+    "collectorsreap:portobello": {
+      "chance": 0.65
+    },
+    "collectorsreap:portobello_colony": {
+      "chance": 1.0
+    },
+    "collectorsreap:portobello_quiche": {
+      "chance": 1.0
+    },
+    "collectorsreap:portobello_quiche_slice": {
+      "chance": 0.85
+    },
+    "collectorsreap:potato_fritters": {
+      "chance": 0.65
+    },
+    "collectorsreap:skull_lily_seeds": {
+      "chance": 0.3
+    },
+    "collectorsreap:stuffed_portobello_cap": {
+      "chance": 1.0
+    },
+    "minecraft:air": {
+      "chance": 0.85
+    }
+  }
+}

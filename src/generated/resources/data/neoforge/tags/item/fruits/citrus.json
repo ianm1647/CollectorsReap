@@ -1,0 +1,9 @@
+{
+  "values": [
+    "#neoforge:fruits/lime",
+    {
+      "id": "#neoforge:fruits/lemon",
+      "required": false
+    }
+  ]
+}

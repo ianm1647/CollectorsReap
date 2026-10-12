@@ -1,0 +1,11 @@
+{
+  "values": [
+    "#neoforge:cheese/mild",
+    "#neoforge:cheese/spicy",
+    "#neoforge:cheese/sweet",
+    {
+      "id": "#brewinandchewin:cheese_wedges",
+      "required": false
+    }
+  ]
+}

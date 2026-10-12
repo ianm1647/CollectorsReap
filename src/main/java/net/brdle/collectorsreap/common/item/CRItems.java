@@ -34,6 +34,7 @@ import net.minecraft.world.item.*;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.material.Fluids;
 import net.neoforged.bus.api.IEventBus;
+import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import vectorwing.farmersdelight.common.item.ConsumableItem;
 import vectorwing.farmersdelight.common.item.DrinkableItem;
@@ -531,7 +532,10 @@ public class CRItems {
 	);
 
 	public static Supplier<Item> registerBlock(Supplier<? extends Block> block) {
-		return registerBlock(Util.name(block.get()), block);
+		if (block instanceof DeferredHolder<?, ?> holder) {
+			return registerBlock(holder.getId().getPath(), block);
+		}
+		return null;
 	}
 
 	public static Supplier<Item> registerBlock(String name, Supplier<? extends Block> block) {
@@ -580,17 +584,7 @@ public class CRItems {
 		return ITEMS.register(name, item);
 	}
 
-	private static void registerBlocks() {
-		CRBlocks.BLOCKS.getEntries().forEach(b -> {
-			List<Supplier<Item>> doNotRegister = List.of(PORTOBELLO, PANETTONE, PORTOBELLO_QUICHE, LIME_PIE);
-			if (b != doNotRegister) {
-				registerBlock(b);
-			}
-		});
-	}
-
 	public static void create(IEventBus bus) {
-		registerBlocks();
 		ITEMS.register(bus);
 	}
 }

@@ -39,14 +39,16 @@ dependencies {
     runtimeOnly "mezz.jei:jei-${minecraft_version}-neoforge:${jei_version}"
     runtimeOnly "squeek.appleskin:appleskin-neoforge:${appleskin_version}"
     implementation "curse.maven:jade-324717:${jade_version}"
-    implementation "curse.maven:farmers-d-398521:${farmers_delight_version}"
+    implementation "curse.maven:farmers-delight-398521:${farmers_delight_version}"
 	implementation "curse.maven:farmers-respite-unofficial-port-1475195:${farmers_respite_version}"
 	implementation "curse.maven:brewin-and-chewin-637808:${brewin_and_chewin_version}"
 	implementation "curse.maven:let-fish-love-reborn-1556616:${let_fish_love_version}"
 	implementation "com.teamabnormals:blueprint:${minecraft_version}-${blueprint_version}"
 	implementation "com.teamabnormals:boatload:${minecraft_version}-${boatload_version}"
-	compileOnly "curse.maven:neapolitan-382016:${neapolitan_version}"
-	compileOnly "curse.maven:nirvana-1278909:${nirvana_version}"
+	implementation "curse.maven:neapolitan-382016:${neapolitan_version}"
+	implementation "curse.maven:nirvana-1278909:${nirvana_version}"
+
+	implementation "curse.maven:gallery-1173553:${gallery_version}"
 }
 
 base {
