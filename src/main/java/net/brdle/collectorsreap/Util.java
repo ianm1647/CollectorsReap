@@ -386,7 +386,7 @@ public class Util {
 	// Only for items, not other config variables
 	public static boolean enabled(String item) {
 		return (
-			CRItems.HELPER.getDeferredRegister().getEntries().stream()
+			CRItems.ITEMS.getEntries().stream()
 				.filter(reg -> reg.getId().getPath().equals(item))
 				.map(Util::enabled)
 				.findAny()

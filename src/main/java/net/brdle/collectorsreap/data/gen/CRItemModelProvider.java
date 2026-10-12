@@ -65,7 +65,7 @@ public class CRItemModelProvider extends ItemModelProvider {
 		this.blockItem(CRBlocks.LUCUMA_BOOKSHELF);
 		this.blockItem(CRBlocks.LUCUMA_BOARDS);
 		this.chest(CRBlocks.LUCUMA_CHEST);
-		this.trappedChest(CRBlocks.TRAPPED_LUCUMA_CHEST);
+		this.chest(CRBlocks.TRAPPED_LUCUMA_CHEST);
 
 		// Urchin Test
 		this.blockItem(CRBlocks.URCHIN_TEST_BLOCK);
@@ -374,11 +374,7 @@ public class CRItemModelProvider extends ItemModelProvider {
 		this.withExistingParent(Util.name(blockItem.get()), "item/generated").texture("layer0", resourceBlock(Util.name(blockItem.get())));
 	}
 
-	private void chest(Supplier<BlueprintChestBlock> chestItem) {
-		this.withExistingParent(Util.name(chestItem.get()), "blueprint:item/template_chest");
-	}
-
-	private void trappedChest(Supplier<BlueprintTrappedChestBlock> chestItem) {
+	private void chest(Supplier<Block> chestItem) {
 		this.withExistingParent(Util.name(chestItem.get()), "blueprint:item/template_chest");
 	}
 

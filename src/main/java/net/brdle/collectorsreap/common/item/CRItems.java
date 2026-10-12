@@ -1,9 +1,11 @@
 package net.brdle.collectorsreap.common.item;
 
+import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
 
 import com.mojang.datafixers.util.Pair;
+import com.teamabnormals.blueprint.common.block.LogBlock;
 import com.teamabnormals.blueprint.common.item.BlueprintBoatItem;
 import com.teamabnormals.blueprint.core.util.registry.ItemSubRegistryHelper;
 import net.brdle.collectorsreap.CollectorsReap;
@@ -25,11 +27,14 @@ import net.brdle.collectorsreap.compat.miners_delight.CupItem;
 import net.brdle.collectorsreap.compat.mynethersdelight.StygianPomegranateItem;
 import net.brdle.collectorsreap.compat.nirvana.NirvanaCompat;
 import net.brdle.collectorsreap.compat.sob.AsparagusAspicItem;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.*;
-import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.material.Fluids;
+import net.neoforged.bus.api.IEventBus;
+import net.neoforged.neoforge.registries.DeferredRegister;
 import vectorwing.farmersdelight.common.item.ConsumableItem;
 import vectorwing.farmersdelight.common.item.DrinkableItem;
 import vectorwing.farmersdelight.common.item.MushroomColonyItem;
@@ -37,7 +42,7 @@ import org.jetbrains.annotations.NotNull;
 import static vectorwing.farmersdelight.common.registry.ModItems.*;
 
 public class CRItems {
-	public static final ItemSubRegistryHelper HELPER = CollectorsReap.REGISTRY_HELPER.getItemSubHelper();
+	public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(Registries.ITEM, CollectorsReap.MODID);
 
 	// Sniffer Plants/Seeds
 	public static final Supplier<Item> DAMSELFLOWER_SEEDS = registerItem("damselflower_seeds", () ->
@@ -257,11 +262,11 @@ public class CRItems {
 		() -> new BlueprintBoatItem(false, Util.rl("lucuma"), new Item.Properties().stacksTo(1)));
 	public static final Supplier<Item> LUCUMA_CHEST_BOAT = registerItem("lucuma_chest_boat_item",
 		() -> new BlueprintBoatItem(true, Util.rl("lucuma"), new Item.Properties().stacksTo(1)));
-	public static final Supplier<Item> LUCUMA_FURNACE_BOAT = HELPER.createItem("lucuma_furnace_boat",
+	public static final Supplier<Item> LUCUMA_FURNACE_BOAT = registerItem("lucuma_furnace_boat",
 		Modid.BL.loaded() ?
 		CRBoatTypes.LUCUMA_FURNACE_BOAT :
 		() -> new CompatItem(new Item.Properties(), Modid.BL));
-	public static final Supplier<Item> LARGE_LUCUMA_BOAT = HELPER.createItem("large_lucuma_boat",
+	public static final Supplier<Item> LARGE_LUCUMA_BOAT = registerItem("large_lucuma_boat",
 		Modid.BL.loaded() ?
 		CRBoatTypes.LARGE_LUCUMA_BOAT :
 		() -> new CompatItem(new Item.Properties(), Modid.BL));
@@ -572,6 +577,20 @@ public class CRItems {
 	}
 
 	public static Supplier<Item> registerItem(String name, Supplier<Item> item) {
-		return HELPER.createItem(name, item);
+		return ITEMS.register(name, item);
+	}
+
+	private static void registerBlocks() {
+		CRBlocks.BLOCKS.getEntries().forEach(b -> {
+			List<Supplier<Item>> doNotRegister = List.of(PORTOBELLO, PANETTONE, PORTOBELLO_QUICHE, LIME_PIE);
+			if (b != doNotRegister) {
+				registerBlock(b);
+			}
+		});
+	}
+
+	public static void create(IEventBus bus) {
+		registerBlocks();
+		ITEMS.register(bus);
 	}
 }

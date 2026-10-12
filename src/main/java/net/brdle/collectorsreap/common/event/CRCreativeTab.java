@@ -23,7 +23,7 @@ public class CRCreativeTab {
 			.title(Component.translatable("itemGroup." + CollectorsReap.MODID))
 			.icon(() -> Util.getStack(CRItems.POMEGRANATE))
 			.displayItems((params, output) ->
-				CRItems.HELPER.getDeferredRegister().getEntries().stream()
+				CRItems.ITEMS.getEntries().stream()
 					.filter(object -> !CommonProxy.getHiddenItems().contains(object))
 					.map(Supplier::get)
 					.filter(item -> !(item instanceof IConfigured configured) || configured.enabled())

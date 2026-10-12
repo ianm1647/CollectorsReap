@@ -55,7 +55,7 @@ import java.util.Objects;
 
 public class CommonEvents {
 	@SubscribeEvent(priority = EventPriority.HIGHEST)
-	public void onFinishPanettone(LivingEntityUseItemEvent.Finish e) {
+	public void onFinishPanettone(LivingEntityUseItemEvent e) {
 		if (e.getItem().is(CRItems.PANETTONE_SLICE.get())) {
 			PanettoneBlock.addRandomBuff(e.getEntity());
 		}
@@ -271,7 +271,7 @@ public class CommonEvents {
 	}
 
 	@SubscribeEvent
-	public void onFeedGummy(PlayerInteractEvent.EntityInteractSpecific e) {
+	public void onFeedGummy(PlayerInteractEvent.EntityInteract e) {
 		final Player player = e.getEntity();
 		final ItemStack heldStack = e.getItemStack();
 		if (

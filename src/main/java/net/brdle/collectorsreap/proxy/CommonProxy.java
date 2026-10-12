@@ -28,10 +28,11 @@ public class CommonProxy {
 	private static @NotNull List<Item> hiddenItems = Collections.emptyList();
 
 	public void start(IEventBus bus) {
-		final var modBus = NeoForge.EVENT_BUS;
-		bus.register(new CommonEvents());
+		NeoForge.EVENT_BUS.register(new CommonEvents());
 		bus.register(new ModEvents());
 		bus.register(new Generators());
+		CRBlocks.create(bus);
+		CRItems.create(bus);
 		CRFluids.create(bus);
 		CREntities.create(bus);
 		CRParticleTypes.create(bus);
@@ -42,42 +43,42 @@ public class CommonProxy {
 		CRSoundEvents.create(bus);
 		CRFoliagePlacerTypes.create(bus);
 
-		hiddenItems = new ArrayList<>();
-		if (!Modid.FR.loaded()) {
-			hiddenItems.addAll(List.of(
-				CRItems.STRONG_LIMEADE.get(),
-				CRItems.LIME_GREEN_TEA.get(),
-				CRItems.POMEGRANATE_BLACK_TEA.get(),
-				CRItems.VERNAL_PURGE.get(),
-				CRItems.STRONG_VERNAL_PURGE.get(),
-				CRItems.LIMBO_BREW.get(),
-				CRItems.LONG_LIMBO_BREW.get(),
-				CRItems.STRONG_LIMBO_BREW.get(),
-				CRItems.SWEET_RECOVERY.get(),
-				CRItems.LONG_SWEET_RECOVERY.get(),
-				CRItems.STRONG_SWEET_RECOVERY.get()
-			));
-		}
-		if (!Modid.BC.loaded()) {
-			hiddenItems.addAll(List.of(
-				CRItems.DEIFIC_BLOOD.get(),
-				CRItems.HERMITS_SOUR.get(),
-				CRItems.ROSE_MOON.get(),
-				CRItems.REANIMATORS_GARDEN.get(),
-				CRItems.HEAVENS_CREAM.get()
-			));
-		}
-		if (!Modid.WW.loaded()) {
-			hiddenItems.addAll(List.of(
-				CRBlocks.LUCUMA_BEEHIVE.get().asItem(),
-				CRBlocks.LUCUMA_LADDER.get().asItem(),
-				CRBlocks.LUCUMA_BOOKSHELF.get().asItem(),
-				CRBlocks.CHISELED_LUCUMA_BOOKSHELF.get().asItem(),
-				CRBlocks.LUCUMA_BOARDS.get().asItem(),
-				CRBlocks.LUCUMA_CHEST.get().asItem(),
-				CRBlocks.TRAPPED_LUCUMA_CHEST.get().asItem()
-			));
-		}
+//		hiddenItems = new ArrayList<>();
+//		if (!Modid.FR.loaded()) {
+//			hiddenItems.addAll(List.of(
+//				CRItems.STRONG_LIMEADE.get(),
+//				CRItems.LIME_GREEN_TEA.get(),
+//				CRItems.POMEGRANATE_BLACK_TEA.get(),
+//				CRItems.VERNAL_PURGE.get(),
+//				CRItems.STRONG_VERNAL_PURGE.get(),
+//				CRItems.LIMBO_BREW.get(),
+//				CRItems.LONG_LIMBO_BREW.get(),
+//				CRItems.STRONG_LIMBO_BREW.get(),
+//				CRItems.SWEET_RECOVERY.get(),
+//				CRItems.LONG_SWEET_RECOVERY.get(),
+//				CRItems.STRONG_SWEET_RECOVERY.get()
+//			));
+//		}
+//		if (!Modid.BC.loaded()) {
+//			hiddenItems.addAll(List.of(
+//				CRItems.DEIFIC_BLOOD.get(),
+//				CRItems.HERMITS_SOUR.get(),
+//				CRItems.ROSE_MOON.get(),
+//				CRItems.REANIMATORS_GARDEN.get(),
+//				CRItems.HEAVENS_CREAM.get()
+//			));
+//		}
+//		if (!Modid.WW.loaded()) {
+//			hiddenItems.addAll(List.of(
+//				CRBlocks.LUCUMA_BEEHIVE.get().asItem(),
+//				CRBlocks.LUCUMA_LADDER.get().asItem(),
+//				CRBlocks.LUCUMA_BOOKSHELF.get().asItem(),
+//				CRBlocks.CHISELED_LUCUMA_BOOKSHELF.get().asItem(),
+//				CRBlocks.LUCUMA_BOARDS.get().asItem(),
+//				CRBlocks.LUCUMA_CHEST.get().asItem(),
+//				CRBlocks.TRAPPED_LUCUMA_CHEST.get().asItem()
+//			));
+//		}
 	}
 
 	public static @NotNull List<Item> getHiddenItems() {

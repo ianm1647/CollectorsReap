@@ -1,6 +1,7 @@
 package net.brdle.collectorsreap.data.gen;
 
 import net.brdle.collectorsreap.client.CRSpriteSourceProvider;
+import net.brdle.collectorsreap.data.pack.CRDataMaps;
 import net.brdle.collectorsreap.data.pack.CRRegistries;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.DataGenerator;
@@ -21,8 +22,10 @@ public class Generators {
 		ExistingFileHelper helper = e.getExistingFileHelper();
 
 		DatapackBuiltinEntriesProvider datapackProvider = new CRRegistries(output, e.getLookupProvider());
-		CompletableFuture<HolderLookup.Provider> lookup = datapackProvider.getRegistryProvider();
 		gen.addProvider(e.includeServer(), datapackProvider);
+		CompletableFuture<HolderLookup.Provider> lookup = datapackProvider.getRegistryProvider();
+		gen.addProvider(e.includeServer(), new CRDataMaps(output, lookup));
+
 		CRBlockTagProvider blockTags = new CRBlockTagProvider(output, lookup, helper);
 		gen.addProvider(e.includeServer(), blockTags);
 		gen.addProvider(e.includeServer(), new CRItemTagProvider(output, lookup, blockTags.contentsGetter(), helper));
@@ -38,5 +41,7 @@ public class Generators {
 		gen.addProvider(e.includeClient(), new CRItemModelProvider(output, helper));
 		gen.addProvider(e.includeClient(), new CRLanguageProvider(output));
 		gen.addProvider(e.includeClient(), new CRSpriteSourceProvider(output, lookup, helper));
+
+
 	}
 }

@@ -331,7 +331,7 @@ public class CRBlockModelProvider extends BlockStateProvider {
 			.partialState().with(RotatedPillarBlock.AXIS, Direction.Axis.X).modelForState().modelFile(boardsHorizontalModel).rotationY(270).addModel();
 	}
 
-	private void chests(Supplier<BlueprintChestBlock> chest, Supplier<BlueprintTrappedChestBlock> trapped, ResourceLocation texture) {
+	private void chests(Supplier<Block> chest, Supplier<Block> trapped, ResourceLocation texture) {
 		ModelFile model = this.models().getBuilder(Util.name(chest.get())).texture("particle", texture);
 		this.simpleBlock(chest.get(), model);
 		this.simpleBlock(trapped.get(), model);

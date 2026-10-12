@@ -1,6 +1,5 @@
 package net.brdle.collectorsreap.common.block;
 
-import com.mojang.datafixers.util.Pair;
 import com.teamabnormals.blueprint.common.block.*;
 import com.teamabnormals.blueprint.common.block.chest.BlueprintChestBlock;
 import com.teamabnormals.blueprint.common.block.chest.BlueprintTrappedChestBlock;
@@ -11,7 +10,6 @@ import com.teamabnormals.blueprint.common.block.sign.BlueprintWallSignBlock;
 import com.teamabnormals.blueprint.core.api.BlockSetTypeRegistryHelper;
 import com.teamabnormals.blueprint.core.api.WoodTypeRegistryHelper;
 import com.teamabnormals.blueprint.core.util.PropertyUtil;
-import com.teamabnormals.blueprint.core.util.registry.BlockSubRegistryHelper;
 import net.brdle.collectorsreap.CollectorsReap;
 import net.brdle.collectorsreap.common.item.CRItems;
 import net.brdle.collectorsreap.compat.Modid;
@@ -19,7 +17,10 @@ import net.brdle.collectorsreap.compat.abnormals.ChiseledLucumaBookshelfBlock;
 import net.brdle.collectorsreap.compat.letfishlove.LetFishLoveCompat;
 import net.brdle.collectorsreap.data.pack.CRConfiguredFeatures;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.BlockBehaviour;
@@ -29,15 +30,18 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.WoodType;
 import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.level.material.PushReaction;
+import net.neoforged.bus.api.IEventBus;
+import net.neoforged.neoforge.registries.DeferredRegister;
 import vectorwing.farmersdelight.common.block.CabinetBlock;
 import vectorwing.farmersdelight.common.block.PieBlock;
 import vectorwing.farmersdelight.common.block.WildCropBlock;
 import vectorwing.farmersdelight.common.registry.ModBlocks;
+
 import java.util.function.Supplier;
 import java.util.function.ToIntFunction;
 
 public class CRBlocks {
-	public static final BlockSubRegistryHelper HELPER = CollectorsReap.REGISTRY_HELPER.getBlockSubHelper();
+	public static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(Registries.BLOCK, CollectorsReap.MODID);
 
 	// Crates
 	public static final Supplier<Block> LIME_CRATE = registerBlock("lime_crate",
@@ -72,16 +76,16 @@ public class CRBlocks {
 	public static final Supplier<Block> LUCUMA_WALL_SIGN = registerBlock("lucuma_wall_sign", () -> new BlueprintWallSignBlock(Properties.LUCUMA.sign().lootFrom(LUCUMA_SIGN), Properties.LUCUMA_WOOD_TYPE));
 	public static final Supplier<Block> LUCUMA_HANGING_SIGN = registerBlock("lucuma_hanging_sign", () -> new BlueprintCeilingHangingSignBlock(Properties.LUCUMA.sign(), Properties.LUCUMA_WOOD_TYPE));
 	public static final Supplier<Block> LUCUMA_WALL_HANGING_SIGN = registerBlock("lucuma_wall_hanging_sign", () -> new BlueprintWallHangingSignBlock(Properties.LUCUMA.hangingSign().lootFrom(LUCUMA_HANGING_SIGN), Properties.LUCUMA_WOOD_TYPE));
-	public static final Supplier<Block> LUCUMA_CABINET = HELPER.createFuelBlock("lucuma_cabinet", () -> new CabinetBlock(BlockBehaviour.Properties.ofFullCopy(ModBlocks.OAK_CABINET.get())), 300);
+	public static final Supplier<Block> LUCUMA_CABINET = registerBlock("lucuma_cabinet", () -> new CabinetBlock(BlockBehaviour.Properties.ofFullCopy(ModBlocks.OAK_CABINET.get())));
 
 	// Lucuma Woodworks
 	public static final Supplier<Block> LUCUMA_BEEHIVE = registerBlock("lucuma_beehive", () -> new BlueprintBeehiveBlock(Properties.LUCUMA.beehive()));
-	public static final Supplier<Block> LUCUMA_LADDER = HELPER.createFuelBlock("lucuma_ladder",() -> new LadderBlock(Properties.LUCUMA.ladder()), 300);
-	public static final Supplier<Block> LUCUMA_BOOKSHELF = HELPER.createFuelBlock("lucuma_bookshelf", () -> new Block(Properties.LUCUMA.bookshelf()), 300);
-	public static final Supplier<Block> CHISELED_LUCUMA_BOOKSHELF = HELPER.createFuelBlock("chiseled_lucuma_bookshelf", () -> new ChiseledLucumaBookshelfBlock(Properties.LUCUMA.chiseledBookshelf()), 300);
-	public static final Supplier<Block> LUCUMA_BOARDS = HELPER.createFuelBlock("lucuma_boards", () -> new RotatedPillarBlock(Properties.LUCUMA.planks()), 300);
-	public static final Supplier<BlueprintChestBlock> LUCUMA_CHEST = HELPER.createChestBlock("lucuma", Properties.LUCUMA.chest());
-	public static final Supplier<BlueprintTrappedChestBlock> TRAPPED_LUCUMA_CHEST = HELPER.createTrappedChestBlock("lucuma", Properties.LUCUMA.chest());
+	public static final Supplier<Block> LUCUMA_LADDER = registerBlock("lucuma_ladder",() -> new LadderBlock(Properties.LUCUMA.ladder()));
+	public static final Supplier<Block> LUCUMA_BOOKSHELF = registerBlock("lucuma_bookshelf", () -> new Block(Properties.LUCUMA.bookshelf()));
+	public static final Supplier<Block> CHISELED_LUCUMA_BOOKSHELF = registerBlock("chiseled_lucuma_bookshelf", () -> new ChiseledLucumaBookshelfBlock(Properties.LUCUMA.chiseledBookshelf()));
+	public static final Supplier<Block> LUCUMA_BOARDS = registerBlock("lucuma_boards", () -> new RotatedPillarBlock(Properties.LUCUMA.planks()));
+	public static final Supplier<Block> LUCUMA_CHEST = registerBlock("lucuma_chest", () -> new BlueprintChestBlock(Properties.LUCUMA_WOOD_TYPE.name(), Properties.LUCUMA.chest()));
+	public static final Supplier<Block> TRAPPED_LUCUMA_CHEST = registerBlock("lucuma_trapped_chest", () -> new BlueprintTrappedChestBlock(Properties.LUCUMA_WOOD_TYPE.name(), Properties.LUCUMA.chest()));
 
 	public static final Supplier<Block> LUCUMA_LEAVES = registerBlock("lucuma_leaves", () -> new LeavesBlock(Properties.LUCUMA.leaves()));
 	public static final Supplier<Block> LUCUMA_LEAF_PILE = registerBlock("lucuma_leaf_pile", () -> new LeafPileBlock(Properties.LUCUMA.leafPile()));
@@ -242,13 +246,13 @@ public class CRBlocks {
 
 	// Milkshake Cauldrons
 	public static final Supplier<Block> LIME_MILKSHAKE_CAULDRON = registerBlockNoItem("lime_milkshake_cauldron",
-		() -> new CRMilkshakeCauldronBlock(CRCauldronInteractions.LIME_MILKSHAKE));
+		() -> Modid.N.loaded() ? new CRMilkshakeCauldronBlock(CRCauldronInteractions.LIME_MILKSHAKE) : null);
 	public static final Supplier<Block> POMEGRANATE_MILKSHAKE_CAULDRON = registerBlockNoItem("pomegranate_milkshake_cauldron",
-		() -> new CRMilkshakeCauldronBlock(CRCauldronInteractions.POMEGRANATE_MILKSHAKE));
+		() -> Modid.N.loaded() ? new CRMilkshakeCauldronBlock(CRCauldronInteractions.POMEGRANATE_MILKSHAKE) : null);
 	public static final Supplier<Block> PINK_DRAGON_FRUIT_MILKSHAKE_CAULDRON = registerBlockNoItem("pink_dragon_fruit_milkshake_cauldron",
-		() -> new CRMilkshakeCauldronBlock(CRCauldronInteractions.PINK_DRAGON_FRUIT_MILKSHAKE));
+		() -> Modid.N.loaded() ? new CRMilkshakeCauldronBlock(CRCauldronInteractions.PINK_DRAGON_FRUIT_MILKSHAKE) : null);
 	public static final Supplier<Block> LUCUMA_MILKSHAKE_CAULDRON = registerBlockNoItem("lucuma_milkshake_cauldron",
-		() -> new CRMilkshakeCauldronBlock(CRCauldronInteractions.LUCUMA_MILKSHAKE));
+		() -> Modid.N.loaded() ? new CRMilkshakeCauldronBlock(CRCauldronInteractions.LUCUMA_MILKSHAKE) : null);
 
 	// Let Fish Love
 	public static final Supplier<Block> PLATINUM_BASS_ROE = registerBlockNoItem("platinum_bass_roe_block", () ->
@@ -261,13 +265,12 @@ public class CRBlocks {
 		LetFishLoveCompat.tigerPrawnRoeBlock() :
 		new Block(BlockBehaviour.Properties.of())
 	);
-
 	public static Supplier<Block> registerBlock(String name, Supplier<Block> block) {
-		return HELPER.createBlock(name, block);
+		return BLOCKS.register(name, block);
 	}
 
 	public static Supplier<Block> registerBlockNoItem(String name, Supplier<Block> block) {
-		return HELPER.createBlockNoItem(name, block);
+		return BLOCKS.register(name, block);
 	}
 
 	private static BlockBehaviour.Properties copy(Supplier<Block> block) {
@@ -294,5 +297,9 @@ public class CRBlocks {
 		public static final PropertyUtil.WoodSetProperties LUCUMA = PropertyUtil.WoodSetProperties.builder(MapColor.TERRACOTTA_BROWN, MapColor.WOOD).build();
 
 		public static final BlockBehaviour.Properties URCHIN_TEST = BlockBehaviour.Properties.of().sound(SoundType.GILDED_BLACKSTONE).mapColor(MapColor.TERRACOTTA_WHITE);
+	}
+
+	public static void create(IEventBus bus) {
+		BLOCKS.register(bus);
 	}
 }

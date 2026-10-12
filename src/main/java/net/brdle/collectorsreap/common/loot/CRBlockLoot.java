@@ -253,7 +253,7 @@ public class CRBlockLoot extends BlockLootSubProvider {
 
 	@Override
 	protected @NotNull Iterable<Block> getKnownBlocks() {
-		return CRBlocks.HELPER.getDeferredRegister().getEntries()
+		return CRBlocks.BLOCKS.getEntries()
 			.stream()
 			.filter(reg ->
 					reg != CRBlocks.PORTOBELLO_COLONY &&

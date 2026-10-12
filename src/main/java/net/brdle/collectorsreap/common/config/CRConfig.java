@@ -68,12 +68,12 @@ public class CRConfig {
 		BUILDER.pop();
 
 		ITEM_VALUES = new HashMap<>();
-		BUILDER.push("Items");
-		CRItems.HELPER.getDeferredRegister().getEntries().stream()
-			.map(obj -> obj.getId().getPath())
-			.sorted()
-			.forEach(name -> defineItem(BUILDER, name));
-		BUILDER.pop();
+//		BUILDER.push("Items");
+//		CRItems.HELPER.getDeferredRegister().getEntries().stream()
+//			.map(obj -> obj.getId().getPath())
+//			.sorted()
+//			.forEach(name -> defineItem(BUILDER, name));
+//		BUILDER.pop();
 		COMMON = BUILDER.build();
 	}
 

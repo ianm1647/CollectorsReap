@@ -69,7 +69,7 @@ public class CRBlockTagProvider extends BlockTagsProvider {
 			.add(Blocks.VINE);
 
 		// Minecraft
-		CRBlocks.HELPER.getDeferredRegister().getEntries()
+		CRBlocks.BLOCKS.getEntries()
 			.stream()
 			.map(Supplier::get)
 			.filter(b -> b instanceof EffectCandleCakeBlock)
