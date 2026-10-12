@@ -126,6 +126,6 @@ public class CRItemTags {
 	}
 
 	public static TagKey<Item> forge(String name) {
-		return Modid.LOADER.it(name);
+		return Modid.COMMON.it(name);
 	}
 }

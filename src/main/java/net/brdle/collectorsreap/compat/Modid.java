@@ -23,6 +23,7 @@ public enum Modid {
 	MC(Util.MC),
 	FD(FarmersDelight.MODID),
 	CR(CollectorsReap.MODID),
+	COMMON("c"),
 	AA("additionaladditions"),
 	AAE("ancient_aether"),
 	AD("abnormals_delight"),

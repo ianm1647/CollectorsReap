@@ -54,6 +54,6 @@ public class CRBlockTags {
 	}
 
 	private static TagKey<Block> forge(@NotNull String name) {
-		return bind("forge", name);
+		return bind("c", name);
 	}
 }

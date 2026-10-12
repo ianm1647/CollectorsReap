@@ -158,11 +158,6 @@ public class CRItemTagProvider extends ItemTagsProvider {
 		this.tag(ModTags.Items.CABINETS_WOODEN).add(CRBlocks.LUCUMA_CABINET.get().asItem());
 		this.tag(ModTags.Items.WILD_CROPS)
 			.add(CRBlocks.DRAGON_BUSH.get().asItem());
-		this.tag(CommonTags.Items.FOODS_CABBAGE)
-			.addTag(CRItemTags.RAW_CRAB_MEAT)
-			.addTag(CRItemTags.RAW_CLAM)
-			.addTag(CRItemTags.RAW_PRAWN)
-			.addTag(CRItemTags.RAW_URCHIN);
 		this.tag(ModTags.Items.DRINKS)
 			.addTag(CRItemTags.JUICES)
 			.addTag(CRItemTags.FERMENTED_DRINKS)
