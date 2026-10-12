@@ -4,14 +4,13 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.AxeItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
@@ -22,9 +21,9 @@ import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.phys.BlockHitResult;
-import net.minecraft.world.phys.HitResult;
-import net.minecraftforge.common.Tags;
 import java.util.Optional;
+
+import net.neoforged.neoforge.common.Tags;
 import org.jetbrains.annotations.NotNull;
 
 public abstract class FruitBushBlock extends TallBushCropBlock {
@@ -71,11 +70,6 @@ public abstract class FruitBushBlock extends TallBushCropBlock {
 		return super.isRandomlyTicking(state) && !state.getValue(STUNTED);
 	}
 
-	@Override
-	public ItemStack getCloneItemStack(BlockState state, HitResult target, BlockGetter level, BlockPos pos, Player player) {
-		return new ItemStack(this.getSeeds());
-	}
-
 	public Optional<Item> getSpecialFruit() {
 		return Optional.empty();
 	}
@@ -97,10 +91,9 @@ public abstract class FruitBushBlock extends TallBushCropBlock {
 		);
 	}
 
-	@SuppressWarnings("deprecation")
 	@Override
-	public @NotNull InteractionResult use(BlockState state, @NotNull Level level, @NotNull BlockPos pos, @NotNull Player player, @NotNull InteractionHand hand, @NotNull BlockHitResult hit) {
-		if (state.getValue(AGE) != MAX_AGE && player.getItemInHand(hand).is(Items.BONE_MEAL)) {
+	public @NotNull InteractionResult useWithoutItem(BlockState state, @NotNull Level level, @NotNull BlockPos pos, @NotNull Player player, @NotNull BlockHitResult hit) {
+		if (state.getValue(AGE) != MAX_AGE && player.getMainHandItem().is(Items.BONE_MEAL)) {
 			return InteractionResult.PASS;
 		}
 		if (state.getValue(HALF) == DoubleBlockHalf.UPPER) {
@@ -108,7 +101,7 @@ public abstract class FruitBushBlock extends TallBushCropBlock {
 			pos = pos.below();
 		}
 		if (state.getValue(AGE) == MAX_AGE) {
-			if (state.getBlock() instanceof PomegranateBushBlock && !player.getItemInHand(hand).is(Tags.Items.SHEARS)) {
+			if (state.getBlock() instanceof PomegranateBushBlock && !player.getMainHandItem().is(Tags.Items.TOOLS_SHEAR)) {
 				player.hurt(player.damageSources().sweetBerryBush(), 1F);
 			}
 			this.dropFruit(level, pos);
@@ -118,13 +111,13 @@ public abstract class FruitBushBlock extends TallBushCropBlock {
 			level.setBlock(pos.above(), picked.setValue(HALF, DoubleBlockHalf.UPPER), 2); // Revert upper to pre-flowering
 			level.gameEvent(GameEvent.BLOCK_CHANGE, pos, GameEvent.Context.of(player, picked));
 			return InteractionResult.sidedSuccess(level.isClientSide());
-		} else if (player.getItemInHand(hand).getItem() instanceof AxeItem && !state.hasProperty(STUNTED)) {
+		} else if (player.getMainHandItem().getItem() instanceof AxeItem && !state.hasProperty(STUNTED)) {
 			BlockState stunted = state.setValue(STUNTED, true);
 			level.playSound(player, pos, SoundEvents.AXE_STRIP, SoundSource.BLOCKS, 1F, 1F);
 			level.setBlockAndUpdate(pos, stunted);
 			level.setBlockAndUpdate(pos.above(), stunted.setValue(HALF, DoubleBlockHalf.UPPER));
 			level.gameEvent(GameEvent.BLOCK_CHANGE, pos, GameEvent.Context.of(player, stunted));
-			player.getItemInHand(hand).hurtAndBreak(1, player, (b) -> b.broadcastBreakEvent(b.getUsedItemHand()));
+			player.getMainHandItem().hurtAndBreak(1, player, EquipmentSlot.MAINHAND);
 			return InteractionResult.sidedSuccess(level.isClientSide());
 		}
 		return InteractionResult.PASS;

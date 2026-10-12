@@ -1,21 +1,21 @@
 plugins {
-	id 'java-library'
-	id 'maven-publish'
-	id 'net.neoforged.moddev' version '2.0.144'
-	id 'idea'
+    id 'java-library'
+    id 'maven-publish'
+    id 'net.neoforged.moddev' version '2.0.148'
+    id 'idea'
 }
 
 tasks.named('wrapper', Wrapper).configure {
-	distributionType = Wrapper.DistributionType.BIN
+    distributionType = Wrapper.DistributionType.BIN
 }
 
 version = mod_version
 group = mod_group_id
 
 sourceSets.main.resources {
-	srcDir('src/generated/resources')
-	exclude("**/*.bbmodel")
-	exclude("src/generated/**/.cache")
+    srcDir('src/generated/resources')
+    exclude("**/*.bbmodel")
+    exclude("src/generated/**/.cache")
 }
 
 repositories {
@@ -31,6 +31,7 @@ repositories {
     maven { url "https://maven.tterrag.com/" }
     maven { url "https://maven.ryanliptak.com/" }
 }
+
 
 dependencies {
     compileOnly "mezz.jei:jei-${minecraft_version}-common-api:${jei_version}"
@@ -49,57 +50,58 @@ dependencies {
 }
 
 base {
-	archivesName = mod_id
+    archivesName = mod_id
 }
 
 java.toolchain.languageVersion = JavaLanguageVersion.of(21)
 
 neoForge {
-	version = project.neo_version
-	parchment {
-		mappingsVersion = project.parchment_mappings_version
-		minecraftVersion = project.parchment_minecraft_version
-	}
+    version = project.neo_version
 
-	runs {
-		client {
-			client()
-			systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
-		}
+    parchment {
+        mappingsVersion = project.parchment_mappings_version
+        minecraftVersion = project.parchment_minecraft_version
+    }
 
-		server {
-			server()
-			programArgument '--nogui'
-			systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
-		}
+    runs {
+        client {
+            client()
+            systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
+        }
 
-		gameTestServer {
-			type = "gameTestServer"
-			systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
-		}
+        server {
+            server()
+            programArgument '--nogui'
+            systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
+        }
 
-		data {
-			data()
-			programArguments.addAll '--mod', project.mod_id, '--all', '--output', file('src/generated/resources/').getAbsolutePath(), '--existing', file('src/main/resources/').getAbsolutePath()
-		}
+        gameTestServer {
+            type = "gameTestServer"
+            systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
+        }
 
-		configureEach {
-			systemProperty 'forge.logging.markers', 'REGISTRIES'
-			logLevel = org.slf4j.event.Level.DEBUG
-		}
-	}
+        data {
+            data()
+            programArguments.addAll '--mod', project.mod_id, '--all', '--output', file('src/generated/resources/').getAbsolutePath(), '--existing', file('src/main/resources/').getAbsolutePath()
+        }
 
-	mods {
-		"${mod_id}" {
-			sourceSet(sourceSets.main)
-		}
-	}
+        configureEach {
+            systemProperty 'forge.logging.markers', 'REGISTRIES'
+            logLevel = org.slf4j.event.Level.DEBUG
+        }
+    }
 
-	accessTransformers = ['src/main/resources/META-INF/accesstransformer.cfg']
+    mods {
+        "${mod_id}" {
+            sourceSet(sourceSets.main)
+        }
+    }
+
+    accessTransformers = ['src/main/resources/META-INF/accesstransformer.cfg']
 }
 
 configurations {
-	runtimeClasspath.extendsFrom localRuntime
+    runtimeClasspath.extendsFrom localRuntime
 }
 
 var generateModMetadata = tasks.register("generateModMetadata", ProcessResources) {
@@ -125,25 +127,25 @@ sourceSets.main.resources.srcDir generateModMetadata
 neoForge.ideSyncTask generateModMetadata
 
 publishing {
-	publications {
-		register('mavenJava', MavenPublication) {
-			from components.java
-		}
-	}
-	repositories {
-		maven {
-			url "file://${project.projectDir}/repo"
-		}
-	}
+    publications {
+        register('mavenJava', MavenPublication) {
+            from components.java
+        }
+    }
+    repositories {
+        maven {
+            url "file://${project.projectDir}/repo"
+        }
+    }
 }
 
 tasks.withType(JavaCompile).configureEach {
-	options.encoding = 'UTF-8'
+    options.encoding = 'UTF-8'
 }
 
 idea {
-	module {
-		downloadSources = true
-		downloadJavadoc = true
-	}
+    module {
+        downloadSources = true
+        downloadJavadoc = true
+    }
 }

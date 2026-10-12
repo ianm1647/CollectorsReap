@@ -15,6 +15,7 @@ import net.minecraft.util.valueproviders.UniformInt;
 import net.minecraft.util.valueproviders.WeightedListInt;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.grower.TreeGrower;
 import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
 import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.feature.configurations.TreeConfiguration;
@@ -31,6 +32,15 @@ import java.util.Optional;
 public class CRConfiguredFeatures {
 	public static final ResourceKey<ConfiguredFeature<?, ?>> LUCUMA = createKey("lucuma");
 	public static final ResourceKey<ConfiguredFeature<?, ?>> LUCUMA_BEES = createKey("lucuma_bees");
+
+	public static final TreeGrower LUCUMA_GROWER = new TreeGrower("lucuma", 0.1F,
+		Optional.empty(),
+		Optional.empty(),
+		Optional.of(LUCUMA),
+		Optional.empty(),
+		Optional.of(LUCUMA_BEES),
+		Optional.empty()
+	);
 
 	public static void bootstrap(BootstrapContext<ConfiguredFeature<?, ?>> context) {
 		final HolderGetter<Block> holdergetter = context.lookup(Registries.BLOCK);

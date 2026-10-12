@@ -1,8 +1,0 @@
-{
-  "parent": "minecraft:block/door_bottom_left_open",
-  "render_type": "minecraft:cutout",
-  "textures": {
-    "bottom": "collectorsreap:block/lucuma_door_bottom",
-    "top": "collectorsreap:block/lucuma_door_top"
-  }
-}

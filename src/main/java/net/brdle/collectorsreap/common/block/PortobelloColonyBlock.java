@@ -3,6 +3,7 @@ package net.brdle.collectorsreap.common.block;
 import net.brdle.collectorsreap.data.CRBlockTags;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Holder;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.Level;
@@ -13,22 +14,20 @@ import vectorwing.farmersdelight.common.block.MushroomColonyBlock;
 import java.util.function.Supplier;
 
 public class PortobelloColonyBlock extends MushroomColonyBlock {
-	public PortobelloColonyBlock(Properties properties, Supplier<Item> mushroomType) {
-		super(properties, mushroomType);
+	public PortobelloColonyBlock(Properties properties, Holder<Item> mushroomType) {
+		super(mushroomType, properties);
 	}
 
 	@Override
 	public boolean canSurvive(@NotNull BlockState pState, LevelReader level, BlockPos pos) {
 		BlockPos blockpos = pos.below();
 		BlockState blockstate = level.getBlockState(blockpos);
-		return (
-			(blockstate.is(CRBlockTags.PORTOBELLO_SPAWNABLE_ON)) ||
-				(blockstate.canSustainPlant(level, blockpos, Direction.UP, this))
-		);
+		return blockstate.is(CRBlockTags.PORTOBELLO_SPAWNABLE_ON) ||
+			blockstate.canSustainPlant(level, blockpos, Direction.UP, this.defaultBlockState()).isDefault();
 	}
 
 	@Override
-	public boolean isValidBonemealTarget(@NotNull LevelReader pLevel, @NotNull BlockPos pPos, @NotNull BlockState pState, boolean pIsClient) {
+	public boolean isValidBonemealTarget(@NotNull LevelReader pLevel, @NotNull BlockPos pPos, @NotNull BlockState pState) {
 		return false;
 	}
 

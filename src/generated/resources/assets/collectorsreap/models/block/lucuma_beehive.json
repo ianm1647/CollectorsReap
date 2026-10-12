@@ -1,8 +1,0 @@
-{
-  "parent": "minecraft:block/orientable",
-  "textures": {
-    "front": "collectorsreap:block/lucuma_beehive_front",
-    "side": "collectorsreap:block/lucuma_beehive_side",
-    "top": "collectorsreap:block/lucuma_beehive_end"
-  }
-}

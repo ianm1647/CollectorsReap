@@ -1,6 +1,0 @@
-{
-  "parent": "minecraft:item/generated",
-  "textures": {
-    "layer0": "collectorsreap:item/dried_pink_dragon_fruit"
-  }
-}

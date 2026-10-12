@@ -20,7 +20,6 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.EntityCollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.minecraftforge.common.PlantType;
 import java.util.Optional;
 import org.jetbrains.annotations.NotNull;
 
@@ -39,12 +38,6 @@ public class PomegranateBushBlock extends FruitBushBlock {
 		return super.mayPlaceOn(state, level, pos) || state.is(CRBlockTags.POMEGRANATE_FAST_ON);
 	}
 
-	@Override
-	public PlantType getPlantType(BlockGetter level, BlockPos pos) {
-		return PlantType.NETHER;
-	}
-
-	@SuppressWarnings("deprecation")
 	@Override
 	public @NotNull VoxelShape getShape(@NotNull BlockState state, @NotNull BlockGetter level, @NotNull BlockPos pos, @NotNull CollisionContext context) {
 		return switch (state.getValue(this.getAgeProperty())) {
@@ -119,7 +112,6 @@ public class PomegranateBushBlock extends FruitBushBlock {
 		}
 	}
 
-	@SuppressWarnings("deprecation")
 	@Override
 	public @NotNull VoxelShape getCollisionShape(@NotNull BlockState state, @NotNull BlockGetter level, @NotNull BlockPos pos, @NotNull CollisionContext context) {
 		if (context instanceof EntityCollisionContext ent && ent.getEntity() instanceof Bee && CRConfig.POMEGRANATE_POLLINATION.get()) {

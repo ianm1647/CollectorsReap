@@ -38,6 +38,7 @@ import vectorwing.farmersdelight.common.tag.CommonTags;
 import java.util.Map;
 
 public class EffectCandleCakeBlock extends AbstractCandleBlock {
+	public final MapCodec<AbstractCandleBlock> CODEC = simpleCodec(EffectCandleCakeBlock::new);
 	protected static final VoxelShape CAKE_SHAPE = Block.box(1D, 0D, 1D, 15D, 8D, 15D);
 	protected static final VoxelShape CANDLE_SHAPE = Block.box(7D, 8D, 7D, 9D, 14D, 9D);
 	protected static final VoxelShape SHAPE = Shapes.or(CAKE_SHAPE, CANDLE_SHAPE);
@@ -50,6 +51,11 @@ public class EffectCandleCakeBlock extends AbstractCandleBlock {
 		this.registerDefaultState(this.stateDefinition.any().setValue(LIT, Boolean.FALSE));
 		BY_CAKE_CANDLE.put(Pair.of(cake, candle), this);
 		this.cake = (EffectCakeBlock) cake;
+	}
+
+	public EffectCandleCakeBlock(Properties prop) {
+		super(prop);
+		this.cake = this.getCake();
 	}
 
 	private static boolean candleHit(BlockHitResult pHit) {
@@ -72,7 +78,7 @@ public class EffectCandleCakeBlock extends AbstractCandleBlock {
 
 	@Override
 	protected MapCodec<? extends AbstractCandleBlock> codec() {
-		return (MapCodec<? extends AbstractCandleBlock>) Block.CODEC;
+		return CODEC;
 	}
 
 	@Override

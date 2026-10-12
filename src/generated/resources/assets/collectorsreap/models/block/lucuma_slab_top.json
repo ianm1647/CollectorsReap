@@ -1,8 +1,0 @@
-{
-  "parent": "minecraft:block/slab_top",
-  "textures": {
-    "bottom": "collectorsreap:block/lucuma_planks",
-    "side": "collectorsreap:block/lucuma_planks",
-    "top": "collectorsreap:block/lucuma_planks"
-  }
-}

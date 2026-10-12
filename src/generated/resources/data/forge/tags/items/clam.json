@@ -1,9 +1,0 @@
-{
-  "values": [
-    "collectorsreap:clam",
-    {
-      "id": "crabbersdelight:clam",
-      "required": false
-    }
-  ]
-}

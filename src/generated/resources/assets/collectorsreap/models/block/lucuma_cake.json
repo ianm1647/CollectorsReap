@@ -1,9 +1,0 @@
-{
-  "parent": "minecraft:block/cake",
-  "textures": {
-    "bottom": "collectorsreap:block/lucuma_cake_bottom",
-    "particle": "collectorsreap:block/lucuma_cake_side",
-    "side": "collectorsreap:block/lucuma_cake_side",
-    "top": "collectorsreap:block/lucuma_cake_top"
-  }
-}

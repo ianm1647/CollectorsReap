@@ -16,8 +16,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
-import net.minecraftforge.common.ForgeHooks;
-import net.minecraftforge.common.PlantType;
+import net.neoforged.neoforge.common.CommonHooks;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -70,11 +69,6 @@ public abstract class TallBushCropBlock extends DoublePlantBlock implements Bone
 		return this.isTall(state.getValue(this.getAgeProperty()));
 	}
 
-	@Override
-	public PlantType getPlantType(BlockGetter level, BlockPos pos) {
-		return PlantType.PLAINS;
-	}
-
 	public boolean canGrowInto(LevelReader level, BlockPos pos) {
 		BlockState blockstate = level.getBlockState(pos);
 		return blockstate.isAir() || blockstate.is(this);
@@ -93,7 +87,7 @@ public abstract class TallBushCropBlock extends DoublePlantBlock implements Bone
 		final int newAge = Math.min(state.getValue(this.getAgeProperty()) + ageIncrement, this.getMaxAge());
 		if (
 			this.canGrow(level, pos, state, newAge) &&
-			ForgeHooks.onCropsGrowPre(level, pos, state, true)
+			CommonHooks.canCropGrow(level, pos, state, true)
 		) {
 			final BlockState newState = this.getStateForAge(newAge);
 			level.setBlock(pos, copyWaterloggedFrom(
@@ -105,7 +99,7 @@ public abstract class TallBushCropBlock extends DoublePlantBlock implements Bone
 					level, above, newState.setValue(HALF, DoubleBlockHalf.UPPER)
 				), 3);
 			}
-			ForgeHooks.onCropsGrowPost(level, pos, state);
+			CommonHooks.fireCropGrowPost(level, pos, state);
 		}
 	}
 
@@ -126,7 +120,7 @@ public abstract class TallBushCropBlock extends DoublePlantBlock implements Bone
 
 	@Override
 	public void randomTick(@NotNull BlockState state, @NotNull ServerLevel level, @NotNull BlockPos pos, RandomSource random) {
-		float f = CropBlock.getGrowthSpeed(this, level, pos);
+		float f = CropBlock.getGrowthSpeed(state, level, pos);
 		if (random.nextInt((int) (25.0F / f) + 1) == 0) {
 			this.grow(level, state, pos, 1);
 		}
@@ -165,7 +159,7 @@ public abstract class TallBushCropBlock extends DoublePlantBlock implements Bone
 	}
 
 	@Override
-	public boolean isValidBonemealTarget(@NotNull LevelReader level, @NotNull BlockPos pos, @NotNull BlockState state, boolean isClient) {
+	public boolean isValidBonemealTarget(@NotNull LevelReader level, @NotNull BlockPos pos, @NotNull BlockState state) {
 		TallBushCropBlock.PosAndState posAndState = this.getLowerHalf(level, pos, state);
 		return posAndState != null && this.canGrow(level, posAndState.pos, posAndState.state, posAndState.state.getValue(this.getAgeProperty()) + 1);
 	}

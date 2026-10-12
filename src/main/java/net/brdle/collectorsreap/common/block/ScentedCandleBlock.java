@@ -1,10 +1,10 @@
 package net.brdle.collectorsreap.common.block;
 
 import com.google.common.collect.ImmutableList;
+import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.tags.BlockTags;
-import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -31,10 +31,16 @@ import java.util.function.ToIntFunction;
 
 @SuppressWarnings("deprecation")
 public class ScentedCandleBlock extends AbstractCandleBlock implements SimpleWaterloggedBlock {
+	public static final MapCodec<AbstractCandleBlock> CODEC = simpleCodec(ScentedCandleBlock::new);
 	public static final BooleanProperty LIT = AbstractCandleBlock.LIT;
 	public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
 	public static final ToIntFunction<BlockState> LIGHT_EMISSION = (c) -> c.getValue(LIT) ? 3 : 0;
 	private static final VoxelShape SHAPE = Block.box(7D, 0D, 7D, 9D, 6D, 9D);
+
+	@Override
+	protected MapCodec<? extends AbstractCandleBlock> codec() {
+		return CODEC;
+	}
 
 	public ScentedCandleBlock(BlockBehaviour.Properties pProperties) {
 		super(pProperties);
@@ -48,8 +54,8 @@ public class ScentedCandleBlock extends AbstractCandleBlock implements SimpleWat
 	}
 
 	@Override
-	public @NotNull InteractionResult use(@NotNull BlockState pState, @NotNull Level pLevel, @NotNull BlockPos pPos, Player pPlayer, @NotNull InteractionHand pHand, @NotNull BlockHitResult pHit) {
-		if (pPlayer.getAbilities().mayBuild && pPlayer.getItemInHand(pHand).isEmpty() && pState.getValue(LIT)) {
+	public @NotNull InteractionResult useWithoutItem(@NotNull BlockState pState, @NotNull Level pLevel, @NotNull BlockPos pPos, Player pPlayer, @NotNull BlockHitResult pHit) {
+		if (pPlayer.getAbilities().mayBuild && pPlayer.getMainHandItem().isEmpty() && pState.getValue(LIT)) {
 			extinguish(pPlayer, pState, pLevel, pPos);
 			return InteractionResult.sidedSuccess(pLevel.isClientSide);
 		} else {

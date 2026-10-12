@@ -1,20 +1,20 @@
 package net.brdle.collectorsreap.data.gen;
 
-import com.mojang.datafixers.util.Pair;
 import com.teamabnormals.blueprint.common.block.chest.BlueprintChestBlock;
 import com.teamabnormals.blueprint.common.block.chest.BlueprintTrappedChestBlock;
-import com.teamabnormals.blueprint.common.block.sign.BlueprintStandingSignBlock;
-import com.teamabnormals.blueprint.common.block.sign.BlueprintWallSignBlock;
-import com.teamabnormals.blueprint.core.data.client.BlueprintBlockStateProvider;
+import com.teamabnormals.blueprint.core.data.client.BlueprintItemModelProvider;
 import net.brdle.collectorsreap.CollectorsReap;
 import net.brdle.collectorsreap.Util;
 import net.brdle.collectorsreap.common.block.*;
 import net.brdle.collectorsreap.compat.Modid;
 import net.minecraft.core.Direction;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.properties.*;
+import net.neoforged.neoforge.client.model.generators.*;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import vectorwing.farmersdelight.FarmersDelight;
 import vectorwing.farmersdelight.common.block.CabinetBlock;
@@ -25,7 +25,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import org.jetbrains.annotations.Nullable;
 
-public class CRBlockModelProvider extends BlueprintBlockStateProvider {
+public class CRBlockModelProvider extends BlockStateProvider {
 	public CRBlockModelProvider(final PackOutput output, final ExistingFileHelper helper) {
 		super(output, CollectorsReap.MODID, helper);
 	}
@@ -162,8 +162,8 @@ public class CRBlockModelProvider extends BlueprintBlockStateProvider {
 		this.trapdoorCutout(CRBlocks.LUCUMA_TRAPDOOR);
 		this.pressurePlate(CRBlocks.LUCUMA_PRESSURE_PLATE, this.blockTexture(CRBlocks.LUCUMA_PLANKS.get()));
 		this.button(CRBlocks.LUCUMA_BUTTON, this.blockTexture(CRBlocks.LUCUMA_PLANKS.get()));
-		this.signs(CRBlocks.LUCUMA_SIGNS, CRBlocks.LUCUMA_PLANKS);
-		this.hangingSignBlocks(CRBlocks.STRIPPED_LUCUMA_LOG, CRBlocks.LUCUMA_HANGING_SIGNS);
+		this.sign(CRBlocks.LUCUMA_SIGN, CRBlocks.LUCUMA_WALL_SIGN, CRBlocks.LUCUMA_PLANKS);
+		this.hangingSignBlocks(CRBlocks.STRIPPED_LUCUMA_LOG, CRBlocks.LUCUMA_HANGING_SIGN, CRBlocks.LUCUMA_WALL_HANGING_SIGN);
 		this.pottedPlant(CRBlocks.LUCUMA_SAPLING, CRBlocks.POTTED_LUCUMA_SAPLING);
 		this.leavesBlock(CRBlocks.LUCUMA_LEAVES);
 		this.leafPile(CRBlocks.LUCUMA_LEAF_PILE, this.blockTexture(CRBlocks.LUCUMA_LEAVES.get()), true);
@@ -180,66 +180,73 @@ public class CRBlockModelProvider extends BlueprintBlockStateProvider {
 		this.roeBlock(CRBlocks.TIGER_PRAWN_ROE.get());
 	}
 
-	private void stairs(RegistryObject<Block> stairs, ResourceLocation texture) {
+	private void stairs(Supplier<Block> stairs, ResourceLocation texture) {
 		this.stairsBlock((StairBlock) stairs.get(), texture);
 	}
 
-	private void slab(RegistryObject<Block> slab, ResourceLocation texture) {
+	private void slab(Supplier<Block> slab, ResourceLocation texture) {
 		this.slabBlock((SlabBlock) slab.get(), texture, texture);
 	}
 
-	private void wall(RegistryObject<Block> wall, ResourceLocation texture) {
+	private void wall(Supplier<Block> wall, ResourceLocation texture) {
 		this.wallBlock((WallBlock) wall.get(), texture);
 	}
 
-	private void wood(RegistryObject<Block> log, ResourceLocation texture) {
+	private void wood(Supplier<Block> log, ResourceLocation texture) {
 		this.axisBlock((RotatedPillarBlock) log.get(), texture, texture);
 	}
 
-	private void pillar(RegistryObject<Block> pillar) {
-		this.axisBlock((RotatedPillarBlock) pillar.get(), this.blockTexture(pillar.get()), this.modLoc("block/" + Util.name(pillar) + "_top"));
+	private void pillar(Supplier<Block> pillar) {
+		this.axisBlock((RotatedPillarBlock) pillar.get(), this.blockTexture(pillar.get()), this.modLoc("block/" + Util.name(pillar.get()) + "_top"));
 	}
 
-	private void fence(RegistryObject<Block> fence, ResourceLocation texture) {
+	private void fence(Supplier<Block> fence, ResourceLocation texture) {
 		this.fenceBlock((FenceBlock) fence.get(), texture);
 	}
 
-	private void fenceGate(RegistryObject<Block> gate, ResourceLocation texture) {
+	private void fenceGate(Supplier<Block> gate, ResourceLocation texture) {
 		this.fenceGateBlock((FenceGateBlock) gate.get(), texture);
 	}
 
-	private void door(RegistryObject<Block> door) {
-		String name = Util.name(door);
+	private void door(Supplier<Block> door) {
+		String name = Util.name(door.get());
 		this.doorBlock((DoorBlock) door.get(), name.replace("_door", ""), this.modLoc("block/" + name + "_bottom"), this.modLoc("block/" + name + "_top"));
 	}
 
-	private void doorCutout(RegistryObject<Block> door) {
-		String name = Util.name(door);
+	private void doorCutout(Supplier<Block> door) {
+		String name = Util.name(door.get());
 		this.doorBlockWithRenderType((DoorBlock) door.get(), name.replace("_door", ""), this.modLoc("block/" + name + "_bottom"), this.modLoc("block/" + name + "_top"), "cutout");
 	}
 
-	private void trapdoor(RegistryObject<Block> trapdoor) {
+	private void trapdoor(Supplier<Block> trapdoor) {
 		this.trapdoorBlock((TrapDoorBlock) trapdoor.get(), this.blockTexture(trapdoor.get()), true);
 	}
 
-	private void trapdoorCutout(RegistryObject<Block> trapdoor) {
+	private void trapdoorCutout(Supplier<Block> trapdoor) {
 		this.trapdoorBlockWithRenderType((TrapDoorBlock) trapdoor.get(), this.blockTexture(trapdoor.get()), true, "cutout");
 	}
 
-	private void pressurePlate(RegistryObject<Block> pressurePlate, ResourceLocation texture) {
+	private void pressurePlate(Supplier<Block> pressurePlate, ResourceLocation texture) {
 		this.pressurePlateBlock((PressurePlateBlock) pressurePlate.get(), texture);
 	}
 
-	private void button(RegistryObject<Block> button, ResourceLocation texture) {
+	private void button(Supplier<Block> button, ResourceLocation texture) {
 		this.buttonBlock((ButtonBlock) button.get(), texture);
 	}
 
-	private void signs(Pair<RegistryObject<BlueprintStandingSignBlock>, RegistryObject<BlueprintWallSignBlock>> signs, Supplier<Block> planks) {
-		this.signBlock(signs.getFirst().get(), signs.getSecond().get(), this.blockTexture(planks.get()));
+	private void sign(Supplier<Block> sign, Supplier<Block> wallSign, Supplier<Block> planks) {
+		this.signBlock((StandingSignBlock) sign.get(), (WallSignBlock) wallSign.get(), this.blockTexture(planks.get()));
 	}
 
-	private void leafPile(RegistryObject<Block> leafPile, ResourceLocation texture, boolean tinted) {
-		ModelFile model = this.models().withExistingParent(Util.name(leafPile), "blueprint:block/" + (tinted ? "tinted_" : "") + "leaf_pile").texture("all", texture).renderType("cutout");
+	public void hangingSignBlocks(Supplier<Block> strippedLog, Supplier<Block> sign, Supplier<Block> wallSign) {
+		ModelFile model = particle(sign, blockTexture(strippedLog.get()));
+		this.simpleBlock(sign.get(), model);
+		this.generatedItem(sign.get(), "item");
+		this.simpleBlock(wallSign.get(), model);
+	}
+
+	private void leafPile(Supplier<Block> leafPile, ResourceLocation texture, boolean tinted) {
+		ModelFile model = this.models().withExistingParent(Util.name(leafPile.get()), "blueprint:block/" + (tinted ? "tinted_" : "") + "leaf_pile").texture("all", texture).renderType("cutout");
 		this.getMultipartBuilder(leafPile.get())
 			.part().modelFile(model).uvLock(true).rotationX(270).addModel().condition(BlockStateProperties.UP, true).end()
 			.part().modelFile(model).uvLock(true).rotationX(90).addModel().condition(BlockStateProperties.DOWN, true).end()
@@ -249,8 +256,13 @@ public class CRBlockModelProvider extends BlueprintBlockStateProvider {
 			.part().modelFile(model).uvLock(true).rotationY(270).addModel().condition(BlockStateProperties.WEST, true).end();
 	}
 
-	private void tallPlant(RegistryObject<Block> flower) {
-		String name = Util.name(flower);
+	public void leavesBlock(Supplier<Block> leaves) {
+		this.simpleBlock(leaves.get(), models().getBuilder(name(leaves.get())).parent(new ModelFile.UncheckedModelFile(ResourceLocation.withDefaultNamespace("block/leaves"))).texture("all", blockTexture(leaves.get())));
+		this.blockItem(leaves);
+	}
+
+	private void tallPlant(Supplier<Block> flower) {
+		String name = Util.name(flower.get());
 		Function<String, ModelFile> model = s -> this.models().cross(name + "_" + s, this.modLoc("block/" + name + "_" + s)).renderType("cutout");
 		this.itemModels().withExistingParent(name, "item/generated").texture("layer0", this.modLoc("block/" + name + "_top"));
 		this.getVariantBuilder(flower.get())
@@ -258,18 +270,18 @@ public class CRBlockModelProvider extends BlueprintBlockStateProvider {
 			.partialState().with(DoublePlantBlock.HALF, DoubleBlockHalf.LOWER).addModels(new ConfiguredModel(model.apply("bottom")));
 	}
 
-	private void pottedPlant(RegistryObject<Block> plant, RegistryObject<Block> pot) {
+	private void pottedPlant(Supplier<Block> plant, Supplier<Block> pot) {
 		this.pot(pot, this.blockTexture(plant.get()));
 		this.simpleCross(plant);
 	}
 
-	private void pot(RegistryObject<Block> pot, ResourceLocation texture) {
-		ModelFile model = this.models().withExistingParent(Util.name(pot), "block/flower_pot_cross").texture("plant", texture).renderType("cutout");
+	private void pot(Supplier<Block> pot, ResourceLocation texture) {
+		ModelFile model = this.models().withExistingParent(Util.name(pot.get()), "block/flower_pot_cross").texture("plant", texture).renderType("cutout");
 		this.simpleBlock(pot.get(), model);
 	}
 
-	private void simpleCross(RegistryObject<Block> block) {
-		this.simpleBlock(block.get(), this.models().cross(Util.name(block), this.blockTexture(block.get())).renderType("cutout"));
+	private void simpleCross(Supplier<Block> block) {
+		this.simpleBlock(block.get(), this.models().cross(Util.name(block.get()), this.blockTexture(block.get())).renderType("cutout"));
 	}
 
 	private void crateBlock(Block block, String cropName, boolean customBottom) {
@@ -293,34 +305,34 @@ public class CRBlockModelProvider extends BlueprintBlockStateProvider {
 		});
 	}
 
-	private void beehive(RegistryObject<Block> beehive) {
-		String name = Util.name(beehive);
+	private void beehive(Supplier<Block> beehive) {
+		String name = Util.name(beehive.get());
 		ModelFile model = this.models().orientable(name, this.modLoc("block/" + name + "_side"), this.modLoc("block/" + name + "_front"), this.modLoc("block/" + name + "_end"));
 		ModelFile model_honey = this.models().orientable(name + "_honey", this.modLoc("block/" + name + "_side"), this.modLoc("block/" + name + "_front_honey"), this.modLoc("block/" + name + "_end"));
 		this.horizontalBlock(beehive.get(), s -> s.getValue(BeehiveBlock.HONEY_LEVEL) == 5 ? model_honey : model);
 	}
 
-	private void ladder(RegistryObject<Block> ladder) {
+	private void ladder(Supplier<Block> ladder) {
 		ResourceLocation texture = this.blockTexture(ladder.get());
-		this.horizontalBlock(ladder.get(), this.models().withExistingParent(Util.name(ladder), "block/ladder").texture("particle", texture).renderType("cutout").texture("texture", texture));
+		this.horizontalBlock(ladder.get(), this.models().withExistingParent(Util.name(ladder.get()), "block/ladder").texture("particle", texture).renderType("cutout").texture("texture", texture));
 	}
 
-	private void bookshelf(RegistryObject<Block> bookshelf, Supplier<Block> planks) {
-		this.simpleBlock(bookshelf.get(), this.models().cubeColumn(Util.name(bookshelf), this.blockTexture(bookshelf.get()), this.blockTexture(planks.get())));
+	private void bookshelf(Supplier<Block> bookshelf, Supplier<Block> planks) {
+		this.simpleBlock(bookshelf.get(), this.models().cubeColumn(Util.name(bookshelf.get()), this.blockTexture(bookshelf.get()), this.blockTexture(planks.get())));
 	}
 
-	private void boards(RegistryObject<Block> boards) {
+	private void boards(Supplier<Block> boards) {
 		ResourceLocation texture = this.blockTexture(boards.get());
-		ModelFile boardsModel = this.models().getBuilder(Util.name(boards)).parent(new ModelFile.UncheckedModelFile(Modid.BP.rl("block/template_boards"))).texture("all", texture);
-		ModelFile boardsHorizontalModel = this.models().getBuilder(Util.name(boards) + "_horizontal").parent(new ModelFile.UncheckedModelFile(Modid.BP.rl("block/template_boards_horizontal"))).texture("all", texture);
+		ModelFile boardsModel = this.models().getBuilder(Util.name(boards.get())).parent(new ModelFile.UncheckedModelFile(Modid.BP.rl("block/template_boards"))).texture("all", texture);
+		ModelFile boardsHorizontalModel = this.models().getBuilder(Util.name(boards.get()) + "_horizontal").parent(new ModelFile.UncheckedModelFile(Modid.BP.rl("block/template_boards_horizontal"))).texture("all", texture);
 		this.getVariantBuilder(boards.get())
 			.partialState().with(RotatedPillarBlock.AXIS, Direction.Axis.Y).modelForState().modelFile(boardsModel).addModel()
 			.partialState().with(RotatedPillarBlock.AXIS, Direction.Axis.Z).modelForState().modelFile(boardsHorizontalModel).addModel()
 			.partialState().with(RotatedPillarBlock.AXIS, Direction.Axis.X).modelForState().modelFile(boardsHorizontalModel).rotationY(270).addModel();
 	}
 
-	private void chests(RegistryObject<BlueprintChestBlock> chest, RegistryObject<BlueprintTrappedChestBlock> trapped, ResourceLocation texture) {
-		ModelFile model = this.models().getBuilder(Util.name(chest)).texture("particle", texture);
+	private void chests(Supplier<BlueprintChestBlock> chest, Supplier<BlueprintTrappedChestBlock> trapped, ResourceLocation texture) {
+		ModelFile model = this.models().getBuilder(Util.name(chest.get())).texture("particle", texture);
 		this.simpleBlock(chest.get(), model);
 		this.simpleBlock(trapped.get(), model);
 	}
@@ -371,10 +383,10 @@ public class CRBlockModelProvider extends BlueprintBlockStateProvider {
 	}
 
 	// Adapted from: https://github.com/vectorwing/FarmersDelight/blob/1.19/src/main/java/vectorwing/farmersdelight/data/BlockStates.java
-	private void pieBlock(RegistryObject<Block> block) {
+	private void pieBlock(Supplier<Block> block) {
 		getVariantBuilder(block.get()).forAllStates(state -> {
 				int bites = state.getValue(PieBlock.BITES);
-				String name = Util.name(block);
+				String name = Util.name(block.get());
 				String suffix = bites > 0 ? "_slice" + bites : "";
 				var mod = models()
 					.withExistingParent("block/" + name + suffix, Util.rl(FarmersDelight.MODID, "pie" + suffix))
@@ -391,10 +403,10 @@ public class CRBlockModelProvider extends BlueprintBlockStateProvider {
 		);
 	}
 
-	private void cakeBlock(RegistryObject<Block> block) {
+	private void cakeBlock(Supplier<Block> block) {
 		getVariantBuilder(block.get()).forAllStates(state -> {
 				int bites = state.getValue(CakeBlock.BITES);
-				String name = Util.name(block);
+				String name = Util.name(block.get());
 				String suffix = bites > 0 ? "_slice" + bites : "";
 				var mod = models()
 					.withExistingParent("block/" + name + suffix, Util.rl("minecraft", "cake" + suffix))
@@ -410,11 +422,11 @@ public class CRBlockModelProvider extends BlueprintBlockStateProvider {
 		);
 	}
 
-	private void candleCakeBlock(RegistryObject<Block> block, RegistryObject<Block> cake) {
+	private void candleCakeBlock(Supplier<Block> block, Supplier<Block> cake) {
 		getVariantBuilder(block.get()).forAllStates(state -> {
 			String lit = state.getValue(AbstractCandleBlock.LIT) ? "_lit" : "";
-			String name = Util.name(block);
-			String cakeName = Util.name(cake);
+			String name = Util.name(block.get());
+			String cakeName = Util.name(cake.get());
 			String candle = name.replace("_" + cakeName, "") + lit;
 			return ConfiguredModel.builder().modelFile(models()
 				.withExistingParent("block/" + name + lit, Modid.MC.rl("template_cake_with_candle"))
@@ -436,6 +448,67 @@ public class CRBlockModelProvider extends BlueprintBlockStateProvider {
 				.renderType("translucent")
 			).build();
 		});
+	}
+
+	public static final String[] ALTERNATE_BOOKSHELF_POSITIONS = new String[]{"top_left", "top_right", "mid_left", "mid_right", "bottom_left", "bottom_right"};
+
+	public void chiseledBookshelfBlock(Supplier<Block> registryObject, String[] parts) {
+		chiseledBookshelfBlock(registryObject, parts, blockTexture(registryObject.get()));
+	}
+
+	public void chiseledBookshelfBlock(Supplier<Block> registryObject, String[] parts, ResourceLocation parent) {
+		Block chiseledBookshelf = registryObject.get();
+		String name = name(chiseledBookshelf);
+		ResourceLocation texture = blockTexture(chiseledBookshelf);
+
+		BlockModelBuilder model = this.models().withExistingParent(name, "block/chiseled_bookshelf").texture("top", texture + "_top").texture("side", texture + "_side");
+		MultiPartBlockStateBuilder builder = getMultipartBuilder(chiseledBookshelf);
+		for (Direction direction : Direction.Plane.HORIZONTAL) {
+			int rotation = (int) (direction.toYRot() + 180) % 360;
+			builder.part().modelFile(model).rotationY(rotation).uvLock(true).addModel().condition(HorizontalDirectionalBlock.FACING, direction);
+			for (int i = 0; i < 6; i++) {
+				String part = parts[i];
+				BooleanProperty property = ChiseledBookShelfBlock.SLOT_OCCUPIED_PROPERTIES.get(i);
+				ResourceLocation slot = suffix(parent, "_slot_" + part);
+
+				builder.part().modelFile(this.models().withExistingParent(name + "_occupied_slot_" + part, slot).texture("texture", texture + "_occupied"))
+					.rotationY(rotation).uvLock(true).addModel()
+					.condition(HorizontalDirectionalBlock.FACING, direction).condition(property, true);
+				builder.part().modelFile(this.models().withExistingParent(name + "_empty_slot_" + part, slot).texture("texture", texture + "_empty"))
+					.rotationY(rotation).uvLock(true).addModel()
+					.condition(HorizontalDirectionalBlock.FACING, direction).condition(property, false);
+			}
+		}
+
+		this.simpleBlockItem(chiseledBookshelf, this.models().withExistingParent(name + "_inventory", "block/chiseled_bookshelf_inventory").texture("top", texture + "_top").texture("side", texture + "_side").texture("front", texture + "_empty"));
+	}
+
+	public void blockItem(Supplier<Block> block) {
+		this.blockItem(block);
+	}
+
+	public void generatedItem(ItemLike item, String type) {
+		this.generatedItem(item, item, type);
+	}
+
+	public void generatedItem(ItemLike item, ItemLike texture, String type) {
+		this.generatedItem(item, prefix(type + "/", BlueprintItemModelProvider.key(texture)).toString());
+	}
+
+	public static String name(Block block) {
+		return BuiltInRegistries.BLOCK.getKey(block).getPath();
+	}
+
+	public static ResourceLocation prefix(String prefix, ResourceLocation rl) {
+		return ResourceLocation.fromNamespaceAndPath(rl.getNamespace(), prefix + rl.getPath());
+	}
+
+	public static ResourceLocation suffix(ResourceLocation rl, String suffix) {
+		return ResourceLocation.fromNamespaceAndPath(rl.getNamespace(), rl.getPath() + suffix);
+	}
+
+	public ModelFile particle(Supplier<Block> block, ResourceLocation texture) {
+		return this.particle(block, texture);
 	}
 
 	public static ResourceLocation resourceBlock(String path) {

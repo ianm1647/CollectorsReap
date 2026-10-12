@@ -1,8 +1,0 @@
-{
-  "parent": "minecraft:block/stairs",
-  "textures": {
-    "bottom": "collectorsreap:block/urchin_test_bricks",
-    "side": "collectorsreap:block/urchin_test_bricks",
-    "top": "collectorsreap:block/urchin_test_bricks"
-  }
-}

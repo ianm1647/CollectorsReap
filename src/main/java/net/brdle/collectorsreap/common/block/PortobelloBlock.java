@@ -22,7 +22,7 @@ public class PortobelloBlock extends MushroomBlock {
 	private static final VoxelShape SHAPE = Block.box(4D, 0D, 4D, 12D, 7D, 12D);
 
 	public PortobelloBlock(Properties pProperties) {
-		super(pProperties, TreeFeatures.HUGE_BROWN_MUSHROOM);
+		super(TreeFeatures.HUGE_BROWN_MUSHROOM, pProperties);
 	}
 
 	// Grow into colony on Rich Soil
@@ -30,7 +30,7 @@ public class PortobelloBlock extends MushroomBlock {
 	public void randomTick(@NotNull BlockState state, ServerLevel level, @NotNull BlockPos pos, @NotNull RandomSource rand) {
 		if (
 			!level.isClientSide() &&
-			level.getBlockState(pos.below()).is(ModTags.MUSHROOM_COLONY_GROWABLE_ON)
+			level.getBlockState(pos.below()).is(ModTags.Blocks.MUSHROOM_COLONY_GROWABLE_ON)
 		) {
 			level.setBlockAndUpdate(pos, CRBlocks.PORTOBELLO_COLONY.get().defaultBlockState());
 		} else {
@@ -42,10 +42,8 @@ public class PortobelloBlock extends MushroomBlock {
 	public boolean canSurvive(@NotNull BlockState pState, LevelReader level, BlockPos pos) {
 		BlockPos blockpos = pos.below();
 		BlockState blockstate = level.getBlockState(blockpos);
-		return (
-			(blockstate.is(CRBlockTags.PORTOBELLO_SPAWNABLE_ON)) ||
-				(blockstate.canSustainPlant(level, blockpos, Direction.UP, this))
-		);
+		return blockstate.is(CRBlockTags.PORTOBELLO_SPAWNABLE_ON) ||
+			blockstate.canSustainPlant(level, pos, Direction.UP, this.defaultBlockState()).isDefault();
 	}
 
 	@Override
@@ -64,7 +62,7 @@ public class PortobelloBlock extends MushroomBlock {
 	}
 
 	@Override
-	public boolean isValidBonemealTarget(@NotNull LevelReader pLevel, @NotNull BlockPos pPos, @NotNull BlockState pState, boolean pIsClient) {
+	public boolean isValidBonemealTarget(@NotNull LevelReader pLevel, @NotNull BlockPos pPos, @NotNull BlockState pState) {
 		return false;
 	}
 

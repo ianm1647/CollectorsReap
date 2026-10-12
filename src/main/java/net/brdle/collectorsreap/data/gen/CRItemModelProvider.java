@@ -50,8 +50,8 @@ public class CRItemModelProvider extends ItemModelProvider {
 		this.blockItem(CRBlocks.LUCUMA_PRESSURE_PLATE);
 		this.buttonInventory(Util.name(CRBlocks.LUCUMA_BUTTON.get()), resourceBlock(CRBlocks.LUCUMA_PLANKS));
 		this.generatedBlockItem(CRBlocks.LUCUMA_DOOR);
-		this.standingSign(CRBlocks.LUCUMA_SIGN);
-		this.hangingSign(CRBlocks.LUCUMA_HANGING_SIGN);
+		this.generatedBlockItem(CRBlocks.LUCUMA_SIGN);
+		this.generatedBlockItem(CRBlocks.LUCUMA_HANGING_SIGN);
 		this.generatedItem(CRItems.LUCUMA_BOAT);
 		this.generatedItem(CRItems.LUCUMA_CHEST_BOAT);
 		this.generatedItem(CRItems.LUCUMA_FURNACE_BOAT);
@@ -347,20 +347,6 @@ public class CRItemModelProvider extends ItemModelProvider {
 	@SafeVarargs
 	public final void generatedBlockItem(Supplier<Block>... items) {
 		for (Supplier<Block> item : items) {
-			this.basicItem(item.get().asItem());
-		}
-	}
-
-	@SafeVarargs
-	public final void standingSign(Supplier<BlueprintStandingSignBlock>... items) {
-		for (Supplier<BlueprintStandingSignBlock> item : items) {
-			this.basicItem(item.get().asItem());
-		}
-	}
-
-	@SafeVarargs
-	public final void hangingSign(Supplier<BlueprintCeilingHangingSignBlock>... items) {
-		for (Supplier<BlueprintCeilingHangingSignBlock> item : items) {
 			this.basicItem(item.get().asItem());
 		}
 	}

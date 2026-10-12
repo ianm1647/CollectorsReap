@@ -1,9 +1,0 @@
-{
-  "parent": "farmersdelight:block/pie",
-  "textures": {
-    "bottom": "collectorsreap:block/portobello_quiche_bottom",
-    "particle": "collectorsreap:block/portobello_quiche_top",
-    "side": "collectorsreap:block/portobello_quiche_side",
-    "top": "collectorsreap:block/portobello_quiche_top"
-  }
-}

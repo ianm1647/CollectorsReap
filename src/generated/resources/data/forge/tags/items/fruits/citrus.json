@@ -1,9 +1,0 @@
-{
-  "values": [
-    "#forge:fruits/lime",
-    {
-      "id": "#forge:fruits/lemon",
-      "required": false
-    }
-  ]
-}

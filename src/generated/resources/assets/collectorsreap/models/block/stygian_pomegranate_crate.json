@@ -1,8 +1,0 @@
-{
-  "parent": "minecraft:block/cube_bottom_top",
-  "textures": {
-    "bottom": "collectorsreap:block/stygian_pomegranate_crate_bottom",
-    "side": "collectorsreap:block/stygian_pomegranate_crate_side",
-    "top": "collectorsreap:block/stygian_pomegranate_crate_top"
-  }
-}

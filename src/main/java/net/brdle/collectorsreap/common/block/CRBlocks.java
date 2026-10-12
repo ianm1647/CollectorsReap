@@ -13,13 +13,12 @@ import com.teamabnormals.blueprint.core.api.WoodTypeRegistryHelper;
 import com.teamabnormals.blueprint.core.util.PropertyUtil;
 import com.teamabnormals.blueprint.core.util.registry.BlockSubRegistryHelper;
 import net.brdle.collectorsreap.CollectorsReap;
-import net.brdle.collectorsreap.common.block.grower.LucumaTreeGrower;
 import net.brdle.collectorsreap.common.item.CRItems;
 import net.brdle.collectorsreap.compat.Modid;
 import net.brdle.collectorsreap.compat.abnormals.ChiseledLucumaBookshelfBlock;
 import net.brdle.collectorsreap.compat.letfishlove.LetFishLoveCompat;
+import net.brdle.collectorsreap.data.pack.CRConfiguredFeatures;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.cauldron.CauldronInteraction;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.*;
@@ -68,12 +67,11 @@ public class CRBlocks {
 	public static final Supplier<Block> LUCUMA_TRAPDOOR = registerBlock("lucuma_trapdoor", () -> new TrapDoorBlock(Properties.LUCUMA_BLOCK_SET, Properties.LUCUMA.trapdoor()));
 	public static final Supplier<Block> LUCUMA_PRESSURE_PLATE = registerBlock("lucuma_pressure_plate", () -> new PressurePlateBlock(Properties.LUCUMA_BLOCK_SET, Properties.LUCUMA.pressurePlate()));
 	public static final Supplier<Block> LUCUMA_BUTTON = registerBlock("lucuma_button", () ->  new ButtonBlock(Properties.LUCUMA_BLOCK_SET, 30, Properties.LUCUMA.button()));
-	public static final Pair<Supplier<BlueprintStandingSignBlock>, Supplier<BlueprintWallSignBlock>> LUCUMA_SIGNS = HELPER.createSignBlock("lucuma", Properties.LUCUMA_WOOD_TYPE, Properties.LUCUMA.sign());
-	public static final Supplier<BlueprintStandingSignBlock> LUCUMA_SIGN = LUCUMA_SIGNS.getFirst();
-	public static final Supplier<BlueprintWallSignBlock> LUCUMA_WALL_SIGN = LUCUMA_SIGNS.getSecond();
-	public static final Pair<Supplier<BlueprintCeilingHangingSignBlock>, Supplier<BlueprintWallHangingSignBlock>> LUCUMA_HANGING_SIGNS = HELPER.createHangingSignBlock("lucuma", Properties.LUCUMA_WOOD_TYPE, Properties.LUCUMA.hangingSign());
-	public static final Supplier<BlueprintCeilingHangingSignBlock> LUCUMA_HANGING_SIGN = LUCUMA_HANGING_SIGNS.getFirst();
-	public static final Supplier<BlueprintWallHangingSignBlock> LUCUMA_WALL_HANGING_SIGN = LUCUMA_HANGING_SIGNS.getSecond();
+
+	public static final Supplier<Block> LUCUMA_SIGN = registerBlock("lucuma_sign", () -> new BlueprintStandingSignBlock(Properties.LUCUMA.sign(), Properties.LUCUMA_WOOD_TYPE));
+	public static final Supplier<Block> LUCUMA_WALL_SIGN = registerBlock("lucuma_wall_sign", () -> new BlueprintWallSignBlock(Properties.LUCUMA.sign().lootFrom(LUCUMA_SIGN), Properties.LUCUMA_WOOD_TYPE));
+	public static final Supplier<Block> LUCUMA_HANGING_SIGN = registerBlock("lucuma_hanging_sign", () -> new BlueprintCeilingHangingSignBlock(Properties.LUCUMA.sign(), Properties.LUCUMA_WOOD_TYPE));
+	public static final Supplier<Block> LUCUMA_WALL_HANGING_SIGN = registerBlock("lucuma_wall_hanging_sign", () -> new BlueprintWallHangingSignBlock(Properties.LUCUMA.hangingSign().lootFrom(LUCUMA_HANGING_SIGN), Properties.LUCUMA_WOOD_TYPE));
 	public static final Supplier<Block> LUCUMA_CABINET = HELPER.createFuelBlock("lucuma_cabinet", () -> new CabinetBlock(BlockBehaviour.Properties.ofFullCopy(ModBlocks.OAK_CABINET.get())), 300);
 
 	// Lucuma Woodworks
@@ -87,7 +85,7 @@ public class CRBlocks {
 
 	public static final Supplier<Block> LUCUMA_LEAVES = registerBlock("lucuma_leaves", () -> new LeavesBlock(Properties.LUCUMA.leaves()));
 	public static final Supplier<Block> LUCUMA_LEAF_PILE = registerBlock("lucuma_leaf_pile", () -> new LeafPileBlock(Properties.LUCUMA.leafPile()));
-	public static final Supplier<Block> LUCUMA_SAPLING = registerBlock("lucuma_sapling", () -> new SaplingBlock(new LucumaTreeGrower(), PropertyUtil.sapling()));
+	public static final Supplier<Block> LUCUMA_SAPLING = registerBlock("lucuma_sapling", () -> new SaplingBlock(CRConfiguredFeatures.LUCUMA_GROWER, PropertyUtil.sapling()));
 	public static final Supplier<Block> POTTED_LUCUMA_SAPLING = registerBlockNoItem("potted_lucuma_sapling", () ->
 		new FlowerPotBlock(LUCUMA_SAPLING.get(), PropertyUtil.flowerPot()));
 
@@ -115,7 +113,7 @@ public class CRBlocks {
 
 	// Wild Crop Blocks
 	public static final Supplier<Block> PORTOBELLO_COLONY = registerBlockNoItem("portobello_colony",
-		() -> new PortobelloColonyBlock(copy(ModBlocks.BROWN_MUSHROOM_COLONY), CRItems.PORTOBELLO));
+		() -> new PortobelloColonyBlock(copy(ModBlocks.BROWN_MUSHROOM_COLONY), CRItems.PORTOBELLO.get().builtInRegistryHolder()));
 	public static final Supplier<Block> PORTOBELLO = registerBlockNoItem("portobello",
 		() -> new PortobelloBlock(copy(Blocks.BROWN_MUSHROOM)
 			.noCollission().randomTicks().instabreak().sound(SoundType.GRASS).lightLevel((l) -> 1).hasPostProcess(CRBlocks::always)));
