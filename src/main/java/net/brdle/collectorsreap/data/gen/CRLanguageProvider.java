@@ -9,9 +9,12 @@ import net.brdle.collectorsreap.common.item.CRItems;
 import net.brdle.collectorsreap.data.CRItemTags;
 import net.minecraft.data.PackOutput;
 import net.minecraft.tags.TagKey;
-import net.minecraftforge.common.data.LanguageProvider;
+import net.minecraft.world.effect.MobEffect;
+import net.neoforged.neoforge.common.data.LanguageProvider;
 import org.jetbrains.annotations.NotNull;
 import vectorwing.farmersdelight.FarmersDelight;
+
+import java.util.function.Supplier;
 
 public class CRLanguageProvider extends LanguageProvider {
 	public CRLanguageProvider(PackOutput output) {
@@ -70,8 +73,8 @@ public class CRLanguageProvider extends LanguageProvider {
 		addTooltip("requires_empty_tag", "Requires empty tag:");
 		addTooltip("requires_tag", "Requires tag:");
 		addTooltip("requires_modid", "Requires modid:");
-		addCRTooltip(Util.name(CRItems.STRAW_BRUSH) + ".pollinated", "Pollen Covered");
-		addCRTooltip(Util.name(CRItems.HEMP_GUMMY) + ".when_feeding", "When fed to a mob:");
+		addCRTooltip(Util.name(CRItems.STRAW_BRUSH.get()) + ".pollinated", "Pollen Covered");
+		addCRTooltip(Util.name(CRItems.HEMP_GUMMY.get()) + ".when_feeding", "When fed to a mob:");
 		add(FarmersDelight.MODID + ".tooltip.asparagus_aspic", "Tastes Funny");
 		add(FarmersDelight.MODID + ".tooltip.stygian_pomegranate", "Explosive");
 		add(FarmersDelight.MODID + ".tooltip.vernal_purge", "Clears Harmful Effects");
@@ -84,29 +87,29 @@ public class CRLanguageProvider extends LanguageProvider {
 
 	private void addText() {
 		add("trim_material." + CollectorsReap.MODID + ".pearl", "Pearl Material");
-		add("desc." + CollectorsReap.MODID + "." + Util.name(CRBlocks.PORTOBELLO), "Portobellos can be rarely found in meadows.");
-		add("desc." + CollectorsReap.MODID + "." + Util.name(CRItems.LIME), "Limes can be found as a wild bush in flower forests.");
-		add("desc." + CollectorsReap.MODID + "." + Util.name(CRItems.LIME) + ".pollination", "A flowering Lime Bush will grow fruit when pollinated by a Bee.");
-		add("desc." + CollectorsReap.MODID + "." + Util.name(CRItems.POMEGRANATE), "Pomegranates can be found as a wild bush in warped forests.");
-		add("desc." + CollectorsReap.MODID + "." + Util.name(CRItems.POMEGRANATE) + ".pollination", "A flowering Pomegranate Bush will grow fruit in the Overworld when pollinated by a Bee.");
-		add("desc." + CollectorsReap.MODID + "." + Util.name(CRItems.STYGIAN_POMEGRANATE), "A dangerous variant that can be rarely picked from Pomegranate Bushes growing on Resurgent Soil.");
-		add("desc." + CollectorsReap.MODID + "." + Util.name(CRItems.PINK_DRAGON_FRUIT), "Pink Dragon Fruits can be found as a wild bush in the badlands.");
-		add("desc." + CollectorsReap.MODID + "." + Util.name(CRItems.LUCUMA), "Lucuma Saplings can be found in Ancient Cities, growing a tree that provides a powerful fruit.");
-		add("desc." + CollectorsReap.MODID + "." + Util.name(CRItems.URCHIN_DART), "Poisonous projectiles that can be thrown by hand or fired using Bamboo in your offhand.");
-		add("desc." + CollectorsReap.MODID + "." + Util.name(CRItems.STRAW_BRUSH), "Steal pollen from a Bee and use it to allow a plant to reach later stages.");
+		add("desc." + CollectorsReap.MODID + "." + Util.name(CRBlocks.PORTOBELLO.get()), "Portobellos can be rarely found in meadows.");
+		add("desc." + CollectorsReap.MODID + "." + Util.name(CRItems.LIME.get()), "Limes can be found as a wild bush in flower forests.");
+		add("desc." + CollectorsReap.MODID + "." + Util.name(CRItems.LIME.get()) + ".pollination", "A flowering Lime Bush will grow fruit when pollinated by a Bee.");
+		add("desc." + CollectorsReap.MODID + "." + Util.name(CRItems.POMEGRANATE.get()), "Pomegranates can be found as a wild bush in warped forests.");
+		add("desc." + CollectorsReap.MODID + "." + Util.name(CRItems.POMEGRANATE.get()) + ".pollination", "A flowering Pomegranate Bush will grow fruit in the Overworld when pollinated by a Bee.");
+		add("desc." + CollectorsReap.MODID + "." + Util.name(CRItems.STYGIAN_POMEGRANATE.get()), "A dangerous variant that can be rarely picked from Pomegranate Bushes growing on Resurgent Soil.");
+		add("desc." + CollectorsReap.MODID + "." + Util.name(CRItems.PINK_DRAGON_FRUIT.get()), "Pink Dragon Fruits can be found as a wild bush in the badlands.");
+		add("desc." + CollectorsReap.MODID + "." + Util.name(CRItems.LUCUMA.get()), "Lucuma Saplings can be found in Ancient Cities, growing a tree that provides a powerful fruit.");
+		add("desc." + CollectorsReap.MODID + "." + Util.name(CRItems.URCHIN_DART.get()), "Poisonous projectiles that can be thrown by hand or fired using Bamboo in your offhand.");
+		add("desc." + CollectorsReap.MODID + "." + Util.name(CRItems.STRAW_BRUSH.get()), "Steal pollen from a Bee and use it to allow a plant to reach later stages.");
 		add("itemGroup." + CollectorsReap.MODID, "Collector's Reap");
 		add("config.jade.plugin_" + CollectorsReap.MODID + ".crop_progress", "Crop Progress");
 	}
 
 	private void addEffects() {
-		addEffect(CREffects.CORROSION, "Corrosion");
-		add(CREffects.CORROSION.get().getDescriptionId() + ".description", "A defensive acid shield that corrodes incoming projectiles and weapons.");
-		addEffect(CREffects.VOLATILITY, "Volatility");
-		add(CREffects.VOLATILITY.get().getDescriptionId() + ".description", "Striking an enemy creates a shockwave of splash damage.");
-		addEffect(CREffects.SURGE, "Surge");
-		add(CREffects.SURGE.get().getDescriptionId() + ".description", "Increases melee damage; gaining amplifier with successful strikes. Resets upon landing a hit at maximum amplifier.");
-		addEffect(CREffects.REBOUND, "Rebound");
-		add(CREffects.REBOUND.get().getDescriptionId() + ".description", "Provides a chance to recover health when taking damage.");
+		addEffect((Supplier<MobEffect>) CREffects.CORROSION.value(), "Corrosion");
+		add(CREffects.CORROSION.value().getDescriptionId() + ".description", "A defensive acid shield that corrodes incoming projectiles and weapons.");
+		addEffect((Supplier<MobEffect>) CREffects.VOLATILITY.value(), "Volatility");
+		add(CREffects.VOLATILITY.value().getDescriptionId() + ".description", "Striking an enemy creates a shockwave of splash damage.");
+		addEffect((Supplier<MobEffect>) CREffects.SURGE.value(), "Surge");
+		add(CREffects.SURGE.value().getDescriptionId() + ".description", "Increases melee damage; gaining amplifier with successful strikes. Resets upon landing a hit at maximum amplifier.");
+		addEffect((Supplier<MobEffect>) CREffects.REBOUND.value(), "Rebound");
+		add(CREffects.REBOUND.value().getDescriptionId() + ".description", "Provides a chance to recover health when taking damage.");
 	}
 
 	private void addBlocks() {

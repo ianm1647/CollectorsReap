@@ -29,14 +29,14 @@ public class Generators {
 		gen.addProvider(e.includeServer(), new CREntityTagProvider(output, lookup, helper));
 		gen.addProvider(e.includeServer(), new CRMobEffectTagProvider(output, lookup, helper));
 		gen.addProvider(e.includeServer(), new CRBiomeTagProvider(output, lookup, helper));
-		gen.addProvider(e.includeServer(), new CRRecipeProvider(output));
-		gen.addProvider(e.includeServer(), new CRLootTableProvider(output));
+		gen.addProvider(e.includeServer(), new CRRecipeProvider(output, lookup));
+		gen.addProvider(e.includeServer(), new CRLootTableProvider(output, lookup));
 		gen.addProvider(e.includeServer(), new CRLootModifierProvider(output, lookup));
 		gen.addProvider(e.includeServer(), new CRTrimMaterialTagProvider(output, lookup, helper));
 
 		gen.addProvider(e.includeClient(), new CRBlockModelProvider(output, helper));
 		gen.addProvider(e.includeClient(), new CRItemModelProvider(output, helper));
 		gen.addProvider(e.includeClient(), new CRLanguageProvider(output));
-		gen.addProvider(e.includeClient(), new CRSpriteSourceProvider(output, helper));
+		gen.addProvider(e.includeClient(), new CRSpriteSourceProvider(output, lookup, helper));
 	}
 }

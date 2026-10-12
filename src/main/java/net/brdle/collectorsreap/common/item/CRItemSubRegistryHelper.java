@@ -8,17 +8,19 @@ import com.teamabnormals.blueprint.core.util.registry.RegistryHelper;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
-import net.minecraftforge.registries.RegistryObject;
+
+import java.util.function.Supplier;
 
 public class CRItemSubRegistryHelper extends ItemSubRegistryHelper {
+
 	public CRItemSubRegistryHelper(RegistryHelper parent) {
-		super(parent, parent.getItemSubHelper().getDeferredRegister());
+		super(parent);
 	}
 
-	public Pair<RegistryObject<Item>, RegistryObject<Item>> createBoatAndChestBoatItem(String wood, Block block) {
-		ResourceLocation type = new ResourceLocation(this.parent.getModId(), wood);
-		RegistryObject<Item> boat = this.deferredRegister.register(wood + "_boat", () -> new BlueprintBoatItem(false, type, createSimpleItemProperty(1)));
-		RegistryObject<Item> chestBoat = this.deferredRegister.register(wood + "_chest_boat", () -> new BlueprintBoatItem(true, type, createSimpleItemProperty(1)));
+	public Pair<Supplier<Item>, Supplier<Item>> createBoatAndChestBoatItem(String wood, Block block) {
+		ResourceLocation type = ResourceLocation.fromNamespaceAndPath(this.parent.getModId(), wood);
+		Supplier<Item> boat = this.deferredRegister.register(wood + "_boat", () -> new BlueprintBoatItem(false, type, createSimpleItemProperty(1)));
+		Supplier<Item> chestBoat = this.deferredRegister.register(wood + "_chest_boat", () -> new BlueprintBoatItem(true, type, createSimpleItemProperty(1)));
 		BlueprintBoatTypes.registerType(type, boat, chestBoat, () -> block, false);
 		return Pair.of(boat, chestBoat);
 	}

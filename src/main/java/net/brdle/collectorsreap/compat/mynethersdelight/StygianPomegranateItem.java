@@ -10,12 +10,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class StygianPomegranateItem extends CompatConsumable {
 	public StygianPomegranateItem(Properties properties) {
-		super(properties, false, true, 1F, Modid.MND);
-	}
-
-	@Override
-	public @NotNull Rarity getRarity(@NotNull ItemStack stack) {
-		return Rarity.RARE;
+		super(properties.rarity(Rarity.RARE), false, true, 1F, Modid.MND);
 	}
 
 	@Override

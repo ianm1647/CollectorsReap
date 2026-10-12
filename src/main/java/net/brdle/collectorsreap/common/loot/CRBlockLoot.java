@@ -6,6 +6,7 @@ import net.brdle.collectorsreap.common.block.PomegranateBushBlock;
 import net.brdle.collectorsreap.common.item.CRItems;
 import net.minecraft.advancements.critereon.ItemPredicate;
 import net.minecraft.advancements.critereon.StatePropertiesPredicate;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.data.loot.BlockLootSubProvider;
 import net.minecraft.world.flag.FeatureFlags;
 import net.minecraft.world.item.Item;
@@ -24,14 +25,15 @@ import net.minecraft.world.level.storage.loot.predicates.LootItemBlockStatePrope
 import net.minecraft.world.level.storage.loot.predicates.MatchTool;
 import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
 import net.minecraft.world.level.storage.loot.providers.number.UniformGenerator;
-import net.minecraftforge.common.Tags;
-import net.minecraftforge.registries.RegistryObject;
 import java.util.Collections;
+import java.util.function.Supplier;
+
+import net.neoforged.neoforge.common.Tags;
 import org.jetbrains.annotations.NotNull;
 
 public class CRBlockLoot extends BlockLootSubProvider {
-	public CRBlockLoot() {
-		super(Collections.emptySet(), FeatureFlags.REGISTRY.allFlags());
+	public CRBlockLoot(HolderLookup.Provider registries) {
+		super(Collections.emptySet(), FeatureFlags.REGISTRY.allFlags(), registries);
 	}
 
 	private static final float[] NORMAL_LEAVES_SAPLING_CHANCES = new float[]{0.05F, 0.0625F, 0.083333336F, 0.1F};
@@ -215,13 +217,13 @@ public class CRBlockLoot extends BlockLootSubProvider {
 			createLeavesDrops(block, CRBlocks.LUCUMA_SAPLING.get(), NORMAL_LEAVES_SAPLING_CHANCES)
 				.withPool(
 					LootPool.lootPool().setRolls(ConstantValue.exactly(1.0F))
-					.when(HAS_NO_SHEARS_OR_SILK_TOUCH)
+						.when(HAS_SHEARS)
 					.add(applyExplosionDecay(block, LootItem.lootTableItem(CRItems.LUCUMA.get()))
-						.when(BonusLevelTableCondition.bonusLevelFlatChance(Enchantments.BLOCK_FORTUNE, 0.04F, 0.05F, 0.06F, 0.07F, 0.25F))
+						.when(BonusLevelTableCondition.bonusLevelFlatChance(this.registries.holderOrThrow(Enchantments.FORTUNE), 0.04F, 0.05F, 0.06F, 0.07F, 0.25F))
 				)));
 		this.leafPile(CRBlocks.LUCUMA_LEAF_PILE.get());
 		this.dropSelf(CRBlocks.LUCUMA_CABINET.get());
-		this.add(CRBlocks.LUCUMA_BEEHIVE.get(), CRBlockLoot::createBeeHiveDrop);
+		this.add(CRBlocks.LUCUMA_BEEHIVE.get(), this::createBeeHiveDrop);
 		this.dropSelf(CRBlocks.LUCUMA_LADDER.get());
 		this.bookshelf(CRBlocks.LUCUMA_BOOKSHELF.get());
 		this.dropWhenSilkTouch(CRBlocks.CHISELED_LUCUMA_BOOKSHELF.get());
@@ -242,7 +244,7 @@ public class CRBlockLoot extends BlockLootSubProvider {
 	}
 
 	private void leafPile(Block block) {
-		this.add(block, b -> createMultifaceBlockDrops(b, MatchTool.toolMatches(ItemPredicate.Builder.item().of(Tags.Items.SHEARS))));
+		this.add(block, b -> createMultifaceBlockDrops(b, MatchTool.toolMatches(ItemPredicate.Builder.item().of(Tags.Items.TOOLS_SHEAR))));
 	}
 
 	private void bookshelf(Block block) {
@@ -253,19 +255,21 @@ public class CRBlockLoot extends BlockLootSubProvider {
 	protected @NotNull Iterable<Block> getKnownBlocks() {
 		return CRBlocks.HELPER.getDeferredRegister().getEntries()
 			.stream()
-			.filter(reg -> {
-				return (
+			.filter(reg ->
 					reg != CRBlocks.PORTOBELLO_COLONY &&
 					reg != CRBlocks.PINK_DRAGON_FRUIT_CROP &&
 					reg != CRBlocks.BULBOUS_ROSE_CROP &&
 					reg != CRBlocks.HEARTPETALS_CROP
-				);
-			})
-			.map(RegistryObject::get)
+			)
+			.<Block>map(Supplier::get)
 			::iterator;
 	}
 
-	public void empty(RegistryObject<Block> block) {
+	private static boolean isBoolean() {
+		return false;
+	}
+
+	public void empty(Supplier<Block> block) {
 		this.add(block.get(), LootTable.lootTable());
 	}
 }

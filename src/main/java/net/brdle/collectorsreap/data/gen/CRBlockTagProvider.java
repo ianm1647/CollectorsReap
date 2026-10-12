@@ -2,7 +2,6 @@ package net.brdle.collectorsreap.data.gen;
 
 import com.teamabnormals.blueprint.core.other.tags.BlueprintBlockTags;
 import net.brdle.collectorsreap.CollectorsReap;
-import net.brdle.collectorsreap.Util;
 import net.brdle.collectorsreap.common.block.CRBlocks;
 import net.brdle.collectorsreap.common.block.EffectCandleCakeBlock;
 import net.brdle.collectorsreap.compat.Modid;
@@ -11,14 +10,14 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraftforge.common.Tags;
-import net.minecraftforge.common.data.BlockTagsProvider;
-import net.minecraftforge.common.data.ExistingFileHelper;
-import net.minecraftforge.registries.RegistryObject;
+import net.neoforged.neoforge.common.Tags;
+import net.neoforged.neoforge.common.data.BlockTagsProvider;
+import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import vectorwing.farmersdelight.common.registry.ModBlocks;
-import vectorwing.farmersdelight.common.tag.ForgeTags;
 import vectorwing.farmersdelight.common.tag.ModTags;
 import java.util.concurrent.CompletableFuture;
+import java.util.function.Supplier;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -36,14 +35,14 @@ public class CRBlockTagProvider extends BlockTagsProvider {
 			.addOptionalTag(Modid.GR.rl("farmlands"))
 			.addOptional(Modid.MND.rl("resurgent_soil_farmland"));
 		this.tag(CRBlockTags.PORTOBELLO_SPAWNABLE_ON)
-			.addTag(ModTags.MUSHROOM_COLONY_GROWABLE_ON)
+			.addTag(ModTags.Blocks.MUSHROOM_COLONY_GROWABLE_ON)
 			.addTag(BlockTags.MUSHROOM_GROW_BLOCK)
 			.addTag(BlockTags.DIRT);
 		this.tag(CRBlockTags.LIME_SPAWNABLE_ON)
 			.addTag(BlockTags.DIRT)
 			.addTag(CRBlockTags.CROPS_PLANTABLE_ON);
 		this.tag(CRBlockTags.DRAGON_FRUIT_SPAWNABLE_ON)
-			.addTag(Tags.Blocks.SAND_RED);
+			.addTag(Tags.Blocks.SANDS_RED);
 		this.tag(CRBlockTags.STYGIAN_POMEGRANATE_GROWABLE_ON)
 			.addOptional(Modid.MND.rl("resurgent_soil"))
 			.addOptional(Modid.MND.rl("resurgent_soil_farmland"))
@@ -53,7 +52,7 @@ public class CRBlockTagProvider extends BlockTagsProvider {
 			.addTag(BlockTags.NYLIUM);
 		this.tag(CRBlockTags.CRAB_SPAWNABLE_ON)
 			.addTag(BlockTags.SAND)
-			.addTag(Tags.Blocks.GRAVEL)
+			.addTag(Tags.Blocks.GRAVELS)
 			.add(Blocks.WATER)
 			.add(Blocks.CLAY)
 			.addOptionalTag(Modid.Q.rl("crab_spawnable"))
@@ -72,7 +71,7 @@ public class CRBlockTagProvider extends BlockTagsProvider {
 		// Minecraft
 		CRBlocks.HELPER.getDeferredRegister().getEntries()
 			.stream()
-			.map(RegistryObject::get)
+			.map(Supplier::get)
 			.filter(b -> b instanceof EffectCandleCakeBlock)
 			.forEach(b -> this.tag(BlockTags.CANDLE_CAKES).add(b));
 		this.tag(BlockTags.LOGS_THAT_BURN).addTag(CRBlockTags.LUCUMA_LOGS);
@@ -172,7 +171,7 @@ public class CRBlockTagProvider extends BlockTagsProvider {
 			.addTag(CRBlockTags.STORAGE_BLOCKS_PINK_DRAGON_FRUIT)
 			.addTag(CRBlockTags.STORAGE_BLOCKS_LUCUMA)
 			.addTag(CRBlockTags.STORAGE_BLOCKS_GILDED_LUCUMA);
-		this.tag(ForgeTags.MINEABLE_WITH_KNIFE)
+		this.tag(ModTags.Blocks.MINEABLE_WITH_KNIFE)
 			.add(CRBlocks.PORTOBELLO_QUICHE.get())
 			.add(CRBlocks.LIME_PIE.get())
 			.add(CRBlocks.LIME_CAKE.get())
@@ -182,12 +181,12 @@ public class CRBlockTagProvider extends BlockTagsProvider {
 			.add(CRBlocks.PANETTONE.get());
 
 		// Farmer's Delight
-		this.tag(ModTags.COMPOST_ACTIVATORS)
+		this.tag(ModTags.Blocks.COMPOST_ACTIVATORS)
 			.add(CRBlocks.PORTOBELLO.get())
 			.add(CRBlocks.PORTOBELLO_COLONY.get());
-		this.tag(ModTags.UNAFFECTED_BY_RICH_SOIL)
+		this.tag(ModTags.Blocks.UNAFFECTED_BY_RICH_SOIL)
 			.add(CRBlocks.PORTOBELLO_COLONY.get());
-		this.tag(ModTags.WILD_CROPS)
+		this.tag(ModTags.Blocks.WILD_CROPS)
 			.add(CRBlocks.DRAGON_BUSH.get());
 
 		// Blueprint

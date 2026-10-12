@@ -1,7 +1,7 @@
 package net.brdle.collectorsreap.compat.letfishlove;
 
-import com.uraneptus.letfishlove.common.blocks.RoeBlock;
-import com.uraneptus.letfishlove.core.other.LFLProperties;
+import com.chinaex123.letfishlove.blocks.RoeBlock;
+import com.chinaex123.letfishlove.init.LFLProperties;
 import net.minecraft.world.entity.EntityType;
 import java.util.function.Supplier;
 

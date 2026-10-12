@@ -1,6 +1,6 @@
 package net.brdle.collectorsreap.compat.letfishlove;
 
-import com.uraneptus.letfishlove.common.items.RoeItem;
+import com.chinaex123.letfishlove.items.RoeItem;
 import net.minecraft.world.level.block.Block;
 import java.util.function.Supplier;
 

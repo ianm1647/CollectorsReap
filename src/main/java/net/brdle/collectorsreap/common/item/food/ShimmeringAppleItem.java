@@ -1,6 +1,8 @@
 package net.brdle.collectorsreap.common.item.food;
 
 import net.brdle.collectorsreap.Util;
+import net.minecraft.core.Holder;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
@@ -9,7 +11,6 @@ import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.registries.ForgeRegistries;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -30,14 +31,14 @@ public class ShimmeringAppleItem extends ConsumableItem {
 	@Override
 	public void affectConsumer(@NotNull ItemStack stack, @NotNull Level level, @NotNull LivingEntity consumer) {
 		super.affectConsumer(stack, level, consumer);
-		final Map<MobEffect, MobEffectInstance> active = new HashMap<>(consumer.getActiveEffectsMap());
+		final Map<Holder<MobEffect>, MobEffectInstance> active = new HashMap<>(consumer.getActiveEffectsMap());
 		if (active.isEmpty()) {
 			consumer.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 400, 1));
 			return;
 		}
 		final List<MobEffect> allBuffs = new ArrayList<>();
 		final List<MobEffect> allDebuffs = new ArrayList<>();
-		ForgeRegistries.MOB_EFFECTS.getValues().forEach(mobEffect -> {
+		BuiltInRegistries.MOB_EFFECT.stream().forEach(mobEffect -> {
 			if (!mobEffect.isInstantenous()) {
 				if (mobEffect.getCategory() == MobEffectCategory.BENEFICIAL) {
 					allBuffs.add(mobEffect);
@@ -53,14 +54,14 @@ public class ShimmeringAppleItem extends ConsumableItem {
 		final RandomSource random = consumer.getRandom();
 		active.entrySet().stream()
 			.filter(pair ->
-				!pair.getKey().isInstantenous() &&
+				!pair.getKey().value().isInstantenous() &&
 				!pair.getValue().isAmbient() &&
 				!pair.getValue().isInfiniteDuration() &&
 				pair.getValue().getDuration() > 200 &&
 				pair.getValue().showIcon()
 			).forEach(entry -> {
 				List<MobEffect> effectList;
-				final MobEffect effect = entry.getKey();
+				final MobEffect effect = entry.getKey().value();
 				final MobEffectInstance instance = entry.getValue();
 				if (effect.getCategory() == MobEffectCategory.BENEFICIAL) {
 					effectList = allBuffs;
@@ -74,7 +75,7 @@ public class ShimmeringAppleItem extends ConsumableItem {
 					final int duration = Math.min(instance.getDuration(), random.nextIntBetweenInclusive(800, 2400));
 					final int amp = Math.min(instance.getAmplifier(), 2);
 					if (Util.removeEffect(consumer, effect)) {
-						consumer.forceAddEffect(new MobEffectInstance(selectedEffect, duration, amp), consumer);
+						consumer.forceAddEffect(new MobEffectInstance(Util.holder(selectedEffect), duration, amp), consumer);
 					}
 				}
 			}

@@ -1,19 +1,22 @@
 package net.brdle.collectorsreap.common.loot;
 
-import com.google.gson.JsonDeserializationContext;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonSerializationContext;
-import net.brdle.collectorsreap.Util;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.brdle.collectorsreap.common.config.CRConfig;
-import net.minecraft.util.GsonHelper;
-import net.minecraft.world.level.ItemLike;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 import net.minecraft.world.level.storage.loot.predicates.LootItemConditionType;
-import net.minecraftforge.registries.RegistryObject;
 import org.jetbrains.annotations.NotNull;
 
 public class LootItemEnabledCondition implements LootItemCondition {
+	public static final MapCodec<LootItemEnabledCondition> CODEC = RecordCodecBuilder.mapCodec(instance ->
+		instance.group(
+			Codec.STRING.fieldOf("item").forGetter(c -> c.item)
+		).apply(instance, LootItemEnabledCondition::new));
+
 	final String item;
 
 	LootItemEnabledCondition(String item) {
@@ -24,8 +27,8 @@ public class LootItemEnabledCondition implements LootItemCondition {
 		return () -> new LootItemEnabledCondition(item);
 	}
 
-	public static LootItemCondition.Builder enabled(RegistryObject<? extends ItemLike> item) {
-		return enabled(Util.name(item));
+	public static LootItemCondition.Builder enabled(Item item) {
+		return enabled(BuiltInRegistries.ITEM.getKey(item).getPath());
 	}
 
 	@Override
@@ -43,17 +46,5 @@ public class LootItemEnabledCondition implements LootItemCondition {
 	@Override
 	public boolean test(LootContext context) {
 		return CRConfig.verify(this.item);
-	}
-
-	public static class Serializer implements net.minecraft.world.level.storage.loot.Serializer<LootItemEnabledCondition> {
-		// Serialize the value by putting its data into the JsonObject.
-		public void serialize(JsonObject object, LootItemEnabledCondition condition, @NotNull JsonSerializationContext context) {
-			object.addProperty("item", condition.item);
-		}
-
-		// Deserialize a value by reading it from the JsonObject.
-		public @NotNull LootItemEnabledCondition deserialize(@NotNull JsonObject object, @NotNull JsonDeserializationContext context) {
-			return new LootItemEnabledCondition(GsonHelper.getAsString(object, "item"));
-		}
 	}
 }

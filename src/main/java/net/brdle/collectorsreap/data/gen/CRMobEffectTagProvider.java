@@ -4,18 +4,19 @@ import net.brdle.collectorsreap.CollectorsReap;
 import net.brdle.collectorsreap.compat.Modid;
 import net.brdle.collectorsreap.data.CRMobEffectTags;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.tags.IntrinsicHolderTagsProvider;
 import net.minecraft.world.effect.MobEffect;
-import net.minecraftforge.common.data.ExistingFileHelper;
-import net.minecraftforge.registries.ForgeRegistries;
 import java.util.concurrent.CompletableFuture;
+
+import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import org.jetbrains.annotations.NotNull;
 
 public class CRMobEffectTagProvider extends IntrinsicHolderTagsProvider<MobEffect> {
 	public CRMobEffectTagProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> provider, ExistingFileHelper helper) {
-		super(output, Registries.MOB_EFFECT, provider, (effect) -> ForgeRegistries.MOB_EFFECTS.getResourceKey(effect).get(), CollectorsReap.MODID, helper);
+		super(output, Registries.MOB_EFFECT, provider, (effect) -> BuiltInRegistries.MOB_EFFECT.getResourceKey(effect).get(), CollectorsReap.MODID, helper);
 	}
 
 	@Override

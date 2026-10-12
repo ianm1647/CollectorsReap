@@ -1,28 +1,18 @@
 package net.brdle.collectorsreap.common.item;
 
-import com.google.common.collect.ImmutableMultimap;
-import com.google.common.collect.Multimap;
-import net.brdle.collectorsreap.Util;
-import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.entity.ai.attributes.Attribute;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.EquipmentSlotGroup;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.common.ForgeMod;
-import net.minecraftforge.common.util.Lazy;
+import net.minecraft.world.item.Rarity;
+import net.minecraft.world.item.component.ItemAttributeModifiers;
 import org.jetbrains.annotations.NotNull;
 
 public class PearlyClawItem extends Item {
-	private final Lazy<Multimap<Attribute, AttributeModifier>> attributes;
-
 	public PearlyClawItem(Properties properties) {
-		super(properties);
-		this.attributes = Lazy.of(() -> {
-			ImmutableMultimap.Builder<Attribute, AttributeModifier> builder = ImmutableMultimap.builder();
-			builder.put(ForgeMod.BLOCK_REACH.get(), new AttributeModifier(Util.BLOCK_REACH,
-				"Block reach modifier", 2D, AttributeModifier.Operation.ADDITION));
-			return builder.build();
-		});
+		super(properties.rarity(Rarity.UNCOMMON));
 	}
 
 	@Override
@@ -31,14 +21,13 @@ public class PearlyClawItem extends Item {
 	}
 
 	@Override
-	public Multimap<Attribute, AttributeModifier> getAttributeModifiers(EquipmentSlot slot, ItemStack stack) {
-		final Multimap<Attribute, AttributeModifier> mods = super.getAttributeModifiers(slot, stack);
-		if (slot.getType() == EquipmentSlot.Type.HAND) {
-			ImmutableMultimap.Builder<Attribute, AttributeModifier> builder = ImmutableMultimap.builder();
-			builder.putAll(mods);
-			builder.putAll(this.attributes.get());
-			return builder.build();
-		}
-		return mods;
+	public @NotNull ItemAttributeModifiers getDefaultAttributeModifiers() {
+		return ItemAttributeModifiers.builder()
+			.add(Attributes.BLOCK_INTERACTION_RANGE,
+				new AttributeModifier(
+					ResourceLocation.withDefaultNamespace("block_reach_modifier"),
+					2D,
+					AttributeModifier.Operation.ADD_VALUE), EquipmentSlotGroup.MAINHAND)
+			.build();
 	}
 }

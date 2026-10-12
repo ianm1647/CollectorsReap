@@ -15,73 +15,72 @@ import net.brdle.collectorsreap.common.loot.CRLootModifiers;
 import net.brdle.collectorsreap.compat.Modid;
 import net.brdle.collectorsreap.data.gen.Generators;
 import net.brdle.collectorsreap.data.pack.CRFoliagePlacerTypes;
-import net.minecraft.world.level.ItemLike;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.minecraftforge.registries.RegistryObject;
+import net.minecraft.world.item.Item;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import net.neoforged.bus.api.IEventBus;
+import net.neoforged.neoforge.common.NeoForge;
 import org.jetbrains.annotations.NotNull;
 
 public class CommonProxy {
-	private static @NotNull List<RegistryObject<? extends ItemLike>> hiddenItems = Collections.emptyList();
+	private static @NotNull List<Item> hiddenItems = Collections.emptyList();
 
-	public void start() {
-		final var modBus = FMLJavaModLoadingContext.get().getModEventBus();
-		final var forgeBus = MinecraftForge.EVENT_BUS;
-		forgeBus.register(new CommonEvents());
-		modBus.register(new ModEvents());
-		modBus.register(new Generators());
-		CRFluids.create(modBus);
-		CREntities.create(modBus);
-		CRParticleTypes.create(modBus);
-		CREffects.create(modBus);
-		CRCreativeTab.create(modBus);
-		CRLootItemConditions.create(modBus);
-		CRLootModifiers.create(modBus);
-		CRSoundEvents.create(modBus);
-		CRFoliagePlacerTypes.create(modBus);
+	public void start(IEventBus bus) {
+		final var modBus = NeoForge.EVENT_BUS;
+		bus.register(new CommonEvents());
+		bus.register(new ModEvents());
+		bus.register(new Generators());
+		CRFluids.create(bus);
+		CREntities.create(bus);
+		CRParticleTypes.create(bus);
+		CREffects.create(bus);
+		CRCreativeTab.create(bus);
+		CRLootItemConditions.create(bus);
+		CRLootModifiers.create(bus);
+		CRSoundEvents.create(bus);
+		CRFoliagePlacerTypes.create(bus);
 
 		hiddenItems = new ArrayList<>();
 		if (!Modid.FR.loaded()) {
 			hiddenItems.addAll(List.of(
-				CRItems.STRONG_LIMEADE,
-				CRItems.LIME_GREEN_TEA,
-				CRItems.POMEGRANATE_BLACK_TEA,
-				CRItems.VERNAL_PURGE,
-				CRItems.STRONG_VERNAL_PURGE,
-				CRItems.LIMBO_BREW,
-				CRItems.LONG_LIMBO_BREW,
-				CRItems.STRONG_LIMBO_BREW,
-				CRItems.SWEET_RECOVERY,
-				CRItems.LONG_SWEET_RECOVERY,
-				CRItems.STRONG_SWEET_RECOVERY
+				CRItems.STRONG_LIMEADE.get(),
+				CRItems.LIME_GREEN_TEA.get(),
+				CRItems.POMEGRANATE_BLACK_TEA.get(),
+				CRItems.VERNAL_PURGE.get(),
+				CRItems.STRONG_VERNAL_PURGE.get(),
+				CRItems.LIMBO_BREW.get(),
+				CRItems.LONG_LIMBO_BREW.get(),
+				CRItems.STRONG_LIMBO_BREW.get(),
+				CRItems.SWEET_RECOVERY.get(),
+				CRItems.LONG_SWEET_RECOVERY.get(),
+				CRItems.STRONG_SWEET_RECOVERY.get()
 			));
 		}
 		if (!Modid.BC.loaded()) {
 			hiddenItems.addAll(List.of(
-				CRItems.DEIFIC_BLOOD,
-				CRItems.HERMITS_SOUR,
-				CRItems.ROSE_MOON,
-				CRItems.REANIMATORS_GARDEN,
-				CRItems.HEAVENS_CREAM
+				CRItems.DEIFIC_BLOOD.get(),
+				CRItems.HERMITS_SOUR.get(),
+				CRItems.ROSE_MOON.get(),
+				CRItems.REANIMATORS_GARDEN.get(),
+				CRItems.HEAVENS_CREAM.get()
 			));
 		}
 		if (!Modid.WW.loaded()) {
 			hiddenItems.addAll(List.of(
-				CRBlocks.LUCUMA_BEEHIVE,
-				CRBlocks.LUCUMA_LADDER,
-				CRBlocks.LUCUMA_BOOKSHELF,
-				CRBlocks.CHISELED_LUCUMA_BOOKSHELF,
-				CRBlocks.LUCUMA_BOARDS,
-				CRBlocks.LUCUMA_CHEST,
-				CRBlocks.TRAPPED_LUCUMA_CHEST
+				CRBlocks.LUCUMA_BEEHIVE.get().asItem(),
+				CRBlocks.LUCUMA_LADDER.get().asItem(),
+				CRBlocks.LUCUMA_BOOKSHELF.get().asItem(),
+				CRBlocks.CHISELED_LUCUMA_BOOKSHELF.get().asItem(),
+				CRBlocks.LUCUMA_BOARDS.get().asItem(),
+				CRBlocks.LUCUMA_CHEST.get().asItem(),
+				CRBlocks.TRAPPED_LUCUMA_CHEST.get().asItem()
 			));
 		}
 	}
 
-	public static @NotNull List<RegistryObject<? extends ItemLike>> getHiddenItems() {
+	public static @NotNull List<Item> getHiddenItems() {
 		return hiddenItems;
 	}
 }

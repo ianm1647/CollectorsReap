@@ -3,7 +3,7 @@ package net.brdle.collectorsreap.compat;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
 import mezz.jei.api.constants.VanillaTypes;
-import mezz.jei.api.forge.ForgeTypes;
+import mezz.jei.api.neoforge.NeoForgeTypes;
 import mezz.jei.api.registration.IRecipeRegistration;
 import mezz.jei.api.runtime.IIngredientManager;
 import net.brdle.collectorsreap.CollectorsReap;
@@ -17,11 +17,11 @@ import net.brdle.collectorsreap.proxy.CommonProxy;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.fluids.FluidStack;
 import java.util.ArrayList;
 import java.util.List;
-import net.minecraftforge.registries.RegistryObject;
 import javax.annotation.ParametersAreNonnullByDefault;
+
+import net.neoforged.neoforge.fluids.FluidStack;
 import org.jetbrains.annotations.NotNull;
 
 @JeiPlugin
@@ -69,22 +69,21 @@ public class JEIPlugin implements IModPlugin {
 		if (!CommonProxy.getHiddenItems().isEmpty()) {
 			manager.removeIngredientsAtRuntime(VanillaTypes.ITEM_STACK,
 				CommonProxy.getHiddenItems().stream()
-					.map(RegistryObject::get)
 					.map(ItemStack::new)
 					.toList()
 			);
 		}
 		if (!hiddenFluids.isEmpty()) {
-			manager.removeIngredientsAtRuntime(ForgeTypes.FLUID_STACK, hiddenFluids);
+			manager.removeIngredientsAtRuntime(NeoForgeTypes.FLUID_STACK, hiddenFluids);
 		}
 
 		// Portobello
-		registration.addItemStackInfo(Util.getStack(CRBlocks.PORTOBELLO), Component.translatable("desc." + CollectorsReap.MODID + "." + Util.name(CRBlocks.PORTOBELLO)));
+		registration.addItemStackInfo(Util.getStack(CRBlocks.PORTOBELLO), Component.translatable("desc." + CollectorsReap.MODID + "." + Util.name(CRBlocks.PORTOBELLO.get())));
 
 		// Lime
-		String limeTranslationKey = "desc." + CollectorsReap.MODID + "." + Util.name(CRItems.LIME);
+		String limeTranslationKey = "desc." + CollectorsReap.MODID + "." + Util.name(CRItems.LIME.get());
 		List<ItemStack> limeStack = List.of(Util.getStack(CRItems.LIME), Util.getStack(CRItems.LIME_SLICE));
-		if (CRConfig.verify(CRItems.LIME) && CRConfig.LIME_POLLINATION.get()) {
+		if (CRConfig.verify(CRItems.LIME.get()) && CRConfig.LIME_POLLINATION.get()) {
 			registration.addItemStackInfo(limeStack, Component.translatable(limeTranslationKey),
 				Component.translatable(limeTranslationKey + ".pollination")
 			);
@@ -93,9 +92,9 @@ public class JEIPlugin implements IModPlugin {
 		}
 
 		// Pomegranate
-		String pomTranslationKey = "desc." + CollectorsReap.MODID + "." + Util.name(CRItems.POMEGRANATE);
+		String pomTranslationKey = "desc." + CollectorsReap.MODID + "." + Util.name(CRItems.POMEGRANATE.get());
 		List<ItemStack> pomStack = List.of(Util.getStack(CRItems.POMEGRANATE), Util.getStack(CRItems.POMEGRANATE_SLICE));
-		if (CRConfig.verify(CRItems.POMEGRANATE)) {
+		if (CRConfig.verify(CRItems.POMEGRANATE.get())) {
 			if (CRConfig.POMEGRANATE_POLLINATION.get()) {
 				registration.addItemStackInfo(pomStack,
 					Component.translatable(pomTranslationKey),
@@ -107,28 +106,28 @@ public class JEIPlugin implements IModPlugin {
 		}
 
 		// Pink Dragon Fruit
-		String dragonFruitTranslationKey = "desc." + CollectorsReap.MODID + "." + Util.name(CRItems.PINK_DRAGON_FRUIT);
+		String dragonFruitTranslationKey = "desc." + CollectorsReap.MODID + "." + Util.name(CRItems.PINK_DRAGON_FRUIT.get());
 		List<ItemStack> dragonFruitStack = List.of(Util.getStack(CRBlocks.DRAGON_BUSH), Util.getStack(CRItems.PINK_DRAGON_FRUIT));
-		if (CRConfig.verify(CRItems.PINK_DRAGON_FRUIT)) {
+		if (CRConfig.verify(CRItems.PINK_DRAGON_FRUIT.get())) {
 			registration.addItemStackInfo(dragonFruitStack, Component.translatable(dragonFruitTranslationKey));
 		}
 
 		// Lucuma
-		String lucumaTranslationKey = "desc." + CollectorsReap.MODID + "." + Util.name(CRItems.LUCUMA);
+		String lucumaTranslationKey = "desc." + CollectorsReap.MODID + "." + Util.name(CRItems.LUCUMA.get());
 		List<ItemStack> lucumaStack = List.of(Util.getStack(CRBlocks.LUCUMA_SAPLING), Util.getStack(CRItems.LUCUMA));
-		if (CRConfig.verify(CRItems.LUCUMA)) {
+		if (CRConfig.verify(CRItems.LUCUMA.get())) {
 			registration.addItemStackInfo(lucumaStack, Component.translatable(lucumaTranslationKey));
 		}
 
 		// Urchin Dart
-		String dartTranslationKey = "desc." + CollectorsReap.MODID + "." + Util.name(CRItems.URCHIN_DART);
-		if (CRConfig.verify(CRItems.URCHIN_DART)) {
+		String dartTranslationKey = "desc." + CollectorsReap.MODID + "." + Util.name(CRItems.URCHIN_DART.get());
+		if (CRConfig.verify(CRItems.URCHIN_DART.get())) {
 			registration.addItemStackInfo(Util.getStack(CRItems.URCHIN_DART), Component.translatable(dartTranslationKey));
 		}
 
 		// Straw Brush
-		String strawBrushTranslationKey = "desc." + CollectorsReap.MODID + "." + Util.name(CRItems.STRAW_BRUSH);
-		if (CRConfig.verify(CRItems.STRAW_BRUSH)) {
+		String strawBrushTranslationKey = "desc." + CollectorsReap.MODID + "." + Util.name(CRItems.STRAW_BRUSH.get());
+		if (CRConfig.verify(CRItems.STRAW_BRUSH.get())) {
 			registration.addItemStackInfo(
 				List.of(Util.getStack(CRItems.STRAW_BRUSH), StrawBrushItem.getPollinatedStack()),
 				Component.translatable(strawBrushTranslationKey)
@@ -139,7 +138,7 @@ public class JEIPlugin implements IModPlugin {
 			if (CRConfig.verify(CRItems.STYGIAN_POMEGRANATE)) {
 				registration.addItemStackInfo(
 					Util.getStack(CRItems.STYGIAN_POMEGRANATE),
-					Component.translatable("desc." + CollectorsReap.MODID + "." + Util.name(CRItems.STYGIAN_POMEGRANATE))
+					Component.translatable("desc." + CollectorsReap.MODID + "." + Util.name(CRItems.STYGIAN_POMEGRANATE.get()))
 				);
 			}
 			registration.addItemStackInfo(Util.getStack(CRItems.PORTOBELLO_COLONY), Component.translatable("mynethersdelight.jei.info.mushroom_colony"));

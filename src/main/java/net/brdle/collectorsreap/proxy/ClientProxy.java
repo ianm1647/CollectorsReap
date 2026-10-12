@@ -1,14 +1,12 @@
 package net.brdle.collectorsreap.proxy;
 
 import net.brdle.collectorsreap.client.ClientEvents;
-import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.neoforged.bus.api.IEventBus;
 
 public class ClientProxy extends CommonProxy {
 	@Override
-	public void start() {
-		super.start();
-		final IEventBus modBus = FMLJavaModLoadingContext.get().getModEventBus();
-		modBus.register(new ClientEvents());
+	public void start(IEventBus bus) {
+		super.start(bus);
+		bus.register(new ClientEvents());
 	}
 }

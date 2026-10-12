@@ -5,29 +5,29 @@ import net.brdle.collectorsreap.common.config.CRConfig;
 import net.brdle.collectorsreap.common.item.CRItemSubRegistryHelper;
 import net.brdle.collectorsreap.proxy.ClientProxy;
 import net.brdle.collectorsreap.proxy.CommonProxy;
-import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.fml.DistExecutor;
-import net.minecraftforge.fml.ModLoadingContext;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.config.ModConfig;
-import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraft.core.registries.Registries;
+import net.neoforged.bus.api.IEventBus;
+import net.neoforged.fml.ModContainer;
+import net.neoforged.fml.common.Mod;
+import net.neoforged.fml.config.ModConfig;
+import net.neoforged.fml.loading.FMLEnvironment;
+import net.neoforged.neoforge.common.NeoForge;
 
 @Mod(CollectorsReap.MODID)
 public class CollectorsReap {
 	public static final String MODID = "collectorsreap";
 	public static final RegistryHelper REGISTRY_HELPER = RegistryHelper.create(MODID, helper -> {
-		helper.putSubHelper(ForgeRegistries.ITEMS, new CRItemSubRegistryHelper(helper));
+		helper.putSubHelper(Registries.ITEM, new CRItemSubRegistryHelper(helper));
 	});
 	public static CommonProxy proxy;
 
-	public CollectorsReap() {
-		final IEventBus modBus = FMLJavaModLoadingContext.get().getModEventBus();
-		REGISTRY_HELPER.register(modBus);
+	public CollectorsReap(IEventBus modEventBus, ModContainer modContainer) {
+		REGISTRY_HELPER.register(modEventBus);
 
-		proxy = DistExecutor.safeRunForDist(() -> ClientProxy::new, () -> CommonProxy::new);
-		proxy.start();
+		proxy = FMLEnvironment.dist.isClient() ? new ClientProxy(): new CommonProxy();
+		proxy.start(modEventBus);
 
-		ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, CRConfig.COMMON);
+		modContainer.registerConfig(ModConfig.Type.COMMON, CRConfig.COMMON);
+		NeoForge.EVENT_BUS.register(this);
 	}
 }

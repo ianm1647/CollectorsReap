@@ -16,10 +16,10 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Block;
-import net.minecraftforge.common.Tags;
-import net.minecraftforge.common.data.ExistingFileHelper;
+import net.neoforged.neoforge.common.Tags;
+import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import vectorwing.farmersdelight.common.registry.ModItems;
-import vectorwing.farmersdelight.common.tag.ForgeTags;
+import vectorwing.farmersdelight.common.tag.CommonTags;
 import vectorwing.farmersdelight.common.tag.ModTags;
 import java.util.concurrent.CompletableFuture;
 import org.jetbrains.annotations.NotNull;
@@ -118,8 +118,8 @@ public class CRItemTagProvider extends ItemTagsProvider {
 
 		// Fish
 		this.tag(ItemTags.FISHES).add(CRItems.PLATINUM_BASS.get());
-		this.tag(ForgeTags.RAW_FISHES).addTag(CRItemTags.RAW_FISHES_PLATINUM_BASS);
-		this.tag(ForgeTags.COOKED_FISHES).addTag(CRItemTags.COOKED_FISHES_PLATINUM_BASS);
+		this.tag(Tags.Items.FOODS_RAW_FISH).addTag(CRItemTags.RAW_FISHES_PLATINUM_BASS);
+		this.tag(Tags.Items.FOODS_COOKED_FISH).addTag(CRItemTags.COOKED_FISHES_PLATINUM_BASS);
 		this.tag(CRItemTags.FISH_ROE)
 			.add(CRItems.PLATINUM_BASS_ROE.get())
 			.addOptional(Modid.LFL.rl("tropical_fish_roe"))
@@ -155,15 +155,15 @@ public class CRItemTagProvider extends ItemTagsProvider {
 			.add(CRItems.TIGER_PRAWN.get());
 
 		// Farmer's Delight
-		this.tag(ModTags.WOODEN_CABINETS).add(CRBlocks.LUCUMA_CABINET.get().asItem());
-		this.tag(ModTags.WILD_CROPS_ITEM)
+		this.tag(ModTags.Items.CABINETS_WOODEN).add(CRBlocks.LUCUMA_CABINET.get().asItem());
+		this.tag(ModTags.Items.WILD_CROPS)
 			.add(CRBlocks.DRAGON_BUSH.get().asItem());
-		this.tag(ModTags.CABBAGE_ROLL_INGREDIENTS)
+		this.tag(CommonTags.Items.FOODS_CABBAGE)
 			.addTag(CRItemTags.RAW_CRAB_MEAT)
 			.addTag(CRItemTags.RAW_CLAM)
 			.addTag(CRItemTags.RAW_PRAWN)
 			.addTag(CRItemTags.RAW_URCHIN);
-		this.tag(ModTags.DRINKS)
+		this.tag(ModTags.Items.DRINKS)
 			.addTag(CRItemTags.JUICES)
 			.addTag(CRItemTags.FERMENTED_DRINKS)
 			.add(CRItems.DRAGONS_PASSION.get())

@@ -7,6 +7,8 @@ import net.brdle.collectorsreap.compat.Modid;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 
+import java.util.Objects;
+
 public class CRItemTags {
 	// CR
 	public static final TagKey<Item> GUMMIES = cr("gummies");
@@ -115,9 +117,9 @@ public class CRItemTags {
 
 	// Let Fish Love
 	public static final TagKey<Item> FISH_FOOD_PLATINUM_BASS = Util.it("letfishlove",
-		"fish_food/" + CollectorsReap.MODID + "/" + CREntities.PLATINUM_BASS.getId().getPath());
+		"fish_food/" + CollectorsReap.MODID + "/" + Objects.requireNonNull(CREntities.PLATINUM_BASS.get().builtInRegistryHolder().getKey()).registry().getPath());
 	public static final TagKey<Item> FISH_FOOD_TIGER_PRAWN = Util.it("letfishlove",
-		"fish_food/" + CollectorsReap.MODID + "/" + CREntities.TIGER_PRAWN.getId().getPath());
+		"fish_food/" + CollectorsReap.MODID + "/" + Objects.requireNonNull(CREntities.TIGER_PRAWN.get().builtInRegistryHolder().getKey()).registry().getPath());
 
 	private static TagKey<Item> cr(String name) {
 		return Modid.CR.it(name);

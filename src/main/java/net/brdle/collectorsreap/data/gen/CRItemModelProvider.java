@@ -1,8 +1,10 @@
 package net.brdle.collectorsreap.data.gen;
 
 import com.teamabnormals.blueprint.common.block.chest.BlueprintChestBlock;
+import com.teamabnormals.blueprint.common.block.chest.BlueprintTrappedChestBlock;
+import com.teamabnormals.blueprint.common.block.sign.BlueprintCeilingHangingSignBlock;
+import com.teamabnormals.blueprint.common.block.sign.BlueprintStandingSignBlock;
 import com.teamabnormals.blueprint.core.data.client.BlueprintBlockStateProvider;
-import com.teamabnormals.blueprint.core.data.client.BlueprintItemModelProvider;
 import net.brdle.collectorsreap.CollectorsReap;
 import net.brdle.collectorsreap.Util;
 import net.brdle.collectorsreap.common.block.CRBlocks;
@@ -13,11 +15,9 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
-import net.neoforged.neoforge.client.model.generators.ItemModelBuilder;
 import net.neoforged.neoforge.client.model.generators.ItemModelProvider;
 import net.neoforged.neoforge.client.model.generators.ModelFile;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
-import net.neoforged.neoforge.registries.DeferredHolder;
 
 import java.util.function.Supplier;
 
@@ -49,9 +49,9 @@ public class CRItemModelProvider extends ItemModelProvider {
 		this.blockItem(CRBlocks.LUCUMA_TRAPDOOR, Util.name(CRBlocks.LUCUMA_TRAPDOOR.get()) + "_bottom");
 		this.blockItem(CRBlocks.LUCUMA_PRESSURE_PLATE);
 		this.buttonInventory(Util.name(CRBlocks.LUCUMA_BUTTON.get()), resourceBlock(CRBlocks.LUCUMA_PLANKS));
-		this.generatedItem(CRBlocks.LUCUMA_DOOR);
-		this.generatedItem(CRBlocks.LUCUMA_SIGN);
-		this.generatedItem(CRBlocks.LUCUMA_HANGING_SIGN);
+		this.generatedBlockItem(CRBlocks.LUCUMA_DOOR);
+		this.standingSign(CRBlocks.LUCUMA_SIGN);
+		this.hangingSign(CRBlocks.LUCUMA_HANGING_SIGN);
 		this.generatedItem(CRItems.LUCUMA_BOAT);
 		this.generatedItem(CRItems.LUCUMA_CHEST_BOAT);
 		this.generatedItem(CRItems.LUCUMA_FURNACE_BOAT);
@@ -65,7 +65,7 @@ public class CRItemModelProvider extends ItemModelProvider {
 		this.blockItem(CRBlocks.LUCUMA_BOOKSHELF);
 		this.blockItem(CRBlocks.LUCUMA_BOARDS);
 		this.chest(CRBlocks.LUCUMA_CHEST);
-		this.chest(CRBlocks.TRAPPED_LUCUMA_CHEST);
+		this.trappedChest(CRBlocks.TRAPPED_LUCUMA_CHEST);
 
 		// Urchin Test
 		this.blockItem(CRBlocks.URCHIN_TEST_BLOCK);
@@ -345,6 +345,27 @@ public class CRItemModelProvider extends ItemModelProvider {
 	}
 
 	@SafeVarargs
+	public final void generatedBlockItem(Supplier<Block>... items) {
+		for (Supplier<Block> item : items) {
+			this.basicItem(item.get().asItem());
+		}
+	}
+
+	@SafeVarargs
+	public final void standingSign(Supplier<BlueprintStandingSignBlock>... items) {
+		for (Supplier<BlueprintStandingSignBlock> item : items) {
+			this.basicItem(item.get().asItem());
+		}
+	}
+
+	@SafeVarargs
+	public final void hangingSign(Supplier<BlueprintCeilingHangingSignBlock>... items) {
+		for (Supplier<BlueprintCeilingHangingSignBlock> item : items) {
+			this.basicItem(item.get().asItem());
+		}
+	}
+
+	@SafeVarargs
 	public final void spawnEggItem(Item... items) {
 		for (Item item : items) {
 			this.withExistingParent(name(item), "item/template_spawn_egg");
@@ -367,7 +388,11 @@ public class CRItemModelProvider extends ItemModelProvider {
 		this.withExistingParent(Util.name(blockItem.get()), "item/generated").texture("layer0", resourceBlock(Util.name(blockItem.get())));
 	}
 
-	private void chest(Supplier<Block> chestItem) {
+	private void chest(Supplier<BlueprintChestBlock> chestItem) {
+		this.withExistingParent(Util.name(chestItem.get()), "blueprint:item/template_chest");
+	}
+
+	private void trappedChest(Supplier<BlueprintTrappedChestBlock> chestItem) {
 		this.withExistingParent(Util.name(chestItem.get()), "blueprint:item/template_chest");
 	}
 

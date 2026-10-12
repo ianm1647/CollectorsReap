@@ -2,6 +2,8 @@ package net.brdle.collectorsreap.common.item;
 
 import java.util.Map;
 import java.util.function.Supplier;
+
+import com.mojang.datafixers.util.Pair;
 import com.teamabnormals.blueprint.common.item.BlueprintBoatItem;
 import com.teamabnormals.blueprint.core.util.registry.ItemSubRegistryHelper;
 import net.brdle.collectorsreap.CollectorsReap;

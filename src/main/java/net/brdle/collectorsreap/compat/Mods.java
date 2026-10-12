@@ -2,7 +2,7 @@ package net.brdle.collectorsreap.compat;
 
 import net.brdle.collectorsreap.CollectorsReap;
 import net.brdle.collectorsreap.Util;
-import net.minecraftforge.fml.ModList;
+import net.neoforged.fml.ModList;
 import vectorwing.farmersdelight.FarmersDelight;
 import java.util.Arrays;
 import org.jetbrains.annotations.NotNull;

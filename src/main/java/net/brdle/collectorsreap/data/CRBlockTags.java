@@ -8,6 +8,8 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.block.Block;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Objects;
+
 public class CRBlockTags {
 	// Collector's Reap
 	public static final TagKey<Block> CROPS_PLANTABLE_ON = bind(CollectorsReap.MODID, "crops_plantable_on");
@@ -40,9 +42,9 @@ public class CRBlockTags {
 
 	// Let Fish Love
 	public static final TagKey<Block> FISH_ROE_PLATINUM_BASS = bind("letfishlove",
-		"fish_roe/" + CollectorsReap.MODID + "/" + CREntities.PLATINUM_BASS.getId().getPath());
+		"fish_roe/" + CollectorsReap.MODID + "/" + Objects.requireNonNull(CREntities.PLATINUM_BASS.get().builtInRegistryHolder().getKey()).registry().getPath());
 	public static final TagKey<Block> FISH_ROE_TIGER_PRAWN = bind("letfishlove",
-		"fish_roe/" + CollectorsReap.MODID + "/" + CREntities.TIGER_PRAWN.getId().getPath());
+		"fish_roe/" + CollectorsReap.MODID + "/" + Objects.requireNonNull(CREntities.TIGER_PRAWN.get().builtInRegistryHolder().getKey()).registry().getPath());
 
 	// Supplementaries
 	public static final TagKey<Block> HANG_FROM_ROPES = bind("supplementaries", "hang_from_ropes");

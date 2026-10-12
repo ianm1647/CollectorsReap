@@ -5,6 +5,7 @@ import net.brdle.collectorsreap.common.config.CRConfig;
 import net.brdle.collectorsreap.common.event.CRSoundEvents;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
@@ -13,12 +14,14 @@ import net.minecraft.tags.BlockTags;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.animal.Bee;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.BonemealableBlock;
@@ -35,11 +38,11 @@ public class StrawBrushItem extends Item implements IConfigured {
 	}
 
 	@Override
-	public void appendHoverText(@NotNull ItemStack stack, @Nullable Level level, @NotNull List<Component> components, @NotNull TooltipFlag isAdvanced) {
-		super.appendHoverText(stack, level, components, isAdvanced);
-		if (this.enabledText(components)) {
+	public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltip, TooltipFlag isAdvanced) {
+		super.appendHoverText(stack, context, tooltip, isAdvanced);
+		if (this.enabledText(tooltip)) {
 			if (isPollinated(stack)) {
-				components.add(Util.crTooltip(Util.name(stack) + ".pollinated").withStyle(ChatFormatting.YELLOW));
+				tooltip.add(Util.crTooltip(Util.name(stack) + ".pollinated").withStyle(ChatFormatting.YELLOW));
 			}
 		}
 	}
@@ -62,7 +65,7 @@ public class StrawBrushItem extends Item implements IConfigured {
 			if (
 				state.is(BlockTags.BEE_GROWABLES) &&
 				state.getBlock() instanceof BonemealableBlock plant &&
-				plant.isValidBonemealTarget(level, pos, state, level.isClientSide())
+				plant.isValidBonemealTarget(level, pos, state)
 			) {
 				level.playSound(
 					null,
@@ -80,8 +83,7 @@ public class StrawBrushItem extends Item implements IConfigured {
 						stack.hurtAndBreak(
 							1,
 							player,
-							p -> p.broadcastBreakEvent(context.getHand())
-						);
+							EquipmentSlot.MAINHAND);
 						player.getInventory().setChanged();
 					}
 				}
@@ -118,11 +120,11 @@ public class StrawBrushItem extends Item implements IConfigured {
 	}
 
 	public static void setPollinated(@NotNull ItemStack stack, boolean pollinated) {
-		stack.getOrCreateTag().putBoolean(POLLINATED, pollinated);
+		CustomData.update(DataComponents.CUSTOM_DATA, stack, tag -> tag.putBoolean(POLLINATED, pollinated));
 	}
 
 	public static boolean isPollinated(@NotNull ItemStack stack) {
-		final CompoundTag tag = stack.getOrCreateTag();
+		final CompoundTag tag = stack.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY).copyTag();
 		return tag.contains(POLLINATED) && tag.getBoolean(POLLINATED);
 	}
 
@@ -140,7 +142,7 @@ public class StrawBrushItem extends Item implements IConfigured {
 				BlockState state = server.getBlockState(pos);
 				if (
 					!(state.getBlock() instanceof BonemealableBlock plant) ||
-						!plant.isValidBonemealTarget(server, pos, state, false)
+						!plant.isValidBonemealTarget(server, pos, state)
 				) {
 					break;
 				}

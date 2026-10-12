@@ -1,12 +1,10 @@
 package net.brdle.collectorsreap.common.loot;
 
-import com.google.gson.JsonDeserializationContext;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonSerializationContext;
-import net.brdle.collectorsreap.Util;
-import net.minecraft.tags.BlockTags;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
-import net.minecraft.util.GsonHelper;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.loot.LootContext;
@@ -16,6 +14,10 @@ import net.minecraft.world.level.storage.loot.predicates.LootItemConditionType;
 import org.jetbrains.annotations.NotNull;
 
 public class LootItemBlockIsTagCondition implements LootItemCondition {
+	public static final MapCodec<LootItemBlockIsTagCondition> CODEC = RecordCodecBuilder.mapCodec(instance ->
+		instance.group(
+			ResourceLocation.CODEC.fieldOf("tag").forGetter(c -> c.tag.location())
+		).apply(instance, rl -> new LootItemBlockIsTagCondition(TagKey.create(Registries.BLOCK, rl))));
 
 	final TagKey<Block> tag;
 
@@ -23,8 +25,8 @@ public class LootItemBlockIsTagCondition implements LootItemCondition {
 		this.tag = tag;
 	}
 
-	public static LootItemBlockIsTagCondition isTag(TagKey<Block> tag) {
-		return new LootItemBlockIsTagCondition(tag);
+	public static LootItemCondition.Builder isTag(TagKey<Block> tag) {
+		return () -> new LootItemBlockIsTagCondition(tag);
 	}
 
 	@Override
@@ -43,21 +45,5 @@ public class LootItemBlockIsTagCondition implements LootItemCondition {
 	public boolean test(LootContext lootContext) {
 		BlockState state = lootContext.getParamOrNull(LootContextParams.BLOCK_STATE);
 		return state != null && state.is(this.tag);
-	}
-
-	public static class Serializer implements net.minecraft.world.level.storage.loot.Serializer<LootItemBlockIsTagCondition> {
-		/**
-		 * Serialize the value by putting its data into the JsonObject.
-		 */
-		public void serialize(JsonObject object, LootItemBlockIsTagCondition cond, @NotNull JsonSerializationContext context) {
-			object.addProperty("tag", cond.tag.location().toString());
-		}
-
-		/**
-		 * Deserialize a value by reading it from the JsonObject.
-		 */
-		public @NotNull LootItemBlockIsTagCondition deserialize(@NotNull JsonObject object, @NotNull JsonDeserializationContext context) {
-			return new LootItemBlockIsTagCondition(BlockTags.create(Util.rl(GsonHelper.getAsString(object, "tag"))));
-		}
 	}
 }

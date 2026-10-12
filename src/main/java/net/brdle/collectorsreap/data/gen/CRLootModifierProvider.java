@@ -1,129 +1,97 @@
 package net.brdle.collectorsreap.data.gen;
 
-import com.teamabnormals.blueprint.common.loot.modification.LootModifierProvider;
-import com.teamabnormals.blueprint.common.loot.modification.modifiers.LootPoolEntriesModifier;
 import net.brdle.collectorsreap.CollectorsReap;
 import net.brdle.collectorsreap.common.block.CRBlocks;
 import net.brdle.collectorsreap.common.item.CRItems;
+import net.brdle.collectorsreap.common.loot.AddItemLootModifier;
 import net.brdle.collectorsreap.common.loot.LootItemEnabledCondition;
 import net.minecraft.advancements.critereon.LocationPredicate;
 import net.minecraft.core.HolderLookup.Provider;
+import net.minecraft.core.HolderSet;
 import net.minecraft.data.PackOutput;
-import net.minecraft.world.level.ItemLike;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.Biomes;
 import net.minecraft.world.level.storage.loot.BuiltInLootTables;
-import net.minecraft.world.level.storage.loot.entries.LootItem;
-import net.minecraft.world.level.storage.loot.functions.SetItemCountFunction;
 import net.minecraft.world.level.storage.loot.predicates.LocationCheck;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
-import net.minecraft.world.level.storage.loot.providers.number.UniformGenerator;
-import net.minecraftforge.registries.RegistryObject;
-import java.util.List;
+import net.neoforged.neoforge.common.data.GlobalLootModifierProvider;
+
 import java.util.concurrent.CompletableFuture;
 
-public class CRLootModifierProvider extends LootModifierProvider {
+public class CRLootModifierProvider extends GlobalLootModifierProvider {
+	private final CompletableFuture<Provider> provider;
+
 	public CRLootModifierProvider(PackOutput output, CompletableFuture<Provider> provider) {
-		super(CollectorsReap.MODID, output, provider);
+		super(output, provider, CollectorsReap.MODID);
+		this.provider = provider;
 	}
 
 	@Override
-	protected void registerEntries(Provider provider) {
-		this.entry("abandoned_mineshaft").selects(BuiltInLootTables.ABANDONED_MINESHAFT)
-			.addModifier(new LootPoolEntriesModifier(false, 0, List.of(
-				LootItem.lootTableItem(CRItems.LIME.get())
-					.setWeight(8)
-					.apply(SetItemCountFunction.setCount(UniformGenerator.between(1, 2)))
-					.when(enabled(CRItems.LIME)).build()
-			)));
-		this.entry("simple_dungeon").selects(BuiltInLootTables.SIMPLE_DUNGEON)
-			.addModifier(new LootPoolEntriesModifier(false, 0, List.of(
-				LootItem.lootTableItem(CRItems.LIME_SEEDS.get())
-					.setWeight(10)
-					.apply(SetItemCountFunction.setCount(UniformGenerator.between(2, 4)))
-					.when(enabled(CRItems.LIME_SEEDS)).build()
-			)));
-		this.entry("bastion_hoglin_stable").selects(BuiltInLootTables.BASTION_HOGLIN_STABLE)
-			.addModifier(new LootPoolEntriesModifier(false, 0, List.of(
-				LootItem.lootTableItem(CRItems.POMEGRANATE_SLICE.get())
-					.setWeight(10)
-					.apply(SetItemCountFunction.setCount(UniformGenerator.between(4, 12)))
-					.when(enabled(CRItems.POMEGRANATE_SLICE)).build()
-			)));
-		this.entry("bastion_other").selects(BuiltInLootTables.BASTION_OTHER)
-			.addModifier(new LootPoolEntriesModifier(false, 0, List.of(
-				LootItem.lootTableItem(CRItems.POMEGRANATE_SLICE.get())
-					.setWeight(10)
-					.apply(SetItemCountFunction.setCount(UniformGenerator.between(6, 16)))
-					.when(enabled(CRItems.POMEGRANATE_SLICE)).build()
-			)));
-		this.entry("ancient_city").selects(BuiltInLootTables.ANCIENT_CITY)
-			.addModifier(new LootPoolEntriesModifier(false, 0, List.of(
-				LootItem.lootTableItem(CRBlocks.LUCUMA_SAPLING.get())
-					.setWeight(4)
-					.when(enabled(CRBlocks.LUCUMA_SAPLING)).build(),
-				LootItem.lootTableItem(CRItems.GILDED_LUCUMA.get())
-					.setWeight(1)
-					.when(enabled(CRItems.GILDED_LUCUMA)).build()
-			)));
-		this.entry("shipwreck_treasure").selects(BuiltInLootTables.SHIPWRECK_TREASURE)
-			.addModifier(new LootPoolEntriesModifier(false, 0, List.of(
-				LootItem.lootTableItem(CRItems.LUNAR_PEARL.get())
-					.setWeight(14)
-					.apply(SetItemCountFunction.setCount(UniformGenerator.between(4, 8)))
-					.when(enabled(CRItems.LUNAR_PEARL)).build()
-			)));
-		this.entry("buried_treasure").selects(BuiltInLootTables.BURIED_TREASURE)
-			.addModifier(new LootPoolEntriesModifier(false, 0, List.of(
-				LootItem.lootTableItem(CRItems.LUNAR_PEARL.get())
-					.setWeight(2)
-					.apply(SetItemCountFunction.setCount(UniformGenerator.between(2, 7)))
-					.when(enabled(CRItems.LUNAR_PEARL)).build()
-			)));
-		this.entry(BuiltInLootTables.SNIFFER_DIGGING.getPath())
-			.selects(BuiltInLootTables.SNIFFER_DIGGING)
-			.addModifier(new LootPoolEntriesModifier(false, 0, List.of(
-				LootItem.lootTableItem(CRItems.DAMSELFLOWER_SEEDS.get())
-					.when(enabled(CRItems.DAMSELFLOWER_SEEDS)).build(),
-				LootItem.lootTableItem(CRItems.MOONTEAR_SEEDS.get())
-					.when(enabled(CRItems.MOONTEAR_SEEDS)).build(),
-				LootItem.lootTableItem(CRItems.SKULL_LILY_SEEDS.get())
-					.when(enabled(CRItems.SKULL_LILY_SEEDS)).build(),
-				LootItem.lootTableItem(CRItems.BULBOUS_ROSE_SEEDS.get())
-					.when(enabled(CRItems.BULBOUS_ROSE_SEEDS)).build(),
-				LootItem.lootTableItem(CRItems.HEARTPETALS_SEEDS.get())
-					.when(enabled(CRItems.HEARTPETALS_SEEDS)).build()
-			)));
-
+	protected void start() {
+		this.add("abandoned_mineshaft", new AddItemLootModifier(
+			new LootItemCondition[]{enabled(CRItems.LIME.get()).build()},
+			BuiltInLootTables.ABANDONED_MINESHAFT, CRItems.LIME.get(), 1, 2, 1F
+		));
+		this.add("simple_dungeon", new AddItemLootModifier(
+			new LootItemCondition[]{enabled(CRItems.LIME_SEEDS.get()).build()},
+			BuiltInLootTables.SIMPLE_DUNGEON, CRItems.LIME_SEEDS.get(), 2, 4, 1F
+		));
+		this.add("bastion_hoglin_stable", new AddItemLootModifier(
+			new LootItemCondition[]{enabled(CRItems.POMEGRANATE_SLICE.get()).build()},
+			BuiltInLootTables.BASTION_HOGLIN_STABLE, CRItems.POMEGRANATE_SLICE.get(), 4, 12, 1F
+		));
+		this.add("bastion_other", new AddItemLootModifier(
+			new LootItemCondition[]{enabled(CRItems.POMEGRANATE_SLICE.get()).build()},
+			BuiltInLootTables.BASTION_OTHER, CRItems.POMEGRANATE_SLICE.get(), 6, 16, 1F
+		));
+		this.add("ancient_city_lucuma_sapling", new AddItemLootModifier(
+			new LootItemCondition[]{enabled(CRBlocks.LUCUMA_SAPLING.get().asItem()).build()},
+			BuiltInLootTables.ANCIENT_CITY, CRBlocks.LUCUMA_SAPLING.get().asItem(), 1, 1, 1F
+		));
+		this.add("ancient_city_gilded_lucuma", new AddItemLootModifier(
+			new LootItemCondition[]{enabled(CRItems.GILDED_LUCUMA.get()).build()},
+			BuiltInLootTables.ANCIENT_CITY, CRItems.GILDED_LUCUMA.get(), 1, 1, 1F
+		));
+		this.add("shipwreck_treasure", new AddItemLootModifier(
+			new LootItemCondition[]{enabled(CRItems.LUNAR_PEARL.get()).build()},
+			BuiltInLootTables.SHIPWRECK_TREASURE, CRItems.LUNAR_PEARL.get(), 4, 8, 1F
+		));
+		this.add("buried_treasure", new AddItemLootModifier(
+			new LootItemCondition[]{enabled(CRItems.LUNAR_PEARL.get()).build()},
+			BuiltInLootTables.BURIED_TREASURE, CRItems.LUNAR_PEARL.get(), 2, 7, 1F
+		));
 		// Fishing
-		final LootItemCondition.Builder inRiver = LocationCheck.checkLocation(LocationPredicate.Builder.location().setBiome(Biomes.RIVER));
-		final LootItemCondition.Builder inSwamp = LocationCheck.checkLocation(LocationPredicate.Builder.location().setBiome(Biomes.SWAMP));
-		final LootItemCondition.Builder inMangroveSwamp = LocationCheck.checkLocation(LocationPredicate.Builder.location().setBiome(Biomes.MANGROVE_SWAMP));
-		final LootItemCondition.Builder inOcean = LocationCheck.checkLocation(LocationPredicate.Builder.location().setBiome(Biomes.OCEAN));
-		final LootItemCondition.Builder inWarmOcean = LocationCheck.checkLocation(LocationPredicate.Builder.location().setBiome(Biomes.WARM_OCEAN));
-		final LootItemCondition.Builder inColdOcean = LocationCheck.checkLocation(LocationPredicate.Builder.location().setBiome(Biomes.COLD_OCEAN));
-		this.entry(BuiltInLootTables.FISHING_FISH.getPath())
-			.selects(BuiltInLootTables.FISHING_FISH)
-			.addModifier(new LootPoolEntriesModifier(false, 0,
-				LootItem.lootTableItem(CRItems.PLATINUM_BASS.get())
-					.setWeight(7)
-					.when(inRiver)
-					.when(enabled(CRItems.PLATINUM_BASS)).build(),
-				LootItem.lootTableItem(CRItems.TIGER_PRAWN.get())
-					.setWeight(9)
-					.when(inRiver.or(inSwamp).or(inMangroveSwamp))
-					.when(enabled(CRItems.TIGER_PRAWN)).build(),
-				LootItem.lootTableItem(CRItems.URCHIN.get())
-					.setWeight(9)
-					.when(inOcean.or(inWarmOcean).or(inColdOcean))
-					.when(enabled(CRItems.URCHIN)).build(),
-				LootItem.lootTableItem(CRItems.CLAM.get())
-					.setWeight(10)
-					.when(inOcean.or(inWarmOcean).or(inColdOcean))
-					.when(enabled(CRItems.CLAM)).build()
-			));
+		final LootItemCondition.Builder inRiver = LocationCheck.checkLocation(inBiome(Biomes.RIVER));
+		final LootItemCondition.Builder inSwamp = LocationCheck.checkLocation(inBiome(Biomes.SWAMP));
+		final LootItemCondition.Builder inMangroveSwamp = LocationCheck.checkLocation(inBiome(Biomes.MANGROVE_SWAMP));
+		final LootItemCondition.Builder inOcean = LocationCheck.checkLocation(inBiome(Biomes.OCEAN));
+		final LootItemCondition.Builder inWarmOcean = LocationCheck.checkLocation(inBiome(Biomes.WARM_OCEAN));
+		final LootItemCondition.Builder inColdOcean = LocationCheck.checkLocation(inBiome(Biomes.COLD_OCEAN));
+		this.add("fishing_platinum_bass", new AddItemLootModifier(
+			new LootItemCondition[]{inRiver.build(), enabled(CRItems.PLATINUM_BASS.get()).build()},
+			BuiltInLootTables.FISHING_FISH, CRItems.PLATINUM_BASS.get(), 1, 1, 1F
+		));
+		this.add("fishing_tiger_prawn", new AddItemLootModifier(
+			new LootItemCondition[]{inRiver.or(inSwamp).or(inMangroveSwamp).build(), enabled(CRItems.TIGER_PRAWN.get()).build()},
+			BuiltInLootTables.FISHING_FISH, CRItems.TIGER_PRAWN.get(), 1, 1, 1F
+		));
+		this.add("fishing_urchin", new AddItemLootModifier(
+			new LootItemCondition[]{inOcean.or(inWarmOcean).or(inColdOcean).build(), enabled(CRItems.URCHIN.get()).build()},
+			BuiltInLootTables.FISHING_FISH, CRItems.URCHIN.get(), 1, 1, 1F
+		));
+		this.add("fishing_clam", new AddItemLootModifier(
+			new LootItemCondition[]{inOcean.or(inWarmOcean).or(inColdOcean).build(), enabled(CRItems.CLAM.get()).build()},
+			BuiltInLootTables.FISHING_FISH, CRItems.CLAM.get(), 1, 1, 1F
+		));
 	}
 
-	private LootItemCondition.Builder enabled(RegistryObject<? extends ItemLike> feature) {
+	private LootItemCondition.Builder enabled(Item feature) {
 		return LootItemEnabledCondition.enabled(feature);
+	}
+
+	private LocationPredicate.Builder inBiome(ResourceKey<Biome> biome) {
+		return LocationPredicate.Builder.location().setBiomes(HolderSet.direct(this.provider.join().holderOrThrow(biome)));
 	}
 }
